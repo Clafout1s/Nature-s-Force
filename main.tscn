@@ -1,0 +1,95 @@
+[gd_scene load_steps=6 format=3 uid="uid://bt7j0qiakfen"]
+
+[ext_resource type="PackedScene" uid="uid://bh3dqik6ou8rr" path="res://player.tscn" id="1_c75vs"]
+[ext_resource type="Texture2D" uid="uid://b18hgsfxr540p" path="res://icon.svg" id="2_qof7i"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pe06c"]
+texture = ExtResource("2_qof7i")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+7:7/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_vckb2"]
+sources/0 = SubResource("TileSetAtlasSource_pe06c")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gnhk4"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_c75vs")]
+
+[node name="Level" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_vckb2")
+format = 2
+
+[node name="Line2D" type="Line2D" parent="."]
+position = Vector2(500, 0)
+points = PackedVector2Array(0, 0, 0, 0)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(0, 500)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+scale = Vector2(200, 10)
+shape = SubResource("RectangleShape2D_gnhk4")
