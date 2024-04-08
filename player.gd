@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var SPEED = 250.0
 @export var GRAVITY=1500
 @export var JUMP_VELOCITY = -500.0
-@export var SHOTGUN_VELOCITY = SPEED*2
+@export var SHOTGUN_VELOCITY = 1000
 
 
 var movement_list_x=[]
@@ -17,56 +17,70 @@ var gun_centre_ecart
 var down_velocity_modifier=20
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = GRAVITY #ProjectSettings.get_setting("physics/2d/default_gravity")
-
+var exp_gravity=0
 
 var x_modifier_burst = 0
 var x_modifier_constant=0
 var y_modifier_burst = 0
 var y_modifier_constant=0
+
+var jump_activator
 	
 func _ready():
 	gun_centre_ecart=Vector2(position.x-$gun.global_position.x,position.x-$gun.global_position.x)
 	
 func _physics_process(delta):
-
+	
+	jump_input()
 	rotate_gun()
-	
-	
-	dash_input()
 	shotgun_input()
+	#dash_input()
 	
+	exp_gravity+=gravity*delta
+	if is_on_floor():
+		exp_gravity=0
 	
 	var to_apply_x=return_apply_regular_burst(movement_list_x)
 	var to_apply_y=return_apply_regular_burst(movement_list_y)
 	
 	x_modifier_constant=return_horizontal_input()
-	y_modifier_burst+=return_jump_input()
-	y_modifier_constant+=gravity*delta
+	x_modifier_burst=burst_test_input()
+	y_modifier_burst=0
+	y_modifier_constant=exp_gravity
+	if jump_activator:
+		y_modifier_constant+=JUMP_VELOCITY
+	
 	for elex in to_apply_x:
 		x_modifier_burst+=elex
 	for eley in to_apply_y:
 		y_modifier_burst+=eley
-	apply_vertical_velocity(y_modifier_constant,y_modifier_burst)
-	apply_horizontal_velocity(x_modifier_constant,x_modifier_burst)
+	
+	print(x_modifier_burst," ",y_modifier_burst)
+	apply_vertical_velocity(delta,y_modifier_constant,y_modifier_burst)
+	apply_horizontal_velocity(delta,x_modifier_constant,x_modifier_burst)
 	move_and_slide()
-
-func apply_horizontal_velocity(modifier_constant, modifier_burst):
+	if is_on_floor():
+		#print("in")
+		y_modifier_burst = 0
+		jump_activator=false
+	
+	
+func apply_horizontal_velocity(delta,modifier_constant, modifier_burst):
 	velocity.x = modifier_constant + modifier_burst
+	velocity.x = move_toward(velocity.x, modifier_constant, abs(SPEED))
 	
-	if modifier_burst == 0:
-		velocity.x = move_toward(modifier_constant, 0, SPEED)
+func apply_vertical_velocity(delta,modifier_constant, modifier_burst):
+	if modifier_burst==0:
+		velocity.y = modifier_constant
 	else:
-		modifier_burst=0
-		print(x_modifier_burst)
+		velocity.y =modifier_burst
+	#y_modifier_burst=move_toward(y_modifier_burst, 0, abs(SPEED*50/float(100)))
 	
-func apply_vertical_velocity(modifier_constant, modifier_burst):
+	#print(velocity.y)
+	
+	#print(velocity.y)
+	#y_modifier_burst=0
 
-	velocity.y = modifier_constant + modifier_burst
-	if modifier_burst == 0:
-		velocity.x = move_toward(modifier_constant, 0, SPEED)
-	else:
-		modifier_burst=0
-		print(x_modifier_burst)
 		
 func return_horizontal_input():
 	var direction = Input.get_axis("left", "right")
@@ -75,11 +89,9 @@ func return_horizontal_input():
 	else:
 		return 0
 		
-func return_jump_input():
+func jump_input():
 	if Input.is_action_just_pressed("up") and is_on_floor():
-		return JUMP_VELOCITY
-	else:
-		return 0
+		jump_activator=true
 
 func dash_input():
 	if Input.is_action_just_pressed("action_bar"):
@@ -113,24 +125,17 @@ func find_in_list(list,thing):
 
 func shotgun_input():
 	if Input.is_action_just_pressed("action2"):
-		
 		var angle=position.angle_to_point(get_global_mouse_position())
-		regular_burst_launch("shotgun_x",-cos(angle)*SHOTGUN_VELOCITY,shotgun_activator,8,movement_list_x)
-		regular_burst_launch("shotgun_y",-sin(angle)*SHOTGUN_VELOCITY,shotgun_activator,8,movement_list_y)
+		regular_burst_launch("shotgun_x",-cos(angle)*SHOTGUN_VELOCITY,shotgun_activator,10,movement_list_x)
+		regular_burst_launch("shotgun_y",-sin(angle)*SHOTGUN_VELOCITY,shotgun_activator,10,movement_list_y)
+		
+func burst_test_input():
+	if Input.is_action_just_pressed("action_bar"):
+		var direction = Input.get_axis("left", "right")
+		return direction*1000
+	else:
+		return 0
 
-	
-"""
-func apply_shotgun_physics():
-	if Input.is_action_just_pressed("action2"):
-		shotgun_shot=true
-		actual_shot_velocity=SHOTGUN_VELOCITY
-	if shotgun_shot:
-		actual_shot_velocity-=shot_percent_reduction/float(100)*float(actual_shot_velocity)
-		print(actual_shot_velocity)
-		if actual_shot_velocity<=10/float(100)*float(SHOTGUN_VELOCITY):
-			shotgun_shot=false
-			actual_shot_velocity=0
-"""
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
