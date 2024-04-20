@@ -15,73 +15,64 @@ var decelereation_constant=20
 var x_modifier_constant=0
 var y_modifier_constant=0
 
-var active_burst_x=null
-var active_burst_y=null
+var active_burst_x=[]
+var active_burst_y=[]
 
 var burst_list=[]
 var deceleration_list=[]
-var shotgun_burst_x = Burst_Movement.new("shotgun_x","x",500,12,20) #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
-var shotgun_burst_y = Burst_Movement.new("shotgun_y","y",-1000,12,20)
+
+var jump_value=0
+
+ #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
 func _ready():
 	gun_centre_ecart=Vector2(position.x-$gun.global_position.x,position.x-$gun.global_position.x)
 	
-
 func _physics_process(delta):
 	shotgun()
 	rotate_gun()
-
-	exp_gravity+=gravity*delta
-	if is_on_floor():
-		exp_gravity=0
+	jump_input()
+	
 	
 	x_modifier_constant=return_horizontal_input()
 	y_modifier_constant=exp_gravity
 	
-	apply_vertical_velocity()
+	apply_vertical_velocity(delta)
 	apply_horizontal_velocity()
 	move_and_slide()
 	
 func apply_horizontal_velocity():
-	if active_burst_x==null:
+	if active_burst_x==[]:
 		for burst_object in deceleration_list:
 			if burst_object.is_dimension_x():
-				x_modifier_constant+=burst_object.return_decelerate()
-				if burst_object.is_deceleration_over():
-					burst_object.end_decelerate(deceleration_list)
+				x_modifier_constant+=burst_object.return_deceleration()
 		velocity.x = x_modifier_constant
 		if x_modifier_constant==0:
 			velocity.x=move_toward(velocity.x,0,decelereation_constant)
 		
 	else:
-		velocity.x =  active_burst_x.return_burst_movement()
-		if active_burst_x.is_decelerating():
-			deceleration_list.append(active_burst_x)
-			active_burst_x=null
+		velocity.x =  active_burst_x[0].return_burst_value()
 	
-func apply_vertical_velocity():
-	if active_burst_y==null:
+func apply_vertical_velocity(delta):
+	if active_burst_y==[]:
+		exp_gravity+=gravity*delta
+		if is_on_floor():
+			exp_gravity=0
 		for burst_object in deceleration_list:
 			if not burst_object.is_dimension_x():
-				y_modifier_constant+=burst_object.return_decelerate()
-				if burst_object.is_deceleration_over():
-					burst_object.end_decelerate(deceleration_list)
-		velocity.y = y_modifier_constant
+				y_modifier_constant+=burst_object.return_deceleration()
+		velocity.y = y_modifier_constant+jump_value
 		if y_modifier_constant==0:
 			velocity.y=move_toward(velocity.y,0,decelereation_constant)
 	else:
-		velocity.y =  active_burst_y.return_burst_movement()
-		if active_burst_y.is_decelerating():
-			deceleration_list.append(active_burst_y)
-			active_burst_y=null
+		velocity.y =  active_burst_y[0].return_burst_value()
 
 func shotgun():
-	if Input.is_action_just_pressed("action2") and shotgun_burst_x not in deceleration_list and shotgun_burst_y not in deceleration_list:
-		
-		active_burst_x=shotgun_burst_x
-		active_burst_y=shotgun_burst_y
-		active_burst_x.activate()
-		active_burst_y.activate()
-		print(active_burst_x.to_string())
+	if Input.is_action_just_pressed("action2") and active_burst_x==[] and active_burst_y==[]:
+		var angle=position.angle_to_point(get_global_mouse_position())
+		var burst_x=Burst_Movement.new("shotgun_x","x",500*-cos(angle),20,2,burst_list,active_burst_x,deceleration_list)
+		var burst_y=Burst_Movement.new("shotgun_y","y",500*-sin(angle),20,2,burst_list,active_burst_y,deceleration_list)
+		burst_x.activate()
+		burst_y.activate()
 func return_horizontal_input():
 	var direction = Input.get_axis("left", "right")
 	if direction:
@@ -91,8 +82,9 @@ func return_horizontal_input():
 		
 func jump_input():
 	if Input.is_action_just_pressed("up") and is_on_floor():
-		pass
-
+		jump_value=-500
+	elif is_on_floor():
+		jump_value=0
 func dash_input():
 	if Input.is_action_just_pressed("action_bar"):
 		var direction = Input.get_axis("left", "right")
@@ -136,7 +128,10 @@ class Burst_Movement:
 	var frames_init
 	var frames
 	var deceleration_speed
-	func _init(nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed):
+	var burst_list
+	var active_burst_spot
+	var deceleration_list
+	func _init(nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed,burst_list,nactive_burst_spot,deceleration_list):
 		self.id=nid
 		self.dimension=ndimension
 		value_init=nvalue_init
@@ -146,49 +141,62 @@ class Burst_Movement:
 		deceleration_speed=ndeceleration_speed
 		active=false
 		decelerate=false
+		self.burst_list=burst_list
+		self.burst_list.append(self)
+		self.active_burst_spot=nactive_burst_spot
+		self.deceleration_list=deceleration_list
+		
+	func getId():
+		return id
 	func _to_string():
 		print(id," ",dimension," ",active," ",decelerate," ",value," ",frames," ",deceleration_speed," ")
 	func is_dimension_x():
 		return dimension=="x"
 	
-	func return_burst_movement():
+	func activate():
+		reset_moving_values()
+		active_burst_spot.append(self)
+		active=true
+		decelerate=false
+	func deactivate():
+		reset_moving_values()
+		active=false
+		active_burst_spot.remove_at(active_burst_spot.find(self))
+		
+	func start_deceleration():
+		reset_moving_values()
+		decelerate=true
+		deceleration_list.append(self)
+	func end_deceleration():
+		reset_moving_values()
+		deceleration_list.remove_at(deceleration_list.find(self))
+		decelerate=false
+	func reset_moving_values():
+		frames=frames_init
+		value=value_init
+	func is_active():
+		return active
+	func is_decelerate():
+		return decelerate
+	func return_burst_value():
 		if active:
-			print(frames)
 			frames-=1
-			deactivate_if_finished()
+			if frames==0:
+				deactivate()
+				start_deceleration()
 			return value
 		else:
 			return 0
-	func activate():
-		frames=frames_init
-		active=true
-		value=value_init
-	func deactivate():
-		active=false
-		frames=frames_init
-	func is_activated():
-		return activate
-	func deactivate_if_finished():
-		if frames==0:
-			deactivate()
-			decelerate=true
-		elif frames <0:
-			print("frame countdonwn error")
-		
-	func start_decelerate(list):
-		list.append(self)
-	func is_decelerating():
-		return decelerate
-	func return_decelerate():
+	func return_deceleration():
 		if decelerate:
+			
 			value=move_toward(value,0,deceleration_speed)
+			print(value)
+			if value==0:
+				end_deceleration()
 			return value
-	func is_deceleration_over():
-		if decelerate:
-			return value==0
 		else:
-			return "not started dingus"
-	func end_decelerate(list):
-		list.remove_at(list.find(self))
-		decelerate=false
+			return 0
+	func give_burst_spot():
+		return active_burst_spot
 		
