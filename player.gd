@@ -39,16 +39,18 @@ func _physics_process(delta):
 	apply_vertical_velocity(delta)
 	apply_horizontal_velocity()
 	move_and_slide()
-	
+	print("-----------------------")
 func apply_horizontal_velocity():
 	if active_burst_x==[]:
+		
 		for burst_object in deceleration_list:
 			if burst_object.is_dimension_x():
 				x_modifier_constant+=burst_object.return_deceleration()
-		velocity.x = x_modifier_constant
+		print("in ",velocity.x ," ",x_modifier_constant)
 		if x_modifier_constant==0:
 			velocity.x=move_toward(velocity.x,0,decelereation_constant)
-		
+		else:
+			velocity.x = x_modifier_constant
 	else:
 		velocity.x =  active_burst_x[0].return_burst_value()
 	
@@ -61,16 +63,15 @@ func apply_vertical_velocity(delta):
 			if not burst_object.is_dimension_x():
 				y_modifier_constant+=burst_object.return_deceleration()
 		velocity.y = y_modifier_constant+jump_value
-		if y_modifier_constant==0:
-			velocity.y=move_toward(velocity.y,0,decelereation_constant)
 	else:
+		exp_gravity=gravity*delta
 		velocity.y =  active_burst_y[0].return_burst_value()
 
 func shotgun():
 	if Input.is_action_just_pressed("action2") and active_burst_x==[] and active_burst_y==[]:
 		var angle=position.angle_to_point(get_global_mouse_position())
-		var burst_x=Burst_Movement.new("shotgun_x","x",500*-cos(angle),20,2,burst_list,active_burst_x,deceleration_list)
-		var burst_y=Burst_Movement.new("shotgun_y","y",500*-sin(angle),20,2,burst_list,active_burst_y,deceleration_list)
+		var burst_x=Burst_Movement.new("shotgun_x","x",500*-cos(angle),10,20,burst_list,active_burst_x,deceleration_list)
+		var burst_y=Burst_Movement.new("shotgun_y","y",500*-sin(angle),10,20,burst_list,active_burst_y,deceleration_list)
 		burst_x.activate()
 		burst_y.activate()
 func return_horizontal_input():
@@ -155,20 +156,27 @@ class Burst_Movement:
 	
 	func activate():
 		reset_moving_values()
+		for i in range(len(active_burst_spot)):
+			active_burst_spot.remove_at(i)
 		active_burst_spot.append(self)
 		active=true
 		decelerate=false
+		for i in range(len(deceleration_list)):
+			deceleration_list.remove_at(i)
+
 	func deactivate():
 		reset_moving_values()
 		active=false
 		active_burst_spot.remove_at(active_burst_spot.find(self))
 		
 	func start_deceleration():
+		print("deceleration starts")
 		reset_moving_values()
 		decelerate=true
 		deceleration_list.append(self)
 	func end_deceleration():
-		reset_moving_values()
+		print("deceleration end")
+		#reset_moving_values()
 		deceleration_list.remove_at(deceleration_list.find(self))
 		decelerate=false
 	func reset_moving_values():
@@ -189,9 +197,8 @@ class Burst_Movement:
 			return 0
 	func return_deceleration():
 		if decelerate:
-			
 			value=move_toward(value,0,deceleration_speed)
-			print(value)
+
 			if value==0:
 				end_deceleration()
 			return value
