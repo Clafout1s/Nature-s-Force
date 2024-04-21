@@ -46,7 +46,6 @@ func apply_horizontal_velocity():
 		for burst_object in deceleration_list:
 			if burst_object.is_dimension_x():
 				x_modifier_constant+=burst_object.return_deceleration()
-		print("in ",velocity.x ," ",x_modifier_constant)
 		if x_modifier_constant==0:
 			velocity.x=move_toward(velocity.x,0,decelereation_constant)
 		else:
@@ -62,9 +61,11 @@ func apply_vertical_velocity(delta):
 		for burst_object in deceleration_list:
 			if not burst_object.is_dimension_x():
 				y_modifier_constant+=burst_object.return_deceleration()
+		print(jump_value)
 		velocity.y = y_modifier_constant+jump_value
 	else:
 		exp_gravity=gravity*delta
+		jump_value = 0
 		velocity.y =  active_burst_y[0].return_burst_value()
 
 func shotgun():
@@ -170,12 +171,10 @@ class Burst_Movement:
 		active_burst_spot.remove_at(active_burst_spot.find(self))
 		
 	func start_deceleration():
-		print("deceleration starts")
 		reset_moving_values()
 		decelerate=true
 		deceleration_list.append(self)
 	func end_deceleration():
-		print("deceleration end")
 		#reset_moving_values()
 		deceleration_list.remove_at(deceleration_list.find(self))
 		decelerate=false
