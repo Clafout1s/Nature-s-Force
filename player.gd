@@ -2,10 +2,10 @@
 extends CharacterBody2D
 #en outre j'aime beaucoup mon papa qui est le meilleur papa du monde et qui fait caca
 
-@export var SPEED = 250.0
-@export var GRAVITY=1500
+@export var SPEED = 300
+@export var GRAVITY=1200
 @export var JUMP_VELOCITY = -500.0
-@export var SHOTGUN_VELOCITY = 1000
+
 
 var gun_centre_ecart
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -71,8 +71,8 @@ func apply_vertical_velocity(delta):
 func shotgun():
 	if Input.is_action_just_pressed("action2") and active_burst_x==[] and active_burst_y==[]:
 		var angle=position.angle_to_point(get_global_mouse_position())
-		var burst_x=Burst_Movement.new("shotgun_x","x",500*-cos(angle),10,20,burst_list,active_burst_x,deceleration_list)
-		var burst_y=Burst_Movement.new("shotgun_y","y",500*-sin(angle),10,20,burst_list,active_burst_y,deceleration_list)
+		var burst_x=Burst_Movement.new("shotgun_x","x",800*-cos(angle),8,100,burst_list,active_burst_x,deceleration_list)
+		var burst_y=Burst_Movement.new("shotgun_y","y",800*-sin(angle),8,100,burst_list,active_burst_y,deceleration_list)
 		burst_x.activate()
 		burst_y.activate()
 func return_horizontal_input():
@@ -196,6 +196,8 @@ class Burst_Movement:
 			return 0
 	func return_deceleration():
 		if decelerate:
+			if not is_dimension_x():
+				print(value)
 			value=move_toward(value,0,deceleration_speed)
 
 			if value==0:
