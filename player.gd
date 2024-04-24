@@ -4,7 +4,7 @@ extends CharacterBody2D
 
 @export var SPEED = 400
 @export var GRAVITY=1800
-@export var JUMP_VELOCITY = -500.0
+
 
 var screen_size
 var gun_centre_ecart
@@ -12,13 +12,17 @@ var gun_centre_ecart
 var gravity = GRAVITY #ProjectSettings.get_setting("physics/2d/default_gravity")
 var exp_gravity=0
 var shotgun_timer
-var jump_value=-1000
+var shotgun_cd_timer
+var jump_value=-750
 var is_jumping=false
 var direction
-
+var dash_direction
+var shotgun_angle
+var shotgun_cd=0.1
  #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
 func _ready():
 	shotgun_timer = $ShotgunDashDuration
+	shotgun_cd_timer = $ShotgunCd
 	screen_size=get_viewport_rect().size
 	gun_centre_ecart=Vector2(position.x-$gun.global_position.x,position.x-$gun.global_position.x)
 	
@@ -31,14 +35,14 @@ func _physics_process(delta):
 	new_dash()
 	jump()
 	if is_dashing():
-		velocity.x=direction*1000
-		velocity.y=0
+		velocity.x=-cos(shotgun_angle)*700
+		velocity.y=-sin(shotgun_angle)*700
 		exp_gravity=0
 		if is_jumping==true:
 			is_jumping=false
 	else:	
 		velocity.x=walk()
-	velocity.y=exp_gravity
+		velocity.y=exp_gravity
 	if is_jumping:
 		velocity.y+=jump_value
 	
@@ -53,11 +57,17 @@ func new_vertical(delta):
 	exp_gravity+=gravity*delta
 	pass
 func new_dash():
-	if Input.is_action_just_pressed("action1"):
+	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
+		shotgun_angle =position.angle_to_point(get_global_mouse_position())
 		shotgun_timer.start()
+		shotgun_cd_timer.start()
+		print(shotgun_cd_timer.get_time_left())
+		
 func is_dashing():
 	return !shotgun_timer.is_stopped()
-	
+func is_shotgun_on_cd():
+	#print(shotgun_cd_timer.get_time_left())
+	return !shotgun_cd_timer.is_stopped()
 func walk():
 	if direction:
 		return direction * SPEED 
@@ -74,3 +84,5 @@ func rotate_gun():
 	var angle=position.angle_to_point(get_global_mouse_position())
 	$gun.position =Vector2(cos(angle), sin(angle))*gun_centre_ecart
 	$gun.look_at(get_global_mouse_position())
+
+
