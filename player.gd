@@ -26,8 +26,8 @@ var dash_direction
 var shotgun_angle
 var shotgun_cd=0.1
 var shotgun_deceleration=Vector2()
-var shotgun_deceleration_nbturns=Vector2()
-var shotgun_deceleration_tps=0.2
+var shotgun_deceleration_value=Vector2()
+var shotgun_deceleration_tps=1
 var global_delta
  #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
 func _ready():
@@ -57,9 +57,10 @@ func _physics_process(delta):
 			if int(velocity.y)==0:
 				is_jumping=false
 		if is_decelerating():
-			shotgun_deceleration.x=move_toward(shotgun_deceleration.x,0,abs(shotgun_deceleration_nbturns.x))
-			shotgun_deceleration.y=move_toward(shotgun_deceleration.y,0,abs(shotgun_deceleration_nbturns.y))
-			print(shotgun_deceleration)
+			shotgun_deceleration.x=move_toward(shotgun_deceleration.x,0,abs(shotgun_deceleration_value.x))
+			shotgun_deceleration.y=move_toward(shotgun_deceleration.y,0,abs(shotgun_deceleration_value.y))
+			print("deceleration ",shotgun_deceleration)
+			print("velocity ",velocity)
 			velocity.x+=shotgun_deceleration.x
 			velocity.y+=shotgun_deceleration.y
 				
@@ -100,10 +101,13 @@ func rotate_gun():
 func _on_shotgun_dash_duration_timeout():
 	velocity.y=0
 	var tpf = shotgun_deceleration_tps*Performance.get_monitor(Performance.TIME_FPS)
-	shotgun_deceleration_nbturns.x = -cos(shotgun_angle)*shotgun_value / tpf
-	shotgun_deceleration_nbturns.y = (-sin(shotgun_angle)*shotgun_value / tpf) - (gravity*global_delta *tpf)
+	shotgun_deceleration_value.x = -cos(shotgun_angle)*shotgun_value / float(tpf)
+	shotgun_deceleration_value.y = (-sin(shotgun_angle)*shotgun_value / float(tpf)) - (gravity*global_delta **tpf)
 	shotgun_deceleration=Vector2(-cos(shotgun_angle)*shotgun_value,-sin(shotgun_angle)*shotgun_value)
-	print(shotgun_deceleration_nbturns)
+	print("-------------------")
+	print(shotgun_deceleration_value.y*tpf)
+	print(shotgun_deceleration_value)
+	print(shotgun_deceleration)
 	shotgun_deceleration_timer.set_wait_time(shotgun_deceleration_tps)
 	shotgun_deceleration_timer.start()
 func is_decelerating():
