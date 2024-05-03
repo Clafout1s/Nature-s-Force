@@ -36,7 +36,9 @@ func _ready():
 	shotgun_cd_timer = $ShotgunCd
 	shotgun_deceleration_timer = $ShotgunDeceleration
 	screen_size=get_viewport_rect().size
-	gun_centre_ecart=Vector2(position.x-$gun.global_position.x,position.x-$gun.global_position.x)
+	gun_centre_ecart=Vector2(10,15)
+	print(gun_centre_ecart)
+	print($gun.transform)
 	
 func _physics_process(delta):
 	rotate_gun()
@@ -100,8 +102,11 @@ func has_same_sign(f1:float,f2:float):
 
 func rotate_gun():
 	var angle=position.angle_to_point(get_global_mouse_position())
-	$gun.position =Vector2(cos(angle), sin(angle))*gun_centre_ecart
-	$gun.look_at(get_global_mouse_position())
+	$gun.position=gun_centre_ecart*Vector2(cos(angle),sin(angle))
+	$gun.transform.x=Vector2(cos(angle),sin(angle))
+	$gun.transform.y=Vector2(-sin(angle),cos(angle))
+	#$gun.position =Vector2(cos(angle), sin(angle))*gun_centre_ecart
+	#$gun.look_at(get_global_mouse_position())
 
 func _on_shotgun_dash_duration_timeout():
 	velocity.y=0
