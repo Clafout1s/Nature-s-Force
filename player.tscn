@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" path="res://player.gd" id="1_ho1wo"]
 [ext_resource type="Texture2D" uid="uid://dmjq7nlrxvjhp" path="res://sprites/mainCharacter.png" id="2_0u831"]
-[ext_resource type="Texture2D" uid="uid://k44qs3dgxmbt" path="res://sprites/gun.png" id="3_id5ot"]
+[ext_resource type="PackedScene" uid="uid://b5a5rryots0sx" path="res://gun.tscn" id="3_44kqv"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_evpym"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_324h7"]
+radius = 6.33333
+height = 22.6667
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 scale = Vector2(3, 3)
@@ -14,7 +16,8 @@ script = ExtResource("1_ho1wo")
 one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_evpym")
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_324h7")
 
 [node name="ShotgunDashDuration" type="Timer" parent="."]
 wait_time = 0.2
@@ -25,11 +28,11 @@ wait_time = 0.001
 one_shot = true
 
 [node name="mainCharac" type="Sprite2D" parent="."]
+texture_filter = 1
 position = Vector2(0, 1.90735e-06)
 scale = Vector2(0.453125, 0.4375)
 texture = ExtResource("2_0u831")
 
-[node name="gun" type="Sprite2D" parent="."]
-texture = ExtResource("3_id5ot")
+[node name="gun" parent="." instance=ExtResource("3_44kqv")]
 
 [connection signal="timeout" from="ShotgunDashDuration" to="." method="_on_shotgun_dash_duration_timeout"]

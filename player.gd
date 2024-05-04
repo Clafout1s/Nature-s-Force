@@ -3,8 +3,8 @@ extends CharacterBody2D
 #en outre j'aime beaucoup mon papa qui est le meilleur papa du monde et qui fait caca
 
 @export var SPEED = 400
-@export var GRAVITY=1500
-
+@export var GRAVITY=200
+var FLOOR = Vector2.UP
 
 
 var jump_height=100.0
@@ -13,7 +13,6 @@ var jump_velocity= -(2.0 * jump_height) / jump_time
 var gravity = (2.0*jump_height) / (jump_time**2) 
 
 var screen_size
-var gun_centre_ecart
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 #var gravity = 500 #ProjectSettings.get_setting("physics/2d/default_gravity")
 var shotgun_timer
@@ -25,6 +24,7 @@ var direction
 var dash_direction
 var shotgun_angle
 var shotgun_cd=0.1
+var shotgun_major_vect
 var shotgun_deceleration=Vector2()
 var shotgun_deceleration_value=Vector2()
 var shotgun_deceleration_tps=0.5
@@ -32,16 +32,17 @@ var global_delta
 var exp_gravity=0
  #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
 func _ready():
+	set_floor_constant_speed_enabled(true)
+	set_floor_snap_length(10)
+	set_floor_max_angle(0.9)
 	shotgun_timer = $ShotgunDashDuration
 	shotgun_cd_timer = $ShotgunCd
 	shotgun_deceleration_timer = $ShotgunDeceleration
 	screen_size=get_viewport_rect().size
-	gun_centre_ecart=Vector2(10,15)
-	print(gun_centre_ecart)
-	print($gun.transform)
+
 	
 func _physics_process(delta):
-	rotate_gun()
+	$gun.rotate_gun(position)
 	global_delta = delta
 	position.x=clamp(position.x,0,screen_size.x)
 	position.y=clamp(position.y,0,screen_size.y)
@@ -64,25 +65,30 @@ func _physics_process(delta):
 		if is_decelerating():
 			shotgun_deceleration.x=move_toward(shotgun_deceleration.x,0,abs(shotgun_deceleration_value.x))
 			shotgun_deceleration.y=move_toward(shotgun_deceleration.y,0,abs(shotgun_deceleration_value.y))
-			print("deceleration ",shotgun_deceleration)
-			print("velocity ",velocity)
 			velocity.x+=shotgun_deceleration.x
 			velocity.y+=shotgun_deceleration.y
 			if direction != 0:
 				shotgun_deceleration.x=0
 				
 	move_and_slide()
+	print(velocity)
 	if is_on_floor():
 		is_jumping=false
 		exp_gravity=0
+		velocity.y=200
 
 func new_dash():
 	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
+		$gun.blast()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
 		shotgun_timer.start()
 		shotgun_cd_timer.start()
 		shotgun_deceleration.x=-cos(shotgun_angle)*shotgun_value
 		shotgun_deceleration.y=-sin(shotgun_angle)*shotgun_value
+		if abs(shotgun_deceleration.x)>abs(shotgun_deceleration.y):
+			shotgun_major_vect="x"
+		else:
+			shotgun_major_vect="y"
 		exp_gravity=0
 func is_dashing():
 	return !shotgun_timer.is_stopped()
@@ -100,24 +106,12 @@ func jump():
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
-func rotate_gun():
-	var angle=position.angle_to_point(get_global_mouse_position())
-	$gun.position=gun_centre_ecart*Vector2(cos(angle),sin(angle))
-	$gun.transform.x=Vector2(cos(angle),sin(angle))
-	$gun.transform.y=Vector2(-sin(angle),cos(angle))
-	#$gun.position =Vector2(cos(angle), sin(angle))*gun_centre_ecart
-	#$gun.look_at(get_global_mouse_position())
-
 func _on_shotgun_dash_duration_timeout():
 	velocity.y=0
 	var tpf = shotgun_deceleration_tps*Performance.get_monitor(Performance.TIME_FPS)
 	shotgun_deceleration_value.x = -cos(shotgun_angle)*shotgun_value / float(tpf)
 	shotgun_deceleration_value.y = (-sin(shotgun_angle)*shotgun_value / float(tpf)) - (gravity*global_delta)
 	shotgun_deceleration=Vector2(-cos(shotgun_angle)*shotgun_value,-sin(shotgun_angle)*shotgun_value)
-	#print("-------------------")
-	#print(shotgun_deceleration_value.y*tpf)
-	#print(shotgun_deceleration_value)
-	#print(shotgun_deceleration)
 	shotgun_deceleration_timer.set_wait_time(shotgun_deceleration_tps)
 	shotgun_deceleration_timer.start()
 func is_decelerating():
