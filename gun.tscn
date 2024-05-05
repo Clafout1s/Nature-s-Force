@@ -1,10 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5a5rryots0sx"]
+[gd_scene load_steps=4 format=3 uid="uid://b5a5rryots0sx"]
 
 [ext_resource type="Script" path="res://gun.gd" id="1_ff1e0"]
 [ext_resource type="Texture2D" uid="uid://k44qs3dgxmbt" path="res://sprites/gun.png" id="1_k6g3i"]
+[ext_resource type="Texture2D" uid="uid://btaqdvkqb70nr" path="res://sprites/blast.png" id="3_quvfo"]
 
-[node name="Node2D" type="Node2D"]
+[node name="StaticBody2D" type="StaticBody2D"]
 script = ExtResource("1_ff1e0")
+metadata/_edit_lock_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="gun" type="Sprite2D" parent="."]
 texture = ExtResource("1_k6g3i")
+
+[node name="blast" type="Sprite2D" parent="."]
+position = Vector2(42, -3)
+texture = ExtResource("3_quvfo")
+
+[node name="blastTimer" type="Timer" parent="."]
+wait_time = 0.2
+
+[node name="blastArea" type="Area2D" parent="."]
+
+[node name="blastCollision" type="CollisionPolygon2D" parent="blastArea"]
+polygon = PackedVector2Array(14, -3, 69, -29, 69, 18)
+
+[connection signal="body_entered" from="blastArea" to="." method="_on_blast_area_body_entered"]

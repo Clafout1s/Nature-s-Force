@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://clxp5h3nxmi08"]
+
+[ext_resource type="Script" path="res://dummy.gd" id="1_3e2aq"]
+[ext_resource type="Texture2D" uid="uid://basyo058dmstn" path="res://sprites/dummy.png" id="1_k34p0"]
+[ext_resource type="Texture2D" uid="uid://btaqdvkqb70nr" path="res://sprites/blast.png" id="3_77lrg"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0geap"]
+height = 48.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("1_3e2aq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.666667, -18)
+shape = SubResource("CapsuleShape2D_0geap")
+
+[node name="rotationOrigin" type="Marker2D" parent="."]
+position = Vector2(0, -1.90735e-06)
+
+[node name="Sprite2D" type="Sprite2D" parent="rotationOrigin"]
+texture = ExtResource("3_77lrg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_k34p0")
+offset = Vector2(0, -16)
+
+[node name="rotationTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="hit" from="." to="." method="_on_hit"]
+[connection signal="timeout" from="rotationTimer" to="." method="_on_rotation_timer_timeout"]

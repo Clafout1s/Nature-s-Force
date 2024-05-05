@@ -6,6 +6,8 @@ extends CharacterBody2D
 @export var GRAVITY=200
 var FLOOR = Vector2.UP
 
+var hitable
+signal hit
 
 var jump_height=100.0
 var jump_time=0.4
@@ -16,7 +18,7 @@ var screen_size
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 #var gravity = 500 #ProjectSettings.get_setting("physics/2d/default_gravity")
 var shotgun_timer
-var shotgun_value = 700
+var shotgun_value = 1050
 var shotgun_cd_timer
 var shotgun_deceleration_timer
 var is_jumping=false
@@ -42,7 +44,7 @@ func _ready():
 
 	
 func _physics_process(delta):
-	$gun.rotate_gun(position)
+	
 	global_delta = delta
 	position.x=clamp(position.x,0,screen_size.x)
 	position.y=clamp(position.y,0,screen_size.y)
@@ -55,6 +57,7 @@ func _physics_process(delta):
 		if is_jumping:
 			is_jumping=false
 	else:
+		$gun.rotate_gun(position)
 		exp_gravity+=gravity * delta
 		velocity.x=walk()
 		velocity.y=exp_gravity
@@ -71,7 +74,6 @@ func _physics_process(delta):
 				shotgun_deceleration.x=0
 				
 	move_and_slide()
-	print(velocity)
 	if is_on_floor():
 		is_jumping=false
 		exp_gravity=0
@@ -108,7 +110,9 @@ func has_same_sign(f1:float,f2:float):
 
 func _on_shotgun_dash_duration_timeout():
 	velocity.y=0
+	$gun.end_blast()
 	var tpf = shotgun_deceleration_tps*Performance.get_monitor(Performance.TIME_FPS)
+	print(Performance.get_monitor(Performance.TIME_FPS))
 	shotgun_deceleration_value.x = -cos(shotgun_angle)*shotgun_value / float(tpf)
 	shotgun_deceleration_value.y = (-sin(shotgun_angle)*shotgun_value / float(tpf)) - (gravity*global_delta)
 	shotgun_deceleration=Vector2(-cos(shotgun_angle)*shotgun_value,-sin(shotgun_angle)*shotgun_value)
