@@ -8,6 +8,7 @@ var value = -1
 var value_counter = -1
 var tpf
 var activated = false
+var bursting = false
 var decelerating = false
 var just_finished=false
 var has_deceleration
@@ -30,7 +31,9 @@ func _init(nid,nvalue_init,ntps,nhas_deceleration=false,ndtps=0):
 		
 func start():
 	print("start ",id)
+	reset_values()
 	activated = true
+	bursting=true
 	decelerating=false
 	just_finished=false
 	value = value_init/tpf
@@ -38,6 +41,7 @@ func start():
 
 func end():
 	print("end ",id)
+	bursting=false
 	if has_deceleration:
 		start_deceleration()
 	else:
@@ -46,9 +50,8 @@ func end():
 		switch_to_followup()
 
 func return_value():
-	if activated and not decelerating:
+	if activated and bursting:
 		value_counter+=value
-		print(value_counter)
 		if abs(value_counter) >= abs(value_init):
 			end()
 			return 0
@@ -66,12 +69,12 @@ func return_value():
 	
 func start_deceleration():
 	if has_deceleration:
+		reset_values()
 		activated=true
+		bursting=false
 		decelerating = true
 		value_counter =  value_init/ tpf
-		value = value_init/ tpf / dtpf
-		print(value)
-		
+		value = value_init/ tpf / dtpf	
 
 func end_deceleration():
 	decelerating = false
@@ -116,7 +119,6 @@ func switch_to_followup():
 			unpack_attributes(followup)
 			self.start()
 	elif origin != self.pack_attributes() and origin != null:
-		print("its okay flying gorilla")
 		self.unpack_attributes(origin)
 	else:
 		print("No Maidens ??")

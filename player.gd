@@ -24,14 +24,18 @@ var shotgun_deceleration_timer
 var is_jumping=false
 var direction
 var dash_direction
-var shotgun_angle
+var shotgun_angle=0
 var shotgun_cd=0.1
 var shotgun_major_vect
 var shotgun_deceleration=Vector2()
 var shotgun_deceleration_value=Vector2()
+var shotgun_tps=0.15
 var shotgun_deceleration_tps=0.5
 var global_delta
 var exp_gravity=0
+
+var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
+var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
  #nid,ndimension,nvalue_init,nframes_init,ndeceleration_speed
 func _ready():
 	set_floor_constant_speed_enabled(true)
@@ -49,49 +53,41 @@ func _physics_process(delta):
 	position.x=clamp(position.x,0,screen_size.x)
 	position.y=clamp(position.y,0,screen_size.y)
 	direction = Input.get_axis("left", "right")
+	$gun.rotate_gun(position)
 	new_dash()
+	velocity.x=shotgun_instance_x.return_value()
+	velocity.y=shotgun_instance_y.return_value()
 	
-	if is_dashing():
-		velocity.x=-cos(shotgun_angle)*shotgun_value
-		velocity.y=-sin(shotgun_angle)*shotgun_value
-		if is_jumping:
-			is_jumping=false
-	else:
-		$gun.rotate_gun(position)
+	if not shotgun_instance_x.bursting and not shotgun_instance_y.bursting:
 		exp_gravity+=gravity * delta
-		velocity.x=walk()
-		velocity.y=exp_gravity
-		jump()
-		if is_jumping:
-			velocity.y+=jump_velocity
 		
-		if is_decelerating():
-			shotgun_deceleration.x=move_toward(shotgun_deceleration.x,0,abs(shotgun_deceleration_value.x))
-			shotgun_deceleration.y=move_toward(shotgun_deceleration.y,0,abs(shotgun_deceleration_value.y))
-			velocity.x+=shotgun_deceleration.x
-			velocity.y+=shotgun_deceleration.y
-			if direction != 0:
-				shotgun_deceleration.x=0
-				
+		velocity.x+=walk()
+	if shotgun_instance_x.decelerating and shotgun_instance_y.decelerating:
+		if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
+			shotgun_instance_x.end_deceleration()
+	velocity.y+=exp_gravity
+	jump()
+	if is_jumping:
+		velocity.y+=jump_velocity
+
 	move_and_slide()
 	if is_on_floor():
 		is_jumping=false
 		exp_gravity=0
-		velocity.y=200
+		#velocity.y=200
 
 func new_dash():
-	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
+	if Input.is_action_just_pressed("action1"):
 		$gun.blast()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
-		shotgun_timer.start()
-		shotgun_cd_timer.start()
-		shotgun_deceleration.x=-cos(shotgun_angle)*shotgun_value
-		shotgun_deceleration.y=-sin(shotgun_angle)*shotgun_value
-		if abs(shotgun_deceleration.x)>abs(shotgun_deceleration.y):
-			shotgun_major_vect="x"
-		else:
-			shotgun_major_vect="y"
+		print((-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60))
+		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
+		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
+		shotgun_instance_x.start()
+		shotgun_instance_y.start()
 		exp_gravity=0
+		if is_jumping:
+			is_jumping=false
 func is_dashing():
 	return !shotgun_timer.is_stopped()
 func is_shotgun_on_cd():

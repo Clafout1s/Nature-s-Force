@@ -20,7 +20,6 @@ func rotate_gun(point):
 	scale=gun_scale
 
 func blast():
-	print("BLAST !")
 	$blastArea/blastCollision.set_deferred("disabled",false)
 	$blast.visible=true
 	$blastTimer.start()

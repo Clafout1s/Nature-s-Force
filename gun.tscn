@@ -23,4 +23,5 @@ wait_time = 0.2
 [node name="blastCollision" type="CollisionPolygon2D" parent="blastArea"]
 polygon = PackedVector2Array(14, -3, 69, -29, 69, 18)
 
+[connection signal="timeout" from="blastTimer" to="." method="_on_blast_timer_timeout"]
 [connection signal="body_entered" from="blastArea" to="." method="_on_blast_area_body_entered"]
