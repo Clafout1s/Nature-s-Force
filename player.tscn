@@ -19,10 +19,6 @@ one_shot = true
 position = Vector2(0, -1)
 shape = SubResource("CapsuleShape2D_324h7")
 
-[node name="ShotgunDashDuration" type="Timer" parent="."]
-wait_time = 0.15
-one_shot = true
-
 [node name="ShotgunCd" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
@@ -35,4 +31,26 @@ texture = ExtResource("2_0u831")
 
 [node name="gun" parent="." instance=ExtResource("3_44kqv")]
 
-[connection signal="timeout" from="ShotgunDashDuration" to="." method="_on_shotgun_dash_duration_timeout"]
+[node name="wallcheckLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-6.66667, 0)
+
+[node name="wallcheckRight" type="RayCast2D" parent="."]
+target_position = Vector2(6.66667, 0.333333)
+
+[node name="wallcheckUp" type="RayCast2D" parent="."]
+target_position = Vector2(0, -12.6667)
+
+[node name="wallcheckDown" type="RayCast2D" parent="."]
+target_position = Vector2(0, 10.6667)
+
+[node name="wallcheckDiagUpLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-4.66667, -11.3333)
+
+[node name="wallcheckDiagUpRight" type="RayCast2D" parent="."]
+target_position = Vector2(4, -11.6667)
+
+[node name="wallcheckDiagDownLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-5, 9.66667)
+
+[node name="wallcheckDiagDownRight" type="RayCast2D" parent="."]
+target_position = Vector2(4.66667, 9.66667)

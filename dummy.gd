@@ -3,13 +3,11 @@ extends CharacterBody2D
 var hitable
 signal hit
 const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
 
 var rotation_angle=0.959931
 var rotation_speed=0.15
 
-var dummy_scale=Vector2(1.5,1.5)
-
+var screen_size
 
 var rotation_instance=Regular_value.new("boing",rotation_angle,rotation_speed)
 
@@ -18,14 +16,13 @@ var rotation_instance=Regular_value.new("boing",rotation_angle,rotation_speed)
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
-	scale=dummy_scale
 	rotation_instance.add_followup(rotation_instance.pack_attributes(Regular_value.new("boing_back",-rotation_angle,rotation_speed)))
-	
+	screen_size=get_viewport_rect().size
 	#$CollisionShape2D.set_deferred("disabled",true)
 
 func _physics_process(delta):
 	# Add the gravity.
-
+	position=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
@@ -38,7 +35,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 func start_rotation():
-	rotation_instance.start()
+	if not rotation_instance.activated:
+		rotation_instance.start()
 
 
 func _on_hit():

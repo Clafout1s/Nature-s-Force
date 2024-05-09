@@ -30,7 +30,6 @@ func _init(nid,nvalue_init,ntps,nhas_deceleration=false,ndtps=0):
 	self.add_origin(self.pack_attributes(self))
 		
 func start():
-	print("start ",id)
 	reset_values()
 	activated = true
 	bursting=true
@@ -40,7 +39,6 @@ func start():
 	value_counter = 0
 
 func end():
-	print("end ",id)
 	bursting=false
 	if has_deceleration:
 		start_deceleration()
@@ -120,8 +118,6 @@ func switch_to_followup():
 			self.start()
 	elif origin != self.pack_attributes() and origin != null:
 		self.unpack_attributes(origin)
-	else:
-		print("No Maidens ??")
 
 func pack_attributes(other=self):
 	var final_pack=[other.id,other.value_init,other.tps,other.has_deceleration,other.dtps,other.followup]
@@ -138,3 +134,9 @@ func unpack_attributes(pack):
 	decelerating=false
 	just_finished=false
 	reset_values()
+
+func global_end():
+	if self.bursting:
+		self.end()
+	elif self.decelerating:
+		self.end_deceleration()
