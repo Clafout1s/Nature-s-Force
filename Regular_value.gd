@@ -40,9 +40,11 @@ func start():
 
 func end():
 	bursting=false
+	
 	if has_deceleration:
 		start_deceleration()
 	else:
+		just_finished=true
 		activated = false
 		reset_values()
 		switch_to_followup()
@@ -63,6 +65,7 @@ func return_value():
 			return 0
 		return value_counter
 	else:
+		just_finished=true
 		return 0
 	
 func start_deceleration():
@@ -77,6 +80,7 @@ func start_deceleration():
 func end_deceleration():
 	decelerating = false
 	activated = false
+	just_finished=true
 	reset_values()
 	
 func reset_values():

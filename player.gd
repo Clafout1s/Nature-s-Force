@@ -22,7 +22,7 @@ var tempoclamp=Vector2()
 var shotgun_value = 1050
 var shotgun_angle=0
 var shotgun_tps=0.15
-var shotgun_deceleration_tps=0.5
+var shotgun_deceleration_tps=0.8
 var shotgun_cd_timer
 var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
@@ -141,3 +141,10 @@ func raycastCollisions():
 		final_vec.y=1
 	return final_vec
 
+
+
+func _on_hit():
+	print("hitted")
+	shotgun_instance_x.global_end()
+	shotgun_instance_y.global_end()
+	velocity=Vector2(0,0)

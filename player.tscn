@@ -54,3 +54,5 @@ target_position = Vector2(-5, 9.66667)
 
 [node name="wallcheckDiagDownRight" type="RayCast2D" parent="."]
 target_position = Vector2(4.66667, 9.66667)
+
+[connection signal="hit" from="." to="." method="_on_hit"]

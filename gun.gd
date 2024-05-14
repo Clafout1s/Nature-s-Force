@@ -36,3 +36,4 @@ func end_blast():
 func _on_blast_area_body_entered(body):
 	if "hitable" in body:
 		body.emit_signal("hit")
+		
