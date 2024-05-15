@@ -38,7 +38,7 @@ func adapt_tile_position(character,tile_position):
 	if character == $player:
 		tile_position.y+=2
 	elif character ==  $ennemy:
-		tile_position.y +=2
+		tile_position.y +=3
 	return tile_position
 
 func get_tile(character,tile_position):

@@ -799,7 +799,7 @@ position = Vector2(208, 470)
 position = Vector2(1384, 339)
 
 [node name="ennemy" parent="." instance=ExtResource("5_q11vl")]
-position = Vector2(397, 982)
+position = Vector2(1417, 355)
 
 [connection signal="floor_detection_question" from="ennemy" to="." method="_on_ennemy_floor_detection_question"]
 [connection signal="wall_detection_question" from="ennemy" to="." method="_on_ennemy_wall_detection_question"]

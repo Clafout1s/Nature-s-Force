@@ -6,6 +6,7 @@ extends CharacterBody2D
 @export var GRAVITY=200
 
 var hitable
+var player
 signal hit
 
 var jump_height=100.0

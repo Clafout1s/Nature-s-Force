@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dlux5nbghwajw"]
+[gd_scene load_steps=5 format=3 uid="uid://dlux5nbghwajw"]
 
 [ext_resource type="Script" path="res://ennemy.gd" id="1_dvn30"]
 [ext_resource type="Texture2D" uid="uid://basyo058dmstn" path="res://sprites/dummy.png" id="1_twgfc"]
@@ -7,7 +7,11 @@
 radius = 11.0
 height = 48.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_1isas"]
+radius = 302.499
+
 [node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(1.5, 1.5)
 script = ExtResource("1_dvn30")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -19,8 +23,10 @@ texture = ExtResource("1_twgfc")
 
 [node name="vision" type="Area2D" parent="."]
 
-[node name="area_right" type="CollisionPolygon2D" parent="vision"]
-polygon = PackedVector2Array(0, -16, 232, -80, 232, 16)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="vision"]
+shape = SubResource("CircleShape2D_1isas")
 
-[node name="area_left" type="CollisionPolygon2D" parent="vision"]
-polygon = PackedVector2Array(0, -16, -232, -80, -232, 16)
+[node name="RayCast2D" type="RayCast2D" parent="."]
+
+[connection signal="body_entered" from="vision" to="." method="_on_vision_body_entered"]
+[connection signal="body_exited" from="vision" to="." method="_on_vision_body_exited"]
