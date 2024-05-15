@@ -6,6 +6,7 @@ var actual_level
 var actual_map 
 var level2 = preload("res://level2.tscn").instantiate()
 var level3 = preload("res://level3.tscn").instantiate()
+var level4 = preload("res://level4.tscn").instantiate()
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	actual_level = $Level
@@ -18,7 +19,7 @@ func _process(delta):
 		apply_dangerous_ground_effect($player)
 	if Input.is_action_just_pressed("down"):
 		pass
-		#switch_level(level3)
+		#switch_level(level4)
 	if Input.is_action_just_pressed("action2"):
 		print(get_tile($ennemy,detect_tile_position($ennemy)))
 
@@ -64,6 +65,6 @@ func _on_ennemy_floor_detection_question(direction):
 
 func _on_ennemy_wall_detection_question(direction):
 	var tile_position = detect_tile_position($ennemy)
-	tile_position.x += direction
+	tile_position.x += direction*2
 	if get_tile($ennemy,tile_position) != null:
 		$ennemy.on_wall_detected()

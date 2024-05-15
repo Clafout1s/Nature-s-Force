@@ -26,7 +26,5 @@ texture = ExtResource("1_twgfc")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="vision"]
 shape = SubResource("CircleShape2D_1isas")
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
-
 [connection signal="body_entered" from="vision" to="." method="_on_vision_body_entered"]
 [connection signal="body_exited" from="vision" to="." method="_on_vision_body_exited"]

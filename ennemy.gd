@@ -6,8 +6,6 @@ const JUMP_VELOCITY = -400.0
 var screen_size
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-#var patrol_movement = Regular_value.new("patrol ennemy",0,1)
-#nid,nvalue_init,ntps,nhas_deceleration=false,ndtps=0
 
 signal floor_detection_question
 signal wall_detection_question
@@ -30,30 +28,41 @@ func _ready():
 	#$vision/area_left.set_deferred("disabled",true)
 	#$vision/area_left.set_deferred("visible",false)
 func _physics_process(delta):
-	# Add the gravity.
 	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
-	if position.x != tempoclamp.x:
+	if state == idle and position.x != tempoclamp.x:
 		swap()
+		position.x = tempoclamp.x
 	
 	if checking_for_player:
-		if raycast_to_player():
-			switch_to_attack()
+		if state==idle:
+			if raycast_to_player():
+				switch_to_attack()
+		elif state == attack:
+			if not raycast_to_player():
+				switch_to_idle()
 	
 	if not is_on_floor():
 		velocity.y += gravity * delta
-	
-	velocity.x = SPEED * direction
-	
+	if state == idle:
+		velocity.x = SPEED * direction
+	elif state == attack:
+		var tempo = player_body.global_position.x - global_position.x 
+		tempo = into_sign(tempo)
+		if not has_same_sign(tempo,direction):
+			swap()
+		velocity.x = tempo * (SPEED * 200/float(100))
 	emit_signal("floor_detection_question",direction)
 	emit_signal("wall_detection_question",direction)
 	move_and_slide()
 	
 
 func on_wall_detected():
-	swap()
+	if state == idle:
+		swap()
 
 func on_no_floor_detected():
-	swap()
+	if state == idle:
+		swap()
 
 func swap_direction_collisions():
 	if $vision/area_left.disabled:
@@ -79,22 +88,34 @@ func _on_vision_body_entered(body):
 		player_body = body
 		
 func _on_vision_body_exited(body):
-	checking_for_player=false
+	if not $vision/CollisionShape2D.disabled:
+		checking_for_player=false
 
 func raycast_to_player():
 	# use global coordinates, not local to node
 	var query = PhysicsRayQueryParameters2D.create(position, player_body.position)
 	var result = space_state.intersect_ray(query)
-	if "player" in result["collider"] :
+	if result != {} and "player" in result["collider"] :
 		return true
 	return false
 
 func switch_to_idle():
 	state = idle
+	checking_for_player = false
 	$vision/CollisionShape2D.set_deferred("disabled",false)
 
 func switch_to_attack():
-	print("graou attacc !!!")
 	checking_for_player = false
 	state = attack
 	$vision/CollisionShape2D.set_deferred("disabled",true)
+	checking_for_player = true
+	
+func has_same_sign(f1:float,f2:float):
+	return f1<0 and f2<0 or f1>0 and f2>0
+func into_sign(f1:float):
+	if f1<0:
+		return -1
+	elif f1>0:
+		return 1
+	else:
+		return 0
