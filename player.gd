@@ -55,7 +55,6 @@ func _physics_process(delta):
 	velocity.y=shotgun_instance_y.return_value()
 	var a = global_position
 	
-	
 	if shotgun_instance_x.activated:
 		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
 			shotgun_instance_x.global_end()
@@ -145,7 +144,7 @@ func raycastCollisions():
 
 
 func _on_hit():
-	print("hitted")
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
+	position = Vector2(0,0)

@@ -5,8 +5,8 @@ const SPEED = 200
 const JUMP_VELOCITY = -400.0
 var screen_size
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-
+var gravity = 1632.65306122449
+var exp_gravity=0
 signal floor_detection_question
 signal wall_detection_question
 
@@ -28,11 +28,15 @@ func _ready():
 	#$vision/area_left.set_deferred("disabled",true)
 	#$vision/area_left.set_deferred("visible",false)
 func _physics_process(delta):
+	exp_gravity += gravity * delta
 	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
-	if state == idle and position.x != tempoclamp.x:
-		swap()
+	if position.x != tempoclamp.x:
 		position.x = tempoclamp.x
-	
+		if state == idle :
+			swap()
+	if position.y != tempoclamp.y:
+		position.y = tempoclamp.y
+		
 	if checking_for_player:
 		if state==idle:
 			if raycast_to_player():
@@ -42,7 +46,9 @@ func _physics_process(delta):
 				switch_to_idle()
 	
 	if not is_on_floor():
-		velocity.y += gravity * delta
+		velocity.y = exp_gravity
+	else:
+		exp_gravity = 0
 	if state == idle:
 		velocity.x = SPEED * direction
 	elif state == attack:
@@ -113,9 +119,14 @@ func switch_to_attack():
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 func into_sign(f1:float):
+	f1 = int(f1)
 	if f1<0:
 		return -1
 	elif f1>0:
 		return 1
 	else:
 		return 0
+
+func _on_damage_zone_body_entered(body):
+	if "hitable" in body:
+		body.emit_signal("hit")

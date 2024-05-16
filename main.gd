@@ -2,26 +2,22 @@ extends Node2D
 
 var _instance=self
 
-var actual_level 
-var actual_map 
+
+var level1 = preload("res://level1.tscn").instantiate()
 var level2 = preload("res://level2.tscn").instantiate()
 var level3 = preload("res://level3.tscn").instantiate()
 var level4 = preload("res://level4.tscn").instantiate()
-# Called when the node enters the scene tree for the first time.
+var actual_level =level1
+var actual_map  = level1.get_node("TileMap")
+
 func _ready():
-	actual_level = $Level
-	actual_map = $Level
+	load_level_scene(actual_level)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if actual_level != $Level:
-		apply_dangerous_ground_effect($player)
+	#apply_dangerous_ground_effect($player)
 	if Input.is_action_just_pressed("down"):
-		pass
-		#switch_level(level4)
-	if Input.is_action_just_pressed("action2"):
-		print(get_tile($ennemy,detect_tile_position($ennemy)))
+		switch(level4)
 
 func apply_dangerous_ground_effect(character):
 	var tile = get_tile(character,adapt_tile_position(character,detect_tile_position(character)))
@@ -48,13 +44,38 @@ func get_tile(character,tile_position):
 
 func switch_level(level):
 	if actual_level != level:
-		actual_level.free()
+		if actual_level != null:
+			print("in")
+			actual_level.queue_free()
 		get_tree().root.add_child(level)
 		actual_level=level
 		actual_map = actual_level.get_node("TileMap")
-		$player.position = actual_level.get_node("player_spawn").position
-		$dummy.position = actual_level.get_node("dummy_spawn").position
 
+		if actual_level.get_node_or_null("player_spawn") != null:
+			$player.position = actual_level.get_node("player_spawn").position
+		else:
+			$player.position = Vector2(0,0)
+		if actual_level.get_node_or_null("dummy_spawn") != null:
+			$dummy.position = actual_level.get_node("dummy_spawn").position
+		else:
+			$dummy.position = Vector2(0,0)
+		if actual_level.get_node_or_null("ennemy_spawn") != null:
+			$ennemy.position = actual_level.get_node("ennemy_spawn").position
+		else:
+			$ennemy.position = Vector2(0,0)
+
+func switch(level_scene):
+	print("in")
+	delete_level_scene(actual_level)
+	load_level_scene(level_scene)
+
+func load_level_scene(level_scene):
+	add_child(level_scene)
+		
+
+func delete_level_scene(level_scene):
+	remove_child(level_scene)
+	level_scene.set_deferred("free",true)
 
 func _on_ennemy_floor_detection_question(direction):
 	var tile_position = adapt_tile_position($ennemy,detect_tile_position($ennemy))
