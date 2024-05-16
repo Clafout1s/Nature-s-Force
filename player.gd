@@ -45,6 +45,7 @@ func _physics_process(delta):
 			shotgun_instance_x.global_end()
 	elif position.y != tempoclamp.y :
 		position.y=tempoclamp.y
+		exp_gravity = 0
 		if shotgun_instance_y.activated:
 			shotgun_instance_y.global_end()
 	direction = Input.get_axis("left", "right")

@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bt7j0qiakfen"]
+[gd_scene load_steps=5 format=3 uid="uid://bt7j0qiakfen"]
 
 [ext_resource type="PackedScene" uid="uid://bh3dqik6ou8rr" path="res://player.tscn" id="1_c75vs"]
 [ext_resource type="Script" path="res://main.gd" id="1_ytp35"]
 [ext_resource type="PackedScene" uid="uid://clxp5h3nxmi08" path="res://dummy.tscn" id="4_eddyy"]
-[ext_resource type="PackedScene" uid="uid://bd4d04rqdpn52" path="res://level1.tscn" id="5_lmnfl"]
 [ext_resource type="PackedScene" uid="uid://dlux5nbghwajw" path="res://ennemy.tscn" id="5_q11vl"]
 
 [node name="Node2D" type="Node2D"]
@@ -15,13 +14,8 @@ position = Vector2(790, 560)
 [node name="dummy" parent="." instance=ExtResource("4_eddyy")]
 position = Vector2(208, 470)
 
-[node name="spawnpoint" type="Marker2D" parent="."]
-position = Vector2(1384, 339)
-
 [node name="ennemy" parent="." instance=ExtResource("5_q11vl")]
 position = Vector2(1417, 355)
-
-[node name="Node2D" parent="." instance=ExtResource("5_lmnfl")]
 
 [connection signal="floor_detection_question" from="ennemy" to="." method="_on_ennemy_floor_detection_question"]
 [connection signal="wall_detection_question" from="ennemy" to="." method="_on_ennemy_wall_detection_question"]
