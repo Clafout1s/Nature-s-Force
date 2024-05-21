@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+var spawn_point = Vector2(0,0)
+signal hit
+var hitable
+var ennemy
+
 var space_state 
 const SPEED = 200
 const JUMP_VELOCITY = -400.0
@@ -7,8 +12,8 @@ var screen_size
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = 1632.65306122449
 var exp_gravity=0
-signal floor_detection_question
-signal wall_detection_question
+signal no_floor_detected
+signal wall_detected
 
 var checking_for_player = false
 var player_body
@@ -57,18 +62,7 @@ func _physics_process(delta):
 		if not has_same_sign(tempo,direction):
 			swap()
 		velocity.x = tempo * (SPEED * 200/float(100))
-	emit_signal("floor_detection_question",direction)
-	emit_signal("wall_detection_question",direction)
 	move_and_slide()
-	
-
-func on_wall_detected():
-	if state == idle:
-		swap()
-
-func on_no_floor_detected():
-	if state == idle:
-		swap()
 
 func swap_direction_collisions():
 	if $vision/area_left.disabled:
@@ -130,3 +124,16 @@ func into_sign(f1:float):
 func _on_damage_zone_body_entered(body):
 	if "hitable" in body:
 		body.emit_signal("hit")
+
+
+func _on_hit():
+	position = spawn_point
+	switch_to_idle()
+
+func _on_no_floor_detected():
+	if state == idle:
+		swap()
+
+func _on_wall_detected():
+	if state == idle:
+		swap()

@@ -31,8 +31,6 @@ func end_blast():
 	$blastArea/blastCollision.set_deferred("disabled",true)
 	$blast.visible=false
 
-
-
 func _on_blast_area_body_entered(body):
 	if "hitable" in body:
 		body.emit_signal("hit")

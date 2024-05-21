@@ -8,6 +8,7 @@ extends CharacterBody2D
 var hitable
 var player
 signal hit
+var spawn_point = Vector2(0,0)
 
 var jump_height=100.0
 var jump_time=0.35
@@ -35,6 +36,7 @@ func _ready():
 	shotgun_cd_timer = $ShotgunCd
 	screen_size=get_viewport_rect().size
 	$gun/blastTimer.wait_time=shotgun_tps
+	position = spawn_point
 
 	
 func _physics_process(delta):
@@ -148,4 +150,4 @@ func _on_hit():
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
-	position = Vector2(0,0)
+	position = spawn_point
