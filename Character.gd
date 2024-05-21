@@ -47,6 +47,10 @@ func remove_character():
 
 func remove_from_list(list):
 	for i in range(len(list)):
-		if self in list[0]:
+		if type_string(typeof(list[0])) == "Array":
+			if self in list[0]:
+				list.remove_at(i)
+		elif self == list[0]:
 			list.remove_at(i)
+		
 
