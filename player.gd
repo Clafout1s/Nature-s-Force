@@ -1,26 +1,11 @@
 
-extends CharacterBody2D
+extends Character_basics
 #en outre j'aime beaucoup mon papa qui est le meilleur papa du monde et qui fait caca
-
-@export var SPEED = 400
-@export var GRAVITY=200
-
-var hitable
-var player
-signal hit
-var spawn_point = Vector2(0,0)
 
 var jump_height=100.0
 var jump_time=0.35
 var jump_velocity= -(2.0 * jump_height) / jump_time
-var gravity = (2.0*jump_height) / (jump_time**2) 
-
-var screen_size
 var is_jumping=false
-var direction
-var exp_gravity=0
-var tempoclamp=Vector2()
-
 var shotgun_value = 1050
 var shotgun_angle=0
 var shotgun_tps=0.15
@@ -38,7 +23,7 @@ func _ready():
 	$gun/blastTimer.wait_time=shotgun_tps
 	position = spawn_point
 
-	
+"""
 func _physics_process(delta):
 	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
 	if position.x != tempoclamp.x:
@@ -69,7 +54,7 @@ func _physics_process(delta):
 		exp_gravity+=gravity * delta
 		velocity.y+=exp_gravity
 		if shotgun_instance_x.decelerating :
-			if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=SPEED and direction!=0 :
+			if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=speed and direction!=0 :
 				shotgun_instance_x.end_deceleration()
 				velocity.x+=walk()
 			if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
@@ -89,7 +74,55 @@ func _physics_process(delta):
 	if is_on_floor():
 		is_jumping=false
 		exp_gravity=0
+"""
+func tempoclamp_addon_x():
+	if shotgun_instance_x.activated:
+			shotgun_instance_x.global_end()
+func tempoclamp_addon_y():
+	if shotgun_instance_y.activated:
+			shotgun_instance_y.global_end()
+	if is_jumping:
+		is_jumping = false
 
+func process_addon(delta):
+	#super(delta)
+	direction = Input.get_axis("left", "right")
+	$gun.rotate_gun(position)
+	shotgun_dash()
+
+	velocity.x=shotgun_instance_x.return_value()
+	velocity.y=shotgun_instance_y.return_value()
+	
+	if shotgun_instance_x.activated:
+		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
+			shotgun_instance_x.global_end()
+	if shotgun_instance_y.activated:
+		if has_same_sign(raycastCollisions().y,shotgun_instance_y.value_init) and raycastCollisions().y != 0:
+			shotgun_instance_y.global_end()
+	
+	if not shotgun_instance_x.bursting or not shotgun_instance_y.bursting:
+		exp_gravity+=gravity * delta
+		velocity.y+=exp_gravity
+		if shotgun_instance_x.decelerating :
+			if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=speed and direction!=0 :
+				shotgun_instance_x.end_deceleration()
+				velocity.x+=walk()
+			if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
+				shotgun_instance_x.end_deceleration()
+				velocity.x+=walk()
+		else:
+			velocity.x+=walk()
+			
+		if shotgun_instance_y.decelerating:
+			pass
+
+	jump()
+	if is_jumping:
+		velocity.y+=jump_velocity
+
+func on_floor_addon():
+	exp_gravity = 0
+	is_jumping = false
 func shotgun_dash():
 	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
 		$gun.blast()
@@ -109,7 +142,7 @@ func is_shotgun_on_cd():
 
 func walk():
 	if direction:
-		return direction * SPEED 
+		return direction * speed 
 	else:
 		return 0
 

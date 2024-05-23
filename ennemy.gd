@@ -122,8 +122,7 @@ func into_sign(f1:float):
 		return 0
 
 func _on_damage_zone_body_entered(body):
-	if "hitable" in body:
-		body.emit_signal("hit")
+	body.emit_signal("hit")
 
 
 func _on_hit():
