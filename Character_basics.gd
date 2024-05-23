@@ -18,7 +18,7 @@ func _ready():
 	screen_size=get_viewport_rect().size
 	position = spawn_point
 	hit.connect(_on_hit)
-
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -32,11 +32,12 @@ func _physics_process(delta):
 	
 	process_addon(delta)
 	
-	move_and_slide()
-	
 	if is_on_floor():
 		on_floor_addon()
-	
+	else:
+		not_on_floor_addon()
+		
+	move_and_slide()
 	
 func tempoclamp_addon_x():
 	pass
@@ -47,7 +48,9 @@ func _on_hit():
 
 func process_addon(delta):
 	exp_gravity += gravity*delta
-	velocity.y = exp_gravity
 
 func on_floor_addon():
 	exp_gravity = 0
+
+func not_on_floor_addon():
+	velocity.y = exp_gravity

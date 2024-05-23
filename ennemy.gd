@@ -1,25 +1,12 @@
-extends CharacterBody2D
-
-var spawn_point = Vector2(0,0)
-signal hit
-var hitable
-var ennemy
+extends Character_basics
 
 var space_state 
 const SPEED = 200
-const JUMP_VELOCITY = -400.0
-var screen_size
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = 1632.65306122449
-var exp_gravity=0
 signal no_floor_detected
 signal wall_detected
 
 var checking_for_player = false
 var player_body
-var rng
-var direction=1
-var tempoclamp
 var ready_to_swap = false
 var state = idle
 enum {
@@ -27,21 +14,16 @@ enum {
 	attack
 }
 func _ready():
+	super()
 	space_state= get_world_2d().direct_space_state
-	rng = RandomNumberGenerator.new()
-	screen_size=get_viewport_rect().size
-	#$vision/area_left.set_deferred("disabled",true)
-	#$vision/area_left.set_deferred("visible",false)
-func _physics_process(delta):
-	exp_gravity += gravity * delta
-	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
-	if position.x != tempoclamp.x:
-		position.x = tempoclamp.x
-		if state == idle :
-			swap()
-	if position.y != tempoclamp.y:
-		position.y = tempoclamp.y
-		
+	direction = 1
+func tempoclamp_addon_x():
+	if state == idle :
+		swap()
+
+func process_addon(delta):
+	exp_gravity += gravity*delta
+	
 	if checking_for_player:
 		if state==idle:
 			if raycast_to_player():
@@ -49,20 +31,20 @@ func _physics_process(delta):
 		elif state == attack:
 			if not raycast_to_player():
 				switch_to_idle()
-	
-	if not is_on_floor():
-		velocity.y = exp_gravity
-	else:
-		exp_gravity = 0
+
 	if state == idle:
 		velocity.x = SPEED * direction
 	elif state == attack:
 		var tempo = player_body.global_position.x - global_position.x 
-		tempo = into_sign(tempo)
+		if abs(tempo) > 80:
+			tempo = into_sign(tempo)
+		else:
+			tempo = direction
+
 		if not has_same_sign(tempo,direction):
 			swap()
+
 		velocity.x = tempo * (SPEED * 200/float(100))
-	move_and_slide()
 
 func swap_direction_collisions():
 	if $vision/area_left.disabled:
@@ -77,13 +59,15 @@ func swap_direction_collisions():
 		$vision/area_right.set_deferred("visible",true)
 
 func swap():
+	if player_body != null and state == attack:
+		print(player_body.position - position)
 	direction *= -1
 	$Sprite2D.scale.x *= -1
 	#swap_direction_collisions()
 
 
 func _on_vision_body_entered(body):
-	if "player" in body:
+	if "type" in body and body.type == "player":
 		checking_for_player=true
 		player_body = body
 		
@@ -95,7 +79,7 @@ func raycast_to_player():
 	# use global coordinates, not local to node
 	var query = PhysicsRayQueryParameters2D.create(position, player_body.position)
 	var result = space_state.intersect_ray(query)
-	if result != {} and "player" in result["collider"] :
+	if result != {} and "type" in result["collider"] and result["collider"].type == "player":
 		return true
 	return false
 
