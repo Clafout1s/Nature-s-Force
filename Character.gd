@@ -20,10 +20,10 @@ func _init(nid,ntype,nroot):
 		"player":
 			scene = preload("res://player.tscn").instantiate() 
 			adapted_positions_list.append("player_floor")
-		"ennemy":
-			scene = preload("res://ennemy.tscn").instantiate()
-			adapted_positions_list.append("ennemy_wall")
-			adapted_positions_list.append("ennemy_floor")
+		"boar":
+			scene = preload("res://boar.tscn").instantiate()
+			adapted_positions_list.append("boar_wall")
+			adapted_positions_list.append("boar_floor")
 			
 		"dummy":
 			scene = preload("res://dummy.tscn").instantiate()
@@ -33,15 +33,15 @@ func add_character():
 	root.add_child(scene)
 	stock_list.append(self)
 	placed = true
-	if type == "ennemy":
-		root.need_floor_detection_list.append([self,"ennemy_floor"])
-		root.need_wall_detection_list.append([self,"ennemy_wall"])
+	if type == "boar":
+		root.need_floor_detection_list.append([self,"boar_floor"])
+		root.need_wall_detection_list.append([self,"boar_wall"])
 	
 func remove_character():
 	root.remove_child(scene)
 	placed = false
 	remove_from_list(stock_list)
-	if type == "ennemy":
+	if type == "boar":
 		remove_from_list(root.need_floor_detection_list)
 		remove_from_list(root.need_wall_detection_list)
 

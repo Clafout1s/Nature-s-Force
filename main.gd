@@ -65,9 +65,9 @@ func adapt_position(character,tile_position,adapt_name):
 			match adapt_name:
 				'player_floor':
 					tile_position.y += 2
-				"ennemy_floor":
+				"boar_floor":
 					tile_position += Vector2i(character.scene.direction,3)
-				"ennemy_wall":
+				"boar_wall":
 					tile_position += Vector2i(character.scene.direction*2,0)
 		return tile_position
 

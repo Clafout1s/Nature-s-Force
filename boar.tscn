@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://dlux5nbghwajw"]
+
+[ext_resource type="Script" path="res://boar.gd" id="1_dvn30"]
+[ext_resource type="Texture2D" uid="uid://basyo058dmstn" path="res://sprites/dummy.png" id="1_twgfc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kfchw"]
+radius = 11.0
+height = 48.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1isas"]
+radius = 302.499
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0d1u5"]
+radius = 13.3333
+height = 49.3333
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("1_dvn30")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_kfchw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_twgfc")
+
+[node name="vision" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="vision"]
+shape = SubResource("CircleShape2D_1isas")
+
+[node name="damage_zone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="damage_zone"]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_0d1u5")
+
+[connection signal="hit" from="." to="." method="_on_hit"]
+[connection signal="no_floor_detected" from="." to="." method="_on_no_floor_detected"]
+[connection signal="wall_detected" from="." to="." method="_on_wall_detected"]
+[connection signal="body_entered" from="vision" to="." method="_on_vision_body_entered"]
+[connection signal="body_exited" from="vision" to="." method="_on_vision_body_exited"]
+[connection signal="body_entered" from="damage_zone" to="." method="_on_damage_zone_body_entered"]

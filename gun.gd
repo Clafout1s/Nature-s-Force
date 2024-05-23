@@ -32,6 +32,5 @@ func end_blast():
 	$blast.visible=false
 
 func _on_blast_area_body_entered(body):
-	#body.emit_signal("hit")
-	pass
+	body.emit_signal("hit")
 		
