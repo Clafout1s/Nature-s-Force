@@ -36,6 +36,10 @@ shape = SubResource("CircleShape2D_1isas")
 position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_0d1u5")
 
+[node name="findTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
 [connection signal="hit" from="." to="." method="_on_hit"]
 [connection signal="no_floor_detected" from="." to="." method="_on_no_floor_detected"]
 [connection signal="wall_detected" from="." to="." method="_on_wall_detected"]

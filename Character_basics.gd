@@ -48,6 +48,7 @@ func _on_hit():
 
 func process_addon(delta):
 	exp_gravity += gravity*delta
+	velocity.y = exp_gravity
 
 func on_floor_addon():
 	exp_gravity = 0
