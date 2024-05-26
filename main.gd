@@ -3,8 +3,7 @@ extends Node2D
 var root_node 
 
 var level1 = preload("res://level1.tscn").instantiate()
-var level3 = preload("res://level3.tscn").instantiate()
-var level4 = preload("res://level4.tscn").instantiate()
+var level2 = preload("res://level2.tscn").instantiate()
 
 var character_list=[] 
 var need_wall_detection_list = []
@@ -16,7 +15,7 @@ var effects_list = ["dangerous"]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	load_level_scene(level1)
+	load_level_scene(level2)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -85,8 +84,8 @@ func apply_all_terrain_effects():
 func apply_terrain_effect(character,effect):
 	if actual_scene != null:
 		var character_node = character.scene
-		var tile_position = adapt_position(character,get_tile_position(character_node.position),str(character.type)+"_floor")
-		var tile = get_tile_from_tile_position(tile_position)
+		var tile_position_ground = adapt_position(character,get_tile_position(character_node.position),str(character.type)+"_floor")
+		var tile = get_tile_from_tile_position(tile_position_ground)
 		if tile != null:
 				if tile.get_custom_data(effect):
 					if effect == "dangerous":
@@ -94,7 +93,7 @@ func apply_terrain_effect(character,effect):
 			
 func dangerous_effect(character):
 	var character_node = character.scene
-	character_node.emit_signal("hit")
+	#character_node.emit_signal("hit")
 
 func check_wall():
 	for i in range(len(need_wall_detection_list)):

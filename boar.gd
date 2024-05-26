@@ -37,10 +37,7 @@ func analyse_and_switch():
 			switch_to_idle()
 
 func idle_behavior():
-	if no_floor or wall:
-		swap()
-		no_floor = false
-		wall = false
+	check_terrain()
 	velocity.x = speed * direction
 
 func attack_behavior():
@@ -56,6 +53,7 @@ func attack_behavior():
 	velocity.x = tempo * (speed * 200/float(100))
 
 func find_behavior():
+	check_terrain()
 	var tempo = last_target_position.x - global_position.x
 	if abs(tempo) > 80:
 		tempo = into_sign(tempo)
@@ -86,14 +84,6 @@ func _on_vision_body_exited(body):
 	
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
-func into_sign(f1:float):
-	f1 = int(f1)
-	if f1<0:
-		return -1
-	elif f1>0:
-		return 1
-	else:
-		return 0
 
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
@@ -107,3 +97,9 @@ func _on_no_floor_detected():
 
 func _on_wall_detected():
 	wall = true
+
+func check_terrain():
+	if no_floor or wall:
+		swap()
+		no_floor = false
+		wall = false

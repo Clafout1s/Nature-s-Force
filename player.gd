@@ -34,13 +34,13 @@ func tempoclamp_addon_y():
 		is_jumping = false
 
 func process_addon(delta):
-	#super(delta)
 	if just_jumping:
 		just_jumping = false
 	direction = Input.get_axis("left", "right")
 	$gun.rotate_gun(position)
 	shotgun_dash()
 
+	test()
 	velocity.x=shotgun_instance_x.return_value()
 	velocity.y=shotgun_instance_y.return_value()
 	
@@ -72,6 +72,9 @@ func process_addon(delta):
 		if (raycastCollisions().y < 0):
 			is_jumping = false
 		velocity.y+=jump_velocity
+	
+	if direction == 0 or not has_same_sign(direction,velocity.x):
+		direction = into_sign(velocity.x)
 
 func on_floor_addon():
 	exp_gravity = 0
@@ -135,7 +138,18 @@ func raycastCollisions():
 		final_vec.y=1
 	return final_vec
 
-
+func test():
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var map = collision.get_collider()
+		var collipos = collision.get_position()
+		collipos -= collision.get_normal() * 8
+		var tile_position = map.local_to_map(collipos)
+		var tile = map.get_cell_tile_data(0, tile_position)
+		if tile != null:
+			if tile.get_custom_data("dangerous"):
+				pass
+				emit_signal("hit")
 
 func _on_hit():
 	shotgun_instance_x.global_end()

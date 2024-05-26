@@ -40,7 +40,6 @@ shape = SubResource("CapsuleShape2D_0d1u5")
 wait_time = 3.0
 one_shot = true
 
-[connection signal="hit" from="." to="." method="_on_hit"]
 [connection signal="no_floor_detected" from="." to="." method="_on_no_floor_detected"]
 [connection signal="wall_detected" from="." to="." method="_on_wall_detected"]
 [connection signal="body_entered" from="vision" to="." method="_on_vision_body_entered"]

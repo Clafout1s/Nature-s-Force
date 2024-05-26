@@ -27,7 +27,10 @@ func _physics_process(delta):
 		position.x=tempoclamp.x
 		tempoclamp_addon_x()
 	if position.y != tempoclamp.y:
-		position.y = tempoclamp.y
+		if position.y > tempoclamp.y:
+			position = spawn_point
+		else:
+			position.y = tempoclamp.y
 		tempoclamp_addon_y()
 	
 	process_addon(delta)
@@ -55,3 +58,12 @@ func on_floor_addon():
 
 func not_on_floor_addon():
 	velocity.y = exp_gravity
+
+func into_sign(f1:float):
+	f1 = int(f1)
+	if f1<0:
+		return -1
+	elif f1>0:
+		return 1
+	else:
+		return 0
