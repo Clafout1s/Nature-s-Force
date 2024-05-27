@@ -52,6 +52,7 @@ func _on_hit():
 func process_addon(delta):
 	exp_gravity += gravity*delta
 	velocity.y = exp_gravity
+	apply_terrain_effects()
 
 func on_floor_addon():
 	exp_gravity = 0
@@ -67,3 +68,17 @@ func into_sign(f1:float):
 		return 1
 	else:
 		return 0
+
+
+func apply_terrain_effects():
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var map = collision.get_collider()
+		if map is TileMap:
+			var collipos = collision.get_position()
+			collipos -= collision.get_normal() * 8
+			var tile_position = map.local_to_map(collipos)
+			var tile = map.get_cell_tile_data(0, tile_position)
+			if tile != null:
+				if tile.get_custom_data("dangerous"):
+					emit_signal("hit")

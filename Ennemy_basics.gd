@@ -10,7 +10,8 @@ func _ready():
 	space_state= get_world_2d().direct_space_state
 	
 func process_addon(delta):
-	super(delta)
+	exp_gravity += gravity*delta
+	velocity.y = exp_gravity
 	analyse_and_switch()
 	chose_behavior()
 

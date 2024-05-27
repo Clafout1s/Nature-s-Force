@@ -19,7 +19,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	apply_all_terrain_effects()
 	check_floor()
 	check_wall()
 
@@ -41,7 +40,6 @@ func spawn_to_position_markers(level_scene):
 				new_charac.scene.spawn_point = spawn_list[i][0].position
 
 func load_level_scene(level_scene):
-	
 	add_child(level_scene)
 	actual_scene=level_scene
 	actual_tilemap = find_tilemap(actual_scene)
@@ -73,27 +71,6 @@ func adapt_position(character,tile_position,adapt_name):
 func get_tile_from_tile_position(tile_position):
 	if actual_scene != null:
 		return actual_tilemap.get_cell_tile_data(0, tile_position)
-
-func apply_all_terrain_effects():
-	if actual_scene != null:
-		for character in character_list:
-			if character.type in ("player") and character.placed:
-				for effect in effects_list:
-					apply_terrain_effect(character,effect)
-
-func apply_terrain_effect(character,effect):
-	if actual_scene != null:
-		var character_node = character.scene
-		var tile_position_ground = adapt_position(character,get_tile_position(character_node.position),str(character.type)+"_floor")
-		var tile = get_tile_from_tile_position(tile_position_ground)
-		if tile != null:
-				if tile.get_custom_data(effect):
-					if effect == "dangerous":
-						dangerous_effect(character)
-			
-func dangerous_effect(character):
-	var character_node = character.scene
-	#character_node.emit_signal("hit")
 
 func check_wall():
 	for i in range(len(need_wall_detection_list)):
