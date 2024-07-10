@@ -2,9 +2,8 @@ extends Node2D
 
 var root_node 
 
-var level1 = preload("res://level1.tscn").instantiate()
-var level2 = preload("res://level2.tscn").instantiate()
 
+var main_menu = preload("res://menu.tscn").instantiate()
 var character_list=[] 
 var need_wall_detection_list = []
 var need_floor_detection_list = []
@@ -15,12 +14,16 @@ var effects_list = ["dangerous"]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	load_level_scene(level2)
+	add_child(main_menu)
+	#load_level_scene(main_menu.levelAmaury1)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	check_floor()
 	check_wall()
+	if Input.is_action_just_pressed("return_menu"):
+		add_child(main_menu)
+		delete_level_scene(actual_scene)
 
 func switch(level_scene):
 	delete_level_scene(actual_scene)
@@ -47,7 +50,6 @@ func load_level_scene(level_scene):
 
 func delete_level_scene(level_scene):
 	remove_child(level_scene)
-	level_scene.free()
 	var character_list_2 = character_list.duplicate()
 	for character in character_list_2:
 		character.remove_character()
