@@ -7,13 +7,13 @@ var jump_time=0.35
 var jump_velocity= -(2.0 * jump_height) / jump_time
 var just_jumping = false
 var is_jumping=false
-var shotgun_value = 1050
+var shotgun_value = 8000
 var shotgun_angle=0
-var shotgun_tps=0.15
-var shotgun_deceleration_tps=0.8
+var shotgun_burst_frames=5
+var shotgun_deceleration_frames=25
 var shotgun_cd_timer
-var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
-var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
+var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
+var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 
 func _ready():
 	super()
@@ -21,7 +21,7 @@ func _ready():
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)
 	shotgun_cd_timer = $ShotgunCd
-	$gun/blastTimer.wait_time=shotgun_tps
+	$gun/blastTimer.wait_time=0.5
 	type = "player"
 
 func tempoclamp_addon_x():
@@ -34,6 +34,8 @@ func tempoclamp_addon_y():
 		is_jumping = false
 
 func process_addon(delta):
+	if Input.is_action_just_pressed("action2"):
+		print(position)
 	apply_terrain_effects()
 	if just_jumping:
 		just_jumping = false
@@ -54,6 +56,7 @@ func process_addon(delta):
 	if not shotgun_instance_x.bursting or not shotgun_instance_y.bursting:
 		exp_gravity+=gravity * delta
 		velocity.y+=exp_gravity
+
 		if shotgun_instance_x.decelerating :
 			if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=speed and direction!=0 :
 				shotgun_instance_x.end_deceleration()
@@ -61,9 +64,10 @@ func process_addon(delta):
 			if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
 				shotgun_instance_x.end_deceleration()
 				velocity.x+=walk()
+
 		else:
 			velocity.x+=walk()
-			
+
 		if shotgun_instance_y.decelerating:
 			pass
 
@@ -87,8 +91,8 @@ func shotgun_dash():
 	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
 		$gun.blast()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
-		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
-		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value)*(shotgun_tps*60),shotgun_tps,true,shotgun_deceleration_tps)
+		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
+		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 		shotgun_instance_x.start()
 		shotgun_instance_y.start()
 
@@ -140,7 +144,10 @@ func raycastCollisions():
 
 
 func _on_hit():
+	"""
+	print(position)
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
 	position = spawn_point
+	"""

@@ -2,30 +2,27 @@ extends Node
 class_name Regular_value
 
 var id
-var tps
 var value_init
+var nb_frames
+var value_deceleration
+var nb_frames_deceleration
 var value = -1
 var value_counter = -1
-var tpf
 var activated = false
 var bursting = false
 var decelerating = false
 var just_finished=false
 var has_deceleration
-var dtps
-var dtpf
 var followup
 var origin
 
-func _init(nid,nvalue_init,ntps,nhas_deceleration=false,ndtps=0):
+func _init(nid,nvalue_init,nnb_frames,nhas_deceleration=false,nnb_frames_deceleration=0,nvalue_deceleration=nvalue_init):
 	id=nid
 	value_init=nvalue_init
-	tps=ntps
+	nb_frames=nnb_frames
 	has_deceleration=nhas_deceleration
-	dtps=ndtps
-	
-	tpf = tps * 60
-	dtpf = dtps * 60
+	value_deceleration = nvalue_deceleration
+	nb_frames_deceleration=nnb_frames_deceleration
 	
 	self.add_origin(self.pack_attributes(self))
 		
@@ -35,7 +32,7 @@ func start():
 	bursting=true
 	decelerating=false
 	just_finished=false
-	value = value_init/tpf
+	value = value_init/nb_frames
 	value_counter = 0
 
 func end():
@@ -59,6 +56,7 @@ func return_value():
 	elif activated and decelerating:
 		if just_finished:
 			just_finished = false
+		print(move_toward(value_counter,0,abs(value)))
 		value_counter=move_toward(value_counter,0,abs(value))
 		if value_counter == 0:
 			end_deceleration()
@@ -74,8 +72,8 @@ func start_deceleration():
 		activated=true
 		bursting=false
 		decelerating = true
-		value_counter =  value_init/ tpf
-		value = value_init/ tpf / dtpf	
+		value_counter =  value_deceleration / nb_frames
+		value = value_deceleration / nb_frames/ nb_frames_deceleration
 
 func end_deceleration():
 	decelerating = false
@@ -86,8 +84,6 @@ func end_deceleration():
 func reset_values():
 	value=-1
 	value_counter=-1
-	tpf = tps * 60
-	dtpf = dtps * 60
 
 func has_just_finished():
 	if just_finished:
@@ -95,18 +91,17 @@ func has_just_finished():
 		return true
 	else:
 		return just_finished 
-
+"""
 func change_values(nvalue_init,ntps=null,ndtps=null):
 	if not activated or just_finished:
 		if nvalue_init != null:
 			value_init=nvalue_init
 		if ntps != null:
 			tps = ntps
-			tpf = tps * 60
 		if ndtps != null:
 			dtps = ndtps
 			dtpf = dtps * 60
-
+"""
 func add_followup(pack):
 	if followup == null:
 		followup=pack
@@ -124,16 +119,18 @@ func switch_to_followup():
 		self.unpack_attributes(origin)
 
 func pack_attributes(other=self):
-	var final_pack=[other.id,other.value_init,other.tps,other.has_deceleration,other.dtps,other.followup]
+	var final_pack=[other.id,other.value_init,other.nb_frames,other.has_deceleration,other.nb_frames_deceleration,other.value_deceleration,other.followup]
 	return final_pack
 
 func unpack_attributes(pack):
 	id=pack[0]
 	value_init=pack[1]
-	tps=pack[2]
+	nb_frames=pack[2]
 	has_deceleration=pack[3]
-	dtps=pack[4]
-	followup=pack[5]
+	nb_frames_deceleration=pack[4]
+	value_deceleration = pack[5]
+	followup=pack[6]
+	
 	activated=false
 	decelerating=false
 	just_finished=false
