@@ -56,7 +56,6 @@ func return_value():
 	elif activated and decelerating:
 		if just_finished:
 			just_finished = false
-		print(move_toward(value_counter,0,abs(value)))
 		value_counter=move_toward(value_counter,0,abs(value))
 		if value_counter == 0:
 			end_deceleration()

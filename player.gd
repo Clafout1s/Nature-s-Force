@@ -12,17 +12,22 @@ var shotgun_angle=0
 var shotgun_burst_frames=5
 var shotgun_deceleration_frames=25
 var shotgun_cd_timer
+var shotgun_slots_init = 2
+var shotgun_slots
+
 var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 
 func _ready():
 	super()
+	speed = 520
 	set_floor_constant_speed_enabled(true)
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)
+	$gun/blastTimer.wait_time=shotgun_burst_frames/60
 	shotgun_cd_timer = $ShotgunCd
-	$gun/blastTimer.wait_time=0.5
 	type = "player"
+	shotgun_slots = shotgun_slots_init
 
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -35,7 +40,7 @@ func tempoclamp_addon_y():
 
 func process_addon(delta):
 	if Input.is_action_just_pressed("action2"):
-		print(position)
+		print(shotgun_slots)
 	apply_terrain_effects()
 	if just_jumping:
 		just_jumping = false
@@ -84,12 +89,17 @@ func on_floor_addon():
 	exp_gravity = 0
 	if not just_jumping:
 		is_jumping = false
+	print(velocity.y)
+	if not shotgun_instance_x.activated and not shotgun_instance_y.activated:
+		reset_shotgun_slots()
 
 func not_on_floor_addon():
 	pass
 func shotgun_dash():
-	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd():
+	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd() and not shotgun_slots <= 0:
 		$gun.blast()
+		shotgun_slots-=1
+		#print(shotgun_slots)
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
 		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
@@ -142,7 +152,8 @@ func raycastCollisions():
 		final_vec.y=1
 	return final_vec
 
-
+func reset_shotgun_slots():
+	shotgun_slots = shotgun_slots_init
 func _on_hit():
 	"""
 	print(position)
