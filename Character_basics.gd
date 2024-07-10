@@ -1,6 +1,6 @@
 extends CharacterBody2D
 class_name Character_basics
-
+var root_node
 var speed = 400
 var gravity = 1633
 var exp_gravity = 0
@@ -12,6 +12,7 @@ var type = "ennemy"
 var direction = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	root_node = get_tree().root.get_child(0)
 	set_floor_constant_speed_enabled(true)
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)

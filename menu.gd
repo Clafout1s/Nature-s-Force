@@ -22,3 +22,8 @@ func _on_level_2_pressed():
 func _on_level_1_pressed():
 	root_node.load_level_scene(level1)
 	root_node.remove_child(self)
+
+
+func _on_level_am_3_pressed():
+	root_node.load_level_scene(levelAmaury3)
+	root_node.remove_child(self)

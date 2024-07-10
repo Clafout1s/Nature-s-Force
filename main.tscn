@@ -1,6 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://bt7j0qiakfen"]
+[gd_scene load_steps=3 format=3 uid="uid://bt7j0qiakfen"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ytp35"]
+[ext_resource type="Texture2D" uid="uid://dda6rd0bik8a6" path="res://sprites/shellPlain.png" id="2_c1i3y"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ytp35")
+
+[node name="bulletSlots" type="Control" parent="."]
+top_level = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 49.0
+offset_top = 1004.0
+offset_right = 89.0
+offset_bottom = 1044.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="bulletSlots"]
+layout_mode = 0
+offset_right = 152.0
+offset_bottom = 65.0
+
+[node name="bullet1" type="TextureRect" parent="bulletSlots/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_c1i3y")
+stretch_mode = 5
+
+[node name="bullet2" type="TextureRect" parent="bulletSlots/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_c1i3y")
+stretch_mode = 5

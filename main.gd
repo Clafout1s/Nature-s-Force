@@ -10,12 +10,14 @@ var need_floor_detection_list = []
 var actual_scene 
 var actual_tilemap
 var effects_list = ["dangerous"]
-
+var textureShellPlain = preload("res://sprites/shellPlain.png")
+var textureShellEmpty = preload("res://sprites/shellEmpty.png")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	#add_child(main_menu)
-	load_level_scene(main_menu.levelAmaury3)
+	add_child(main_menu)
+	print($bulletSlots/HBoxContainer/bullet1.texture)
+	#load_level_scene(main_menu.levelAmaury3)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -44,6 +46,7 @@ func spawn_to_position_markers(level_scene):
 
 func load_level_scene(level_scene):
 	add_child(level_scene)
+	#level_scene.add_child($bulletSlots)
 	actual_scene=level_scene
 	actual_tilemap = find_tilemap(actual_scene)
 	spawn_to_position_markers(actual_scene)
@@ -87,3 +90,19 @@ func check_floor():
 		var floor_position = adapt_position(character_found[0],get_tile_position(character_found[0].scene.position),character_found[1]) 
 		if get_tile_from_tile_position(floor_position) == null:
 			need_floor_detection_list[i][0].scene.emit_signal("no_floor_detected")
+
+func switch_to_empty_shell():
+	var bullet1 = $bulletSlots/HBoxContainer/bullet1
+	var bullet2 = $bulletSlots/HBoxContainer/bullet2
+	if bullet2.texture == textureShellPlain:
+		bullet2.set_texture(textureShellEmpty)
+	elif bullet1.texture == textureShellPlain:
+		bullet1.set_texture(textureShellEmpty)
+
+func switch_to_plain_shell():
+	var bullet1 = $bulletSlots/HBoxContainer/bullet1
+	var bullet2 = $bulletSlots/HBoxContainer/bullet2
+	if bullet1.texture == textureShellEmpty:
+		bullet1.set_texture(textureShellPlain)
+	elif bullet2.texture == textureShellEmpty:
+		bullet2.set_texture(textureShellPlain)
