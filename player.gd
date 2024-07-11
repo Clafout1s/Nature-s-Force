@@ -13,7 +13,8 @@ var shotgun_deceleration_frames=25
 var shotgun_cd_timer
 var shotgun_slots_init = 2
 var shotgun_slots
-
+var shotgun_slots_UI
+var shotgun_slots_UI_instance = preload("res://bulletSlotsUI.tscn").instantiate()
 var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 
@@ -27,6 +28,9 @@ func _ready():
 	shotgun_cd_timer = $ShotgunCd
 	type = "player"
 	shotgun_slots = shotgun_slots_init
+	root_node.add_child(shotgun_slots_UI_instance)
+	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
+	
 
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -95,8 +99,7 @@ func shotgun_dash():
 	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd() and not shotgun_slots <= 0:
 		$gun.blast()
 		shotgun_slots-=1
-		root_node.switch_to_empty_shell()
-		#print(shotgun_slots)
+		shotgun_slots_UI.switch_to_empty_shell()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
 		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
@@ -151,11 +154,10 @@ func raycastCollisions():
 
 func reset_shotgun_slots():
 	for i in range(shotgun_slots_init-shotgun_slots):
-		root_node.switch_to_plain_shell()
+		shotgun_slots_UI.switch_to_plain_shell()
 	shotgun_slots = shotgun_slots_init
 	
 func _on_hit():
-	print(position)
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
