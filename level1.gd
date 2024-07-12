@@ -3,4 +3,4 @@ var spawn_point_list = []
 
 func _ready():
 	pass
-	spawn_point_list = [[$player_spawn,"player"]]
+	spawn_point_list = [[$player_spawn,"player"],[$boar_spawn,"boar"]]

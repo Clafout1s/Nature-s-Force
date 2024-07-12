@@ -8,6 +8,8 @@ var find_timer
 var no_floor = false
 var wall = false
 var last_target_position
+var stunned = false
+var stun_recoil 
 func _ready():
 	super()
 	space_state= get_world_2d().direct_space_state
@@ -20,7 +22,7 @@ func tempoclamp_addon_x():
 		swap()
 
 func process_addon(delta):
-	velocity.x = 0
+	#velocity.x = 0
 	super(delta)
 
 func analyse_and_switch():
@@ -37,8 +39,12 @@ func analyse_and_switch():
 			switch_to_idle()
 
 func idle_behavior():
-	check_terrain()
-	velocity.x = speed * direction
+	if not stunned:
+		check_terrain()
+		velocity.x = speed * direction
+	else:
+		velocity.x = stun_recoil.return_value()
+		print(velocity.x)
 
 func attack_behavior():
 	var tempo = target_body.global_position.x - global_position.x 
@@ -63,13 +69,15 @@ func find_behavior():
 		swap()
 	velocity.x = tempo*speed
 func switch_to_attack():
-	super()
-	find_timer.stop()
+	if not stunned:
+		super()
+		find_timer.stop()
 
 func switch_to_find():
-	super()
-	find_timer.start()
-	last_target_position = target_body.global_position
+	if not stunned:
+		super()
+		find_timer.start()
+		last_target_position = target_body.global_position
 
 func swap():
 	direction *= -1
@@ -86,11 +94,23 @@ func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
 func _on_damage_zone_body_entered(body):
-	body.emit_signal("hit")
+	if body != self:
+		body.emit_signal("hit")
 
 func _on_hit():
+	"""
 	position = spawn_point
 	switch_to_idle()
+	"""
+	#character_class_instance.remove_character()
+	#velocity.x = -direction * 200
+	stunned = true
+	$stunTimer.start()
+	$damage_zone/CollisionShape2D.set_deferred("disabled",true)
+	switch_to_idle()
+	stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
+	stun_recoil.start()
+	
 
 func _on_no_floor_detected():
 	no_floor = true
@@ -103,3 +123,8 @@ func check_terrain():
 		swap()
 		no_floor = false
 		wall = false
+
+
+func _on_stun_timer_timeout():
+	$damage_zone/CollisionShape2D.set_deferred("disabled",false)
+	stunned = false

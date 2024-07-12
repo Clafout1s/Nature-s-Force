@@ -20,13 +20,16 @@ func _init(nid,ntype,nroot):
 		"player":
 			scene = preload("res://player.tscn").instantiate() 
 			adapted_positions_list.append("player_floor")
+			scene.character_class_instance = self
 		"boar":
 			scene = preload("res://boar.tscn").instantiate()
 			adapted_positions_list.append("boar_wall")
 			adapted_positions_list.append("boar_floor")
+			scene.character_class_instance = self
 			
 		"dummy":
 			scene = preload("res://dummy.tscn").instantiate()
+			scene.character_class_instance = self
 		_:
 			assert(false, "wrong type of character")
 func add_character():

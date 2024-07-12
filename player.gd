@@ -6,10 +6,10 @@ var jump_time=0.35
 var jump_velocity= -(2.0 * jump_height) / jump_time
 var just_jumping = false
 var is_jumping=false
-var shotgun_value = 8000
+var shotgun_value = 7000
 var shotgun_angle=0
-var shotgun_burst_frames=5
-var shotgun_deceleration_frames=25
+var shotgun_burst_frames=4
+var shotgun_deceleration_frames=20
 var shotgun_cd_timer
 var shotgun_slots_init = 2
 var shotgun_slots
@@ -20,7 +20,7 @@ var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgu
 
 func _ready():
 	super()
-	speed = 520
+	speed = 500
 	set_floor_constant_speed_enabled(true)
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)

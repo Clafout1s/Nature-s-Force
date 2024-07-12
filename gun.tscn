@@ -12,16 +12,20 @@ metadata/_edit_lock_ = true
 texture = ExtResource("1_k6g3i")
 
 [node name="blast" type="Sprite2D" parent="."]
-position = Vector2(42, -3)
+position = Vector2(55, -4)
+scale = Vector2(1.46875, 1.26562)
 texture = ExtResource("3_quvfo")
 
 [node name="blastTimer" type="Timer" parent="."]
 wait_time = 0.2
 
 [node name="blastArea" type="Area2D" parent="."]
+position = Vector2(-4, -3)
 
 [node name="blastCollision" type="CollisionPolygon2D" parent="blastArea"]
-polygon = PackedVector2Array(14, -3, 69, -29, 69, 18)
+position = Vector2(-1, 2)
+scale = Vector2(1.41477, 1.09043)
+polygon = PackedVector2Array(14, -3, 68.5622, -27.5122, 68.5622, 20.1756)
 
 [connection signal="timeout" from="blastTimer" to="." method="_on_blast_timer_timeout"]
 [connection signal="body_entered" from="blastArea" to="." method="_on_blast_area_body_entered"]

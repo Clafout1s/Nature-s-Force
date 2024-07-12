@@ -10,6 +10,7 @@ var spawn_point = Vector2(0,0)
 signal hit
 var type = "ennemy"
 var direction = 0
+var character_class_instance
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
@@ -42,7 +43,8 @@ func _physics_process(delta):
 		not_on_floor_addon()
 		
 	move_and_slide()
-	
+	velocity = Vector2(0,0)
+
 func tempoclamp_addon_x():
 	pass
 func tempoclamp_addon_y():
