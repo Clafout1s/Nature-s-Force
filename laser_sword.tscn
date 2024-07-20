@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://gaeau15omfc6"]
+
+[ext_resource type="Texture2D" uid="uid://1svf500u0p0v" path="res://sprites/laserBlade.png" id="1_dwhui"]
+[ext_resource type="Script" path="res://laser_sword.gd" id="1_omrll"]
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_omrll")
+
+[node name="damage_zone" type="Area2D" parent="."]
+position = Vector2(16, 0)
+
+[node name="damage_zone_hitbox" type="CollisionPolygon2D" parent="damage_zone"]
+polygon = PackedVector2Array(-28, -25, -10, -18, -2, -7, -2, 6, -9, 17, -27, 25, -3, 24, 17, 11, 20, 0, 18, -8, 10, -18, -4, -23)
+
+[node name="sprite" type="Sprite2D" parent="."]
+position = Vector2(16, 0)
+texture = ExtResource("1_dwhui")

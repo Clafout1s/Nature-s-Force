@@ -17,7 +17,7 @@ var shotgun_slots_UI
 var shotgun_slots_UI_instance = preload("res://bulletSlotsUI.tscn").instantiate()
 var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
-
+var sword_instance = preload("res://laser_sword.tscn").instantiate()
 func _ready():
 	super()
 	speed = 500
@@ -30,7 +30,7 @@ func _ready():
 	shotgun_slots = shotgun_slots_init
 	root_node.add_child(shotgun_slots_UI_instance)
 	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
-	
+	add_child(sword_instance)
 
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -48,7 +48,8 @@ func process_addon(delta):
 	direction = Input.get_axis("left", "right")
 	$gun.rotate_gun(position)
 	shotgun_dash()
-
+	sword_attack()
+	
 	velocity.x=shotgun_instance_x.return_value()
 	velocity.y=shotgun_instance_y.return_value()
 	
@@ -111,6 +112,9 @@ func shotgun_dash():
 			is_jumping=false
 		shotgun_cd_timer.start()
 
+func sword_attack():
+	if Input.is_action_just_pressed("action2"):
+		sword_instance.start_slash(global_position)
 func is_shotgun_on_cd():
 	return !shotgun_cd_timer.is_stopped()
 

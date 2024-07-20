@@ -14,6 +14,7 @@ func _ready():
 	super()
 	space_state= get_world_2d().direct_space_state
 	direction = 1
+	swap()
 	speed = 200
 	find_timer = $findTimer
 	
@@ -44,7 +45,6 @@ func idle_behavior():
 		velocity.x = speed * direction
 	else:
 		velocity.x = stun_recoil.return_value()
-		print(velocity.x)
 
 func attack_behavior():
 	var tempo = target_body.global_position.x - global_position.x 

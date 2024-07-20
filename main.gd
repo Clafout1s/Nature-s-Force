@@ -70,7 +70,7 @@ func adapt_position(character,tile_position,adapt_name):
 				"boar_floor":
 					tile_position += Vector2i(character.scene.direction,3)
 				"boar_wall":
-					tile_position += Vector2i(character.scene.direction*2,0)
+					tile_position += Vector2i(character.scene.direction*4,0)
 		return tile_position
 
 func get_tile_from_tile_position(tile_position):

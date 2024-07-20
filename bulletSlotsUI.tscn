@@ -14,10 +14,10 @@ script = ExtResource("1_n3kn5")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 91.0
-offset_top = 954.0
-offset_right = 239.0
-offset_bottom = 1022.0
+offset_left = 62.0
+offset_top = 52.0
+offset_right = 210.0
+offset_bottom = 120.0
 
 [node name="bullet1" type="TextureRect" parent="HBoxContainer"]
 layout_mode = 2
