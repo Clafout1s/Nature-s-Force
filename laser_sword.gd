@@ -16,8 +16,6 @@ func _ready():
 	rotate_sword(0)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_just_pressed("action3"):
-		print(collision.disabled)
 	if slashing:
 		frame_count -= 1
 		if frame_count <=0:
@@ -45,6 +43,9 @@ func disable_blade():
 
 func unable_blade():
 	sprite.visible = true
-	print(sprite)
 	collision.disabled = false
 	slashing = true
+
+
+func _on_damage_zone_body_entered(body):
+	body.emit_signal("hit")

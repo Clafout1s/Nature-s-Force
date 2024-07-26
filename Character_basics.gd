@@ -7,7 +7,7 @@ var exp_gravity = 0
 var screen_size
 var tempoclamp
 var spawn_point = Vector2(0,0)
-signal hit
+signal hit(hitter)
 var type = "ennemy"
 var direction = 0
 var character_class_instance
@@ -49,7 +49,7 @@ func tempoclamp_addon_x():
 	pass
 func tempoclamp_addon_y():
 	pass
-func _on_hit():
+func _on_hit(hitter=null):
 	pass
 
 func process_addon(delta):

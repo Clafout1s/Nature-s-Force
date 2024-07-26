@@ -53,6 +53,8 @@ func process_addon(delta):
 	velocity.x=shotgun_instance_x.return_value()
 	velocity.y=shotgun_instance_y.return_value()
 	
+	#detect_collisions()
+	
 	if shotgun_instance_x.activated:
 		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
 			shotgun_instance_x.global_end()
@@ -161,8 +163,15 @@ func reset_shotgun_slots():
 		shotgun_slots_UI.switch_to_plain_shell()
 	shotgun_slots = shotgun_slots_init
 	
-func _on_hit():
+func _on_hit(hitter=null):
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
 	position = spawn_point
+
+func detect_collisions():
+	for i in get_slide_collision_count():
+		if not get_slide_collision(i).get_collider() is TileMap:
+			if get_slide_collision(i).get_collider().get_collision_layer() == 4:
+				emit_signal("hit")
+				

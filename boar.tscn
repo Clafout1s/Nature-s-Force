@@ -11,11 +11,13 @@ height = 65.3337
 radius = 302.499
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pe86c"]
-radius = 21.9994
-height = 70.6747
+radius = 25.3376
+height = 79.9877
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 scale = Vector2(1.5, 1.5)
+collision_layer = 2
+collision_mask = 21
 script = ExtResource("1_dvn30")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -34,9 +36,11 @@ flip_h = true
 shape = SubResource("CircleShape2D_1isas")
 
 [node name="damage_zone" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="damage_zone"]
-position = Vector2(0, -3.33333)
+position = Vector2(0.666667, -3.33333)
 rotation = -1.56329
 shape = SubResource("CapsuleShape2D_pe86c")
 debug_color = Color(0, 0.631373, 0.443137, 0.419608)

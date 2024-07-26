@@ -4,9 +4,16 @@
 [ext_resource type="Texture2D" uid="uid://k44qs3dgxmbt" path="res://sprites/gun.png" id="1_k6g3i"]
 [ext_resource type="Texture2D" uid="uid://btaqdvkqb70nr" path="res://sprites/blast.png" id="3_quvfo"]
 
-[node name="StaticBody2D" type="StaticBody2D"]
+[node name="blastArea" type="Area2D"]
+position = Vector2(-4, -3)
+collision_layer = 4
+collision_mask = 2
 script = ExtResource("1_ff1e0")
-metadata/_edit_lock_ = true
+
+[node name="blastCollision" type="CollisionPolygon2D" parent="."]
+position = Vector2(-1, 2)
+scale = Vector2(1.41477, 1.09043)
+polygon = PackedVector2Array(14, -3, 68.5622, -27.5122, 68.5622, 20.1756)
 
 [node name="gun" type="Sprite2D" parent="."]
 texture = ExtResource("1_k6g3i")
@@ -18,14 +25,7 @@ texture = ExtResource("3_quvfo")
 
 [node name="blastTimer" type="Timer" parent="."]
 wait_time = 0.2
+one_shot = true
 
-[node name="blastArea" type="Area2D" parent="."]
-position = Vector2(-4, -3)
-
-[node name="blastCollision" type="CollisionPolygon2D" parent="blastArea"]
-position = Vector2(-1, 2)
-scale = Vector2(1.41477, 1.09043)
-polygon = PackedVector2Array(14, -3, 68.5622, -27.5122, 68.5622, 20.1756)
-
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="blastTimer" to="." method="_on_blast_timer_timeout"]
-[connection signal="body_entered" from="blastArea" to="." method="_on_blast_area_body_entered"]

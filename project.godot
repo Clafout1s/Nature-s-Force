@@ -69,6 +69,15 @@ action3={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="terrain"
+2d_physics/layer_2="ennemy"
+2d_physics/layer_3="player_attacks"
+2d_physics/layer_4="ennemy_attacks"
+2d_physics/layer_5="player"
+2d_physics/layer_6="damaging_terrain"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

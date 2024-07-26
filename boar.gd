@@ -23,7 +23,6 @@ func tempoclamp_addon_x():
 		swap()
 
 func process_addon(delta):
-	#velocity.x = 0
 	super(delta)
 
 func analyse_and_switch():
@@ -40,6 +39,7 @@ func analyse_and_switch():
 			switch_to_idle()
 
 func idle_behavior():
+	print("idle")
 	if not stunned:
 		check_terrain()
 		velocity.x = speed * direction
@@ -56,7 +56,7 @@ func attack_behavior():
 	if not has_same_sign(tempo,direction):
 		swap()
 
-	velocity.x = tempo * (speed * 200/float(100))
+	#velocity.x = tempo * (speed * 200/float(100))
 
 func find_behavior():
 	check_terrain()
@@ -67,7 +67,7 @@ func find_behavior():
 		tempo = direction
 	if not has_same_sign(tempo,direction):
 		swap()
-	velocity.x = tempo*speed
+	#velocity.x = tempo*speed
 func switch_to_attack():
 	if not stunned:
 		super()
@@ -94,21 +94,18 @@ func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
 func _on_damage_zone_body_entered(body):
-	if body != self:
-		body.emit_signal("hit")
-
-func _on_hit():
-	"""
-	position = spawn_point
-	switch_to_idle()
-	"""
-	#character_class_instance.remove_character()
-	#velocity.x = -direction * 200
+	body.emit_signal("hit")
+	
+func _on_hit(hitter=null):
 	stunned = true
 	$stunTimer.start()
 	$damage_zone/CollisionShape2D.set_deferred("disabled",true)
 	switch_to_idle()
-	stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
+	if hitter == null:
+		stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
+	else:
+		var dir = into_sign(position.x - hitter.position.x)
+		stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
 	stun_recoil.start()
 	
 
@@ -128,3 +125,9 @@ func check_terrain():
 func _on_stun_timer_timeout():
 	$damage_zone/CollisionShape2D.set_deferred("disabled",false)
 	stunned = false
+
+func detect_collisions():
+	for i in get_slide_collision_count():
+		if not get_slide_collision(i).get_collider() is TileMap:
+			if get_slide_collision(i).get_collider().get_collision_layer() == 3:
+				emit_signal("hit")
