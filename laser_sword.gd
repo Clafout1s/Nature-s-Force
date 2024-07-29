@@ -1,6 +1,6 @@
 extends StaticBody2D
 
-var character_sword_gap = Vector2(10,10)
+var character_sword_gap = Vector2(20,20)
 var sword_scale = Vector2(1,1)
 var slash_frames = 15
 var collision

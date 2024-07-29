@@ -39,7 +39,6 @@ func analyse_and_switch():
 			switch_to_idle()
 
 func idle_behavior():
-	print("idle")
 	if not stunned:
 		check_terrain()
 		velocity.x = speed * direction
@@ -52,11 +51,11 @@ func attack_behavior():
 		tempo = into_sign(tempo)
 	else:
 		tempo = direction
-
+	
 	if not has_same_sign(tempo,direction):
 		swap()
 
-	#velocity.x = tempo * (speed * 200/float(100))
+	velocity.x = tempo * (speed * 200/float(100))
 
 func find_behavior():
 	check_terrain()
@@ -66,8 +65,9 @@ func find_behavior():
 	else:
 		tempo = direction
 	if not has_same_sign(tempo,direction):
+		print("in")
 		swap()
-	#velocity.x = tempo*speed
+	velocity.x = tempo*speed
 func switch_to_attack():
 	if not stunned:
 		super()

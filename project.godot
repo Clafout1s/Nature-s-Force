@@ -77,6 +77,7 @@ action3={
 2d_physics/layer_4="ennemy_attacks"
 2d_physics/layer_5="player"
 2d_physics/layer_6="damaging_terrain"
+2d_physics/layer_7="other"
 
 [rendering]
 
