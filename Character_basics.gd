@@ -85,3 +85,4 @@ func apply_terrain_effects():
 			if tile != null:
 				if tile.get_custom_data("dangerous"):
 					emit_signal("hit")
+

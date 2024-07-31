@@ -82,7 +82,8 @@ func check_wall():
 		var character_found = need_wall_detection_list[i]
 		var wall_position = adapt_position(character_found[0],get_tile_position(character_found[0].scene.position),character_found[1]) 
 		if get_tile_from_tile_position(wall_position) != null:
-			need_wall_detection_list[i][0].scene.emit_signal("wall_detected")
+			pass
+			#need_wall_detection_list[i][0].scene.emit_signal("wall_detected")
 
 func check_floor():
 	for i in range(len(need_floor_detection_list)):

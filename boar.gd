@@ -10,6 +10,8 @@ var wall = false
 var last_target_position
 var stunned = false
 var stun_recoil 
+var shapeCollision
+var shapeRotated = true
 func _ready():
 	super()
 	space_state= get_world_2d().direct_space_state
@@ -17,13 +19,19 @@ func _ready():
 	swap()
 	speed = 200
 	find_timer = $findTimer
-	
+	if shapeRotated:
+		shapeCollision = Vector2($CollisionShape2D.shape.height,$CollisionShape2D.shape.radius)
+	else:
+		shapeCollision = Vector2($CollisionShape2D.shape.radius,$CollisionShape2D.shape.height)
 func tempoclamp_addon_x():
 	if state == "idle" :
-		swap()
+		#swap()
+		pass
 
 func process_addon(delta):
 	super(delta)
+	wall_detection()
+	ground_detection()
 
 func analyse_and_switch():
 	if state == "idle":
@@ -40,7 +48,7 @@ func analyse_and_switch():
 
 func idle_behavior():
 	if not stunned:
-		check_terrain()
+		#check_terrain()
 		velocity.x = speed * direction
 	else:
 		velocity.x = stun_recoil.return_value()
@@ -58,14 +66,13 @@ func attack_behavior():
 	velocity.x = tempo * (speed * 200/float(100))
 
 func find_behavior():
-	check_terrain()
+	#check_terrain()
 	var tempo = last_target_position.x - global_position.x
 	if abs(tempo) > 80:
 		tempo = into_sign(tempo)
 	else:
 		tempo = direction
 	if not has_same_sign(tempo,direction):
-		print("in")
 		swap()
 	velocity.x = tempo*speed
 func switch_to_attack():
@@ -80,6 +87,7 @@ func switch_to_find():
 		last_target_position = target_body.global_position
 
 func swap():
+	print("SWAP")
 	direction *= -1
 	$Sprite2D.scale.x *= -1
 
@@ -126,8 +134,31 @@ func _on_stun_timer_timeout():
 	$damage_zone/CollisionShape2D.set_deferred("disabled",false)
 	stunned = false
 
+""" LEGACY CODE
 func detect_collisions():
 	for i in get_slide_collision_count():
 		if not get_slide_collision(i).get_collider() is TileMap:
 			if get_slide_collision(i).get_collider().get_collision_layer() == 3:
 				emit_signal("hit")
+"""
+func wall_detection():
+	for i in get_slide_collision_count():
+		if get_slide_collision(i).get_collider() is TileMap:
+			var posi = get_slide_collision(i).get_position()
+			if not has_same_sign(position.x - posi.x,direction) :
+				if posi.y - position.y <= float(shapeCollision.y)/2:
+					pass
+					swap()
+
+func ground_detection():
+	var posi = Vector2(position.x,position.y) 
+	var ground_posi = Vector2(posi.x,posi.y + float(shapeCollision.y)/2)
+	posi = Vector2(ground_posi.x+ (float(shapeCollision.x)/2 * direction),ground_posi.y)
+	posi = root_node.get_tile_position(posi)
+	ground_posi = root_node.get_tile_position(ground_posi)
+	posi.y += 1
+	ground_posi.y += 1
+	var tile = root_node.get_tile_from_tile_position(posi)
+	var ground_tile = root_node.get_tile_from_tile_position(ground_posi)
+	if ground_tile != null and tile == null:
+		swap()
