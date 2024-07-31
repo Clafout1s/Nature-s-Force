@@ -18,6 +18,9 @@ var shotgun_slots_UI_instance = preload("res://bulletSlotsUI.tscn").instantiate(
 var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var sword_instance = preload("res://laser_sword.tscn").instantiate()
+
+var shapeCollision
+var shapeRotated = false
 func _ready():
 	super()
 	speed = 500
@@ -31,6 +34,10 @@ func _ready():
 	root_node.add_child(shotgun_slots_UI_instance)
 	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
 	add_child(sword_instance)
+	if shapeRotated:
+		shapeCollision = Vector2($CollisionShape2D.shape.height,$CollisionShape2D.shape.radius)
+	else:
+		shapeCollision = Vector2($CollisionShape2D.shape.radius,$CollisionShape2D.shape.height)
 
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -42,7 +49,7 @@ func tempoclamp_addon_y():
 		is_jumping = false
 
 func process_addon(delta):
-	apply_terrain_effects()
+	detect_terrain_effect(position,shapeCollision,self)
 	if just_jumping:
 		just_jumping = false
 	direction = Input.get_axis("left", "right")
@@ -52,8 +59,6 @@ func process_addon(delta):
 	
 	velocity.x=shotgun_instance_x.return_value()
 	velocity.y=shotgun_instance_y.return_value()
-	
-	#detect_collisions()
 	
 	if shotgun_instance_x.activated:
 		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
@@ -169,9 +174,5 @@ func _on_hit(hitter=null):
 	velocity=Vector2(0,0)
 	position = spawn_point
 
-func detect_collisions():
-	for i in get_slide_collision_count():
-		if not get_slide_collision(i).get_collider() is TileMap:
-			if get_slide_collision(i).get_collider().get_collision_layer() == 4:
-				emit_signal("hit")
-				
+func dangerous_terrain_behavior(body):
+	body.emit_signal("hit")

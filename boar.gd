@@ -1,7 +1,5 @@
 extends Ennemy_basics
 
-signal no_floor_detected
-signal wall_detected
 
 var target_in_vision
 var find_timer
@@ -30,8 +28,8 @@ func tempoclamp_addon_x():
 
 func process_addon(delta):
 	super(delta)
-	wall_detection()
-	ground_detection()
+	wall_detection(position,shapeCollision,self)
+	ground_detection(position,shapeCollision)
 
 func analyse_and_switch():
 	if state == "idle":
@@ -98,8 +96,6 @@ func _on_vision_body_entered(body):
 func _on_vision_body_exited(body):
 	target_in_vision = false
 	
-func has_same_sign(f1:float,f2:float):
-	return f1<0 and f2<0 or f1>0 and f2>0
 
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
@@ -141,24 +137,11 @@ func detect_collisions():
 			if get_slide_collision(i).get_collider().get_collision_layer() == 3:
 				emit_signal("hit")
 """
-func wall_detection():
-	for i in get_slide_collision_count():
-		if get_slide_collision(i).get_collider() is TileMap:
-			var posi = get_slide_collision(i).get_position()
-			if not has_same_sign(position.x - posi.x,direction) :
-				if posi.y - position.y <= float(shapeCollision.y)/2:
-					pass
-					swap()
 
-func ground_detection():
-	var posi = Vector2(position.x,position.y) 
-	var ground_posi = Vector2(posi.x,posi.y + float(shapeCollision.y)/2)
-	posi = Vector2(ground_posi.x+ (float(shapeCollision.x)/2 * direction),ground_posi.y)
-	posi = root_node.get_tile_position(posi)
-	ground_posi = root_node.get_tile_position(ground_posi)
-	posi.y += 1
-	ground_posi.y += 1
-	var tile = root_node.get_tile_from_tile_position(posi)
-	var ground_tile = root_node.get_tile_from_tile_position(ground_posi)
-	if ground_tile != null and tile == null:
-		swap()
+func no_ground_detected_action():
+	super()
+	swap()
+
+func wall_detected_action():
+	super()
+	swap()

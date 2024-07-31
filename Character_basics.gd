@@ -11,6 +11,7 @@ signal hit(hitter)
 var type = "ennemy"
 var direction = 0
 var character_class_instance
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
@@ -55,7 +56,7 @@ func _on_hit(hitter=null):
 func process_addon(delta):
 	exp_gravity += gravity*delta
 	velocity.y = exp_gravity
-	apply_terrain_effects()
+	#apply_terrain_effects()
 
 func on_floor_addon():
 	exp_gravity = 0
@@ -71,6 +72,9 @@ func into_sign(f1:float):
 		return 1
 	else:
 		return 0
+		
+func has_same_sign(f1:float,f2:float):
+	return f1<0 and f2<0 or f1>0 and f2>0
 
 
 func apply_terrain_effects():
@@ -86,3 +90,44 @@ func apply_terrain_effects():
 				if tile.get_custom_data("dangerous"):
 					emit_signal("hit")
 
+func wall_detection(bodyPosition,bodyShape,body):
+	for i in body.get_slide_collision_count():
+		if body.get_slide_collision(i).get_collider() is TileMap:
+			var posi = body.get_slide_collision(i).get_position()
+			if not has_same_sign(bodyPosition.x - posi.x,direction) :
+				if posi.y - bodyPosition.y <= float(bodyShape.y)/2:
+					wall_detected_action()
+
+func ground_detection(bodyPosition,bodyShape):
+	var posi = Vector2(bodyPosition.x,bodyPosition.y) 
+	var ground_posi = Vector2(posi.x,posi.y + float(bodyShape.y)/2)
+	posi = Vector2(ground_posi.x+ (float(bodyShape.x)/2 * direction),ground_posi.y)
+	posi = root_node.get_tile_position(posi)
+	ground_posi = root_node.get_tile_position(ground_posi)
+	posi.y += 1
+	ground_posi.y += 1
+	var tile = root_node.get_tile_from_tile_position(posi)
+	var ground_tile = root_node.get_tile_from_tile_position(ground_posi)
+	if ground_tile != null and tile == null:
+		no_ground_detected_action()
+
+func wall_detected_action():
+	pass
+
+func no_ground_detected_action():
+	pass
+
+func detect_terrain_effect(bodyPosition,bodyShape,body):
+	for i in body.get_slide_collision_count():
+		if body.get_slide_collision(i).get_collider() is TileMap:
+			var posi = body.get_slide_collision(i).get_position()
+			posi -= body.get_slide_collision(i).get_normal() * 8
+			posi = root_node.get_tile_position(posi)
+			var tile = root_node.get_tile_from_tile_position(posi)
+			if tile != null:
+				if tile.get_custom_data("dangerous"):
+					dangerous_terrain_behavior(body)
+
+func dangerous_terrain_behavior(body):
+	pass
+	

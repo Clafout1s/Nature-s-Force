@@ -19,8 +19,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	check_floor()
-	check_wall()
+	#check_floor()
+	#check_wall()
 	if Input.is_action_just_pressed("return_menu"):
 		add_child(main_menu)
 		delete_level_scene(actual_scene)
@@ -90,5 +90,6 @@ func check_floor():
 		var character_found = need_floor_detection_list[i]
 		var floor_position = adapt_position(character_found[0],get_tile_position(character_found[0].scene.position),character_found[1]) 
 		if get_tile_from_tile_position(floor_position) == null:
-			need_floor_detection_list[i][0].scene.emit_signal("no_floor_detected")
+			pass
+			#need_floor_detection_list[i][0].scene.emit_signal("no_floor_detected")
 
