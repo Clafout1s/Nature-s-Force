@@ -1,6 +1,7 @@
 extends CharacterBody2D
 class_name Character_basics
 var root_node
+var nodeCollision
 var speed = 400
 var gravity = 1633
 var exp_gravity = 0
@@ -11,7 +12,8 @@ signal hit(hitter)
 var type = "ennemy"
 var direction = 0
 var character_class_instance
-
+var shapeCollision
+var shapeRotated = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
@@ -21,7 +23,15 @@ func _ready():
 	screen_size=get_viewport_rect().size
 	position = spawn_point
 	hit.connect(_on_hit)
-	
+	adaptShape()
+		
+
+func adaptShape():
+	if nodeCollision != null:
+		if shapeRotated:
+			shapeCollision = Vector2(nodeCollision.shape.height,nodeCollision.shape.radius)
+		else:
+			shapeCollision = Vector2(nodeCollision.shape.radius,nodeCollision.shape.height)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -76,7 +86,7 @@ func into_sign(f1:float):
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
-
+"""
 func apply_terrain_effects():
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
@@ -89,16 +99,18 @@ func apply_terrain_effects():
 			if tile != null:
 				if tile.get_custom_data("dangerous"):
 					emit_signal("hit")
-
+"""
 func wall_detection(bodyPosition,bodyShape,body):
+	if null in [bodyPosition,bodyShape,body]:
+		assert(false,"Null start value")
 	for i in body.get_slide_collision_count():
 		if body.get_slide_collision(i).get_collider() is TileMap:
 			var posi = body.get_slide_collision(i).get_position()
 			if not has_same_sign(bodyPosition.x - posi.x,direction) :
 				if posi.y - bodyPosition.y <= float(bodyShape.y)/2:
-					wall_detected_action()
+					return true
 
-func ground_detection(bodyPosition,bodyShape):
+func no_ground_detection(bodyPosition,bodyShape):
 	var posi = Vector2(bodyPosition.x,bodyPosition.y) 
 	var ground_posi = Vector2(posi.x,posi.y + float(bodyShape.y)/2)
 	posi = Vector2(ground_posi.x+ (float(bodyShape.x)/2 * direction),ground_posi.y)
@@ -109,15 +121,13 @@ func ground_detection(bodyPosition,bodyShape):
 	var tile = root_node.get_tile_from_tile_position(posi)
 	var ground_tile = root_node.get_tile_from_tile_position(ground_posi)
 	if ground_tile != null and tile == null:
-		no_ground_detected_action()
+		return true
+	else:
+		return false
 
-func wall_detected_action():
-	pass
-
-func no_ground_detected_action():
-	pass
 
 func detect_terrain_effect(bodyPosition,bodyShape,body):
+	
 	for i in body.get_slide_collision_count():
 		if body.get_slide_collision(i).get_collider() is TileMap:
 			var posi = body.get_slide_collision(i).get_position()

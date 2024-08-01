@@ -61,35 +61,9 @@ func get_tile_position(other_position):
 	if actual_scene != null:
 		return actual_tilemap.local_to_map(other_position)
 
-func adapt_position(character,tile_position,adapt_name):
-	if actual_scene != null:
-		if adapt_name in character.adapted_positions_list :
-			match adapt_name:
-				'player_floor':
-					tile_position.y += 2
-				"boar_floor":
-					tile_position += Vector2i(character.scene.direction,3)
-				"boar_wall":
-					tile_position += Vector2i(character.scene.direction*4,0)
-		return tile_position
 
 func get_tile_from_tile_position(tile_position):
 	if actual_scene != null:
 		return actual_tilemap.get_cell_tile_data(0, tile_position)
 
-func check_wall():
-	for i in range(len(need_wall_detection_list)):
-		var character_found = need_wall_detection_list[i]
-		var wall_position = adapt_position(character_found[0],get_tile_position(character_found[0].scene.position),character_found[1]) 
-		if get_tile_from_tile_position(wall_position) != null:
-			pass
-			#need_wall_detection_list[i][0].scene.emit_signal("wall_detected")
-
-func check_floor():
-	for i in range(len(need_floor_detection_list)):
-		var character_found = need_floor_detection_list[i]
-		var floor_position = adapt_position(character_found[0],get_tile_position(character_found[0].scene.position),character_found[1]) 
-		if get_tile_from_tile_position(floor_position) == null:
-			pass
-			#need_floor_detection_list[i][0].scene.emit_signal("no_floor_detected")
 

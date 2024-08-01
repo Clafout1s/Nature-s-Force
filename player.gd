@@ -19,8 +19,7 @@ var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgu
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
 var sword_instance = preload("res://laser_sword.tscn").instantiate()
 
-var shapeCollision
-var shapeRotated = false
+
 func _ready():
 	super()
 	speed = 500
@@ -34,11 +33,10 @@ func _ready():
 	root_node.add_child(shotgun_slots_UI_instance)
 	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
 	add_child(sword_instance)
-	if shapeRotated:
-		shapeCollision = Vector2($CollisionShape2D.shape.height,$CollisionShape2D.shape.radius)
-	else:
-		shapeCollision = Vector2($CollisionShape2D.shape.radius,$CollisionShape2D.shape.height)
-
+	nodeCollision = $CollisionShape2D
+	adaptShape()
+	
+	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
 			shotgun_instance_x.global_end()

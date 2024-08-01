@@ -8,28 +8,24 @@ var wall = false
 var last_target_position
 var stunned = false
 var stun_recoil 
-var shapeCollision
-var shapeRotated = true
 func _ready():
 	super()
 	space_state= get_world_2d().direct_space_state
 	direction = 1
 	swap()
 	speed = 200
-	find_timer = $findTimer
-	if shapeRotated:
-		shapeCollision = Vector2($CollisionShape2D.shape.height,$CollisionShape2D.shape.radius)
-	else:
-		shapeCollision = Vector2($CollisionShape2D.shape.radius,$CollisionShape2D.shape.height)
+	nodeCollision = $CollisionShape2D
+	shapeRotated = true
+	adaptShape()
+	
+
 func tempoclamp_addon_x():
 	if state == "idle" :
-		#swap()
 		pass
 
 func process_addon(delta):
 	super(delta)
-	wall_detection(position,shapeCollision,self)
-	ground_detection(position,shapeCollision)
+	
 
 func analyse_and_switch():
 	if state == "idle":
@@ -41,47 +37,48 @@ func analyse_and_switch():
 	elif state == "find":
 		if raycast_to_target():
 			switch_to_attack()
-		elif find_timer.is_stopped():
+		if stunned:
 			switch_to_idle()
 
 func idle_behavior():
 	if not stunned:
-		#check_terrain()
+		if wall_detection(position,shapeCollision,self):
+			swap()
+		if no_ground_detection(position,shapeCollision):
+			swap()
 		velocity.x = speed * direction
 	else:
 		velocity.x = stun_recoil.return_value()
 
 func attack_behavior():
-	var tempo = target_body.global_position.x - global_position.x 
+	var tempo = target_body.global_position.x - global_position.x
 	if abs(tempo) > 80:
 		tempo = into_sign(tempo)
 	else:
 		tempo = direction
-	
 	if not has_same_sign(tempo,direction):
 		swap()
-
 	velocity.x = tempo * (speed * 200/float(100))
+	if wall_detection(position,shapeCollision,self):
+		switch_to_idle()
 
 func find_behavior():
-	#check_terrain()
-	var tempo = last_target_position.x - global_position.x
-	if abs(tempo) > 80:
-		tempo = into_sign(tempo)
-	else:
-		tempo = direction
+	var tempo = into_sign(last_target_position.x - global_position.x)
 	if not has_same_sign(tempo,direction):
 		swap()
-	velocity.x = tempo*speed
+	var movement = direction * move_toward(0,last_target_position.x,abs(speed))
+	print(movement," " ,float(shapeCollision.x)/2)
+	velocity.x = movement
+	if abs(last_target_position.x - global_position.x) < float(shapeCollision.x)/2 or no_ground_detection(position,shapeCollision) or wall_detection(position,shapeCollision,self):
+		switch_to_idle()
+
 func switch_to_attack():
 	if not stunned:
 		super()
-		find_timer.stop()
 
 func switch_to_find():
 	if not stunned:
 		super()
-		find_timer.start()
 		last_target_position = target_body.global_position
 
 func swap():
@@ -130,18 +127,3 @@ func _on_stun_timer_timeout():
 	$damage_zone/CollisionShape2D.set_deferred("disabled",false)
 	stunned = false
 
-""" LEGACY CODE
-func detect_collisions():
-	for i in get_slide_collision_count():
-		if not get_slide_collision(i).get_collider() is TileMap:
-			if get_slide_collision(i).get_collider().get_collision_layer() == 3:
-				emit_signal("hit")
-"""
-
-func no_ground_detected_action():
-	super()
-	swap()
-
-func wall_detected_action():
-	super()
-	swap()
