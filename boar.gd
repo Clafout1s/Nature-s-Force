@@ -2,9 +2,6 @@ extends Ennemy_basics
 
 
 var target_in_vision
-var find_timer
-var no_floor = false
-var wall = false
 var last_target_position
 var stunned = false
 var stun_recoil 
@@ -20,13 +17,8 @@ func _ready():
 	shapeRotated = true
 	adaptShape()
 
-func tempoclamp_addon_x():
-	if state == "idle" :
-		pass
-
 func process_addon(delta):
 	super(delta)
-	
 
 func analyse_and_switch():
 	if state == "idle":
@@ -104,18 +96,6 @@ func _on_hit(hitter=null):
 			var dir = into_sign(position.x - hitter.global_position.x)
 			stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
 		stun_recoil.start()
-
-func _on_no_floor_detected():
-	no_floor = true
-
-func _on_wall_detected():
-	wall = true
-
-func check_terrain():
-	if no_floor or wall:
-		swap()
-		no_floor = false
-		wall = false
 
 
 func _on_stun_timer_timeout():

@@ -90,6 +90,7 @@ func has_same_sign(f1:float,f2:float):
 func swap():
 	direction *= -1
 	nodeSprite.scale.x *= -1
+	nodeCollision.scale.x *= -1
 
 func wall_detection(bodyPosition,bodyShape,body):
 	if null in [bodyPosition,bodyShape,body]:

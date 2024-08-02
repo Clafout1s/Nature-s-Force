@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://c85jbh6spk3af"]
+
+[ext_resource type="Script" path="res://bulletAttack.gd" id="1_dht7k"]
+[ext_resource type="Texture2D" uid="uid://gv6axsm50qgr" path="res://sprites/shellEmpty.png" id="1_fbtge"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_juarx"]
+radius = 24.0
+height = 64.0
+
+[node name="Area2D" type="Area2D"]
+collision_layer = 8
+collision_mask = 19
+script = ExtResource("1_dht7k")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_fbtge")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_juarx")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="hit_something" from="." to="." method="_on_hit_something"]
