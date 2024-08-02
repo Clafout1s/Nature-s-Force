@@ -2,6 +2,7 @@ extends CharacterBody2D
 class_name Character_basics
 var root_node
 var nodeCollision
+var nodeSprite
 var speed = 400
 var gravity = 1633
 var exp_gravity = 0
@@ -86,20 +87,10 @@ func into_sign(f1:float):
 func has_same_sign(f1:float,f2:float):
 	return f1<0 and f2<0 or f1>0 and f2>0
 
-"""
-func apply_terrain_effects():
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		var map = collision.get_collider()
-		if map is TileMap:
-			var collipos = collision.get_position()
-			collipos -= collision.get_normal() * 8
-			var tile_position = map.local_to_map(collipos)
-			var tile = map.get_cell_tile_data(0, tile_position)
-			if tile != null:
-				if tile.get_custom_data("dangerous"):
-					emit_signal("hit")
-"""
+func swap():
+	direction *= -1
+	nodeSprite.scale.x *= -1
+
 func wall_detection(bodyPosition,bodyShape,body):
 	if null in [bodyPosition,bodyShape,body]:
 		assert(false,"Null start value")

@@ -2,6 +2,7 @@ extends Area2D
 var gun_centre_ecart=Vector2(10,15)
 var gun_scale=Vector2(0.8,0.8)
 var collision
+var user
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scale=gun_scale
@@ -36,5 +37,19 @@ func end_blast():
 	collision.disabled = true
 
 func _on_body_entered(body):
-	var charac = get_parent()
-	body.emit_signal("hit",charac)
+	print(body)
+	if raycast_to_target(body):
+		if user == null:
+			body.emit_signal("hit",self)
+		else:
+			body.emit_signal("hit",user)
+			
+
+func raycast_to_target(target):
+	if target != null:
+		var query = PhysicsRayQueryParameters2D.create(global_position, target.global_position)
+		var result = get_world_2d().direct_space_state.intersect_ray(query)
+		print(result)
+		if result != {} and result["collider"] == target:
+			return true
+	return false

@@ -8,16 +8,17 @@ var wall = false
 var last_target_position
 var stunned = false
 var stun_recoil 
+
 func _ready():
 	super()
 	space_state= get_world_2d().direct_space_state
+	nodeCollision = $CollisionShape2D
+	nodeSprite = $Sprite2D
 	direction = 1
 	swap()
 	speed = 200
-	nodeCollision = $CollisionShape2D
 	shapeRotated = true
 	adaptShape()
-	
 
 func tempoclamp_addon_x():
 	if state == "idle" :
@@ -67,7 +68,6 @@ func find_behavior():
 	if not has_same_sign(tempo,direction):
 		swap()
 	var movement = direction * move_toward(0,last_target_position.x,abs(speed))
-	print(movement," " ,float(shapeCollision.x)/2)
 	velocity.x = movement
 	if abs(last_target_position.x - global_position.x) < float(shapeCollision.x)/2 or no_ground_detection(position,shapeCollision) or wall_detection(position,shapeCollision,self):
 		switch_to_idle()
@@ -81,11 +81,6 @@ func switch_to_find():
 		super()
 		last_target_position = target_body.global_position
 
-func swap():
-	print("SWAP")
-	direction *= -1
-	$Sprite2D.scale.x *= -1
-
 func _on_vision_body_entered(body):
 	target_body = body
 	target_in_vision = true
@@ -98,17 +93,17 @@ func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
 	
 func _on_hit(hitter=null):
-	stunned = true
-	$stunTimer.start()
-	$damage_zone/CollisionShape2D.set_deferred("disabled",true)
-	switch_to_idle()
-	if hitter == null:
-		stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
-	else:
-		var dir = into_sign(position.x - hitter.position.x)
-		stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
-	stun_recoil.start()
-	
+	if not stunned:
+		stunned = true
+		$stunTimer.start()
+		$damage_zone/CollisionShape2D.set_deferred("disabled",true)
+		switch_to_idle()
+		if hitter == null:
+			stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
+		else:
+			var dir = into_sign(position.x - hitter.global_position.x)
+			stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
+		stun_recoil.start()
 
 func _on_no_floor_detected():
 	no_floor = true

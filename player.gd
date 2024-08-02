@@ -27,6 +27,7 @@ func _ready():
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)
 	$gun/blastTimer.wait_time=shotgun_burst_frames/60
+	$gun.user = self
 	shotgun_cd_timer = $ShotgunCd
 	type = "player"
 	shotgun_slots = shotgun_slots_init
@@ -120,6 +121,7 @@ func shotgun_dash():
 func sword_attack():
 	if Input.is_action_just_pressed("action2"):
 		sword_instance.start_slash(global_position)
+		sword_instance.user = self
 func is_shotgun_on_cd():
 	return !shotgun_cd_timer.is_stopped()
 

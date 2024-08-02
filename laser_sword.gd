@@ -1,12 +1,13 @@
 extends StaticBody2D
 
-var character_sword_gap = Vector2(20,20)
-var sword_scale = Vector2(1,1)
+var character_sword_gap = Vector2(30,30)
+var sword_scale = Vector2(0.7,0.7)
 var slash_frames = 15
 var collision
 var sprite
 var slashing = false
 var frame_count = slash_frames
+var user
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scale = sword_scale
@@ -32,6 +33,7 @@ func start_slash(point):
 	var angle=point.angle_to_point(get_global_mouse_position())
 	rotate_sword(angle)
 	unable_blade()
+	
 
 func end_slash():
 	disable_blade()
@@ -48,4 +50,17 @@ func unable_blade():
 
 
 func _on_damage_zone_body_entered(body):
-	body.emit_signal("hit")
+	if user != null:
+		if raycast_to_target(body):
+			print("oops")
+			body.emit_signal("hit",user)
+	else:
+		body.emit_signal("hit",self)
+
+func raycast_to_target(target):
+	if target != null:
+		var query = PhysicsRayQueryParameters2D.create(user.global_position, target.global_position)
+		var result = get_world_2d().direct_space_state.intersect_ray(query)
+		if result != {} and result["collider"] == target:
+			return true
+	return false

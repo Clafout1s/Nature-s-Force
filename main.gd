@@ -15,6 +15,7 @@ var effects_list = ["dangerous"]
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	add_child(main_menu)
+	print(get_viewport_rect().size)
 	#load_level_scene(main_menu.levelAmaury3)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
