@@ -42,8 +42,9 @@ func process_addon(delta):
 	chose_behavior()
 
 func idle_behavior():
+	print("--------------------")
 	if not moving:
-		start_moving(calculate_movement_angle(rng.randi_range(0,3)),speed,movement_frames)
+		start_moving(calculate_movement_angle(2,100),speed,movement_frames)
 
 func attack_behavior():
 	switch_to_idle()
@@ -72,7 +73,6 @@ func flee_behavior():
 		else:
 			direction_cadran.x = 0
 		var banned_cadran = Vector2(into_sign(target_body.position.x - global_position.x  ) , into_sign(target_body.position.y - global_position.y  )) 
-		print(convert_vector_to_cadran(banned_cadran))
 		var movement_angle = calculate_movement_angle()
 		start_moving(movement_angle,speed,movement_frames)
 
@@ -138,13 +138,13 @@ func calculate_movement_angle(cadran_number=null,banned_cadrans=[],wall_detectio
 			good_angle_found = true
 	return tempo_angle
 """
-func calculate_movement_angle(cadran_number=null,banned_cadran=[],wall_detection=true,wall_limit_range=0):
+func calculate_movement_angle(cadran_number=null,wall_limit_range=0,wall_detection=true,banned_cadran=[]):
 	"""
 	Calculate the angle of the bird movement at a random but can be oriented.
 	It uses a 4-sided-cadran to do so, going:
 	 0-rightish, 1-upish, 2-leftish, 3-downish, ish being that these are general directions, which are also randomised.
 	"""
-	if wall_detection == false:
+	if wall_detection == false and cadran_number != null:
 		return (cadran_number * PI/2 + rng.randf_range(-PI/4,PI/4))
 	else:
 		var space_state = get_world_2d().direct_space_state
@@ -162,9 +162,14 @@ func calculate_movement_angle(cadran_number=null,banned_cadran=[],wall_detection
 		var tempo_angle
 		for cad in cadran_list:
 			tempo_angle = cad * PI/2 + rng.randf_range(-PI/4,PI/4)
-			query = PhysicsRayQueryParameters2D.create(global_position, global_position+Vector2(cos(tempo_angle)*wall_limit_range,sin(tempo_angle)*wall_limit_range))
-			result = space_state.intersect_ray(query)
-			if result == {} or not result["collider"] is TileMap:
+			if wall_detection:
+				query = PhysicsRayQueryParameters2D.create(global_position, global_position+Vector2(cos(tempo_angle)*wall_limit_range,sin(tempo_angle)*wall_limit_range))
+				result = space_state.intersect_ray(query)
+				if result == {} or not result["collider"] is TileMap:
+					angle_order_list.append(tempo_angle)
+				else:
+					print("wall shit")
+			else:
 				angle_order_list.append(tempo_angle)
 				
 		if angle_order_list != []:
