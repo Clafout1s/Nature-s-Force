@@ -37,7 +37,6 @@ func end_blast():
 	collision.disabled = true
 
 func _on_body_entered(body):
-	print(body)
 	if raycast_to_target(body):
 		if user == null:
 			body.emit_signal("hit",self)
@@ -49,7 +48,6 @@ func raycast_to_target(target):
 	if target != null:
 		var query = PhysicsRayQueryParameters2D.create(global_position, target.global_position)
 		var result = get_world_2d().direct_space_state.intersect_ray(query)
-		print(result)
 		if result != {} and result["collider"] == target:
 			return true
 	return false

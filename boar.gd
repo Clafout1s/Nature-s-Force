@@ -86,6 +86,7 @@ func _on_damage_zone_body_entered(body):
 	
 func _on_hit(hitter=null):
 	if not stunned:
+		
 		stunned = true
 		$stunTimer.start()
 		$damage_zone/CollisionShape2D.set_deferred("disabled",true)
@@ -96,7 +97,6 @@ func _on_hit(hitter=null):
 			var dir = into_sign(position.x - hitter.global_position.x)
 			stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
 		stun_recoil.start()
-
 
 func _on_stun_timer_timeout():
 	$damage_zone/CollisionShape2D.set_deferred("disabled",false)

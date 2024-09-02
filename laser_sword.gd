@@ -50,17 +50,24 @@ func unable_blade():
 
 
 func _on_damage_zone_body_entered(body):
+	area_or_body_entered(body)
+
+func _on_damage_zone_area_entered(area):
+	area_or_body_entered(area)
+	
+func area_or_body_entered(node):
 	if user != null:
-		if raycast_to_target(body):
-			print("oops")
-			body.emit_signal("hit",user)
+		if raycast_to_target(node):
+			node.emit_signal("hit",user)
 	else:
-		body.emit_signal("hit",self)
+		node.emit_signal("hit",self)
 
 func raycast_to_target(target):
 	if target != null:
 		var query = PhysicsRayQueryParameters2D.create(user.global_position, target.global_position)
 		var result = get_world_2d().direct_space_state.intersect_ray(query)
-		if result != {} and result["collider"] == target:
+		if result == {} or not result["collider"] is TileMap:
 			return true
 	return false
+
+

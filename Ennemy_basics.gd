@@ -46,10 +46,10 @@ func switch_to_find():
 func switch_to_flee():
 	state = "flee"
 
-func raycast_to_target():
-	if target_body != null:
-		var query = PhysicsRayQueryParameters2D.create(position, target_body.position)
+func raycast_to_target(target = target_body):
+	if target != null:
+		var query = PhysicsRayQueryParameters2D.create(position, target.position)
 		var result = space_state.intersect_ray(query)
-		if result != {} and result["collider"] == target_body:
+		if result != {} and result["collider"] == target:
 			return true
 	return false

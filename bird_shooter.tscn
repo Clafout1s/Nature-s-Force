@@ -1,27 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddang74spdrk6"]
+[gd_scene load_steps=6 format=3 uid="uid://ddang74spdrk6"]
 
 [ext_resource type="Script" path="res://bird_shooter.gd" id="1_56wbc"]
 [ext_resource type="Texture2D" uid="uid://basyo058dmstn" path="res://sprites/dummy.png" id="2_e533t"]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dpffw"]
+radius = 13.0
+height = 40.0
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wu1yr"]
-radius = 11.0
-height = 32.0
+radius = 12.0
+height = 36.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1s2op"]
+radius = 728.044
 
 [node name="Character_basics" type="CharacterBody2D"]
+scale = Vector2(-1, 1)
+collision_layer = 2
+collision_mask = 17
 script = ExtResource("1_56wbc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="damage_zone" type="Area2D" parent="."]
 rotation = 1.5708
+collision_layer = 8
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="damage_zone"]
+shape = SubResource("CapsuleShape2D_dpffw")
+debug_color = Color(0, 0.643137, 0.309804, 0.419608)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0)
+rotation = -1.5708
 shape = SubResource("CapsuleShape2D_wu1yr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
 rotation = 1.5708
 scale = Vector2(1, 0.7)
 texture = ExtResource("2_e533t")
 
 [node name="vision" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="vision"]
-polygon = PackedVector2Array(0, 0, 128, -152, 128, 152)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="vision"]
+shape = SubResource("CircleShape2D_1s2op")
 
+[node name="reloadTimer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
+
+[connection signal="body_entered" from="damage_zone" to="." method="_on_damage_zone_body_entered"]
 [connection signal="body_entered" from="vision" to="." method="_on_vision_body_entered"]
+[connection signal="body_exited" from="vision" to="." method="_on_vision_body_exited"]
+[connection signal="timeout" from="reloadTimer" to="." method="_on_reload_timer_timeout"]

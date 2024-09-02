@@ -9,7 +9,6 @@ var root
 var placed = false
 var node
 var stock_list
-var adapted_positions_list = []
 
 func _init(nid,ntype,nroot):
 	id = nid
@@ -19,16 +18,19 @@ func _init(nid,ntype,nroot):
 	match type:
 		"player":
 			scene = preload("res://player.tscn").instantiate() 
-			adapted_positions_list.append("player_floor")
+			#adapted_positions_list.append("player_floor")
 			scene.character_class_instance = self
 		"boar":
 			scene = preload("res://boar.tscn").instantiate()
-			adapted_positions_list.append("boar_wall")
-			adapted_positions_list.append("boar_floor")
+			#adapted_positions_list.append("boar_wall")
+			#adapted_positions_list.append("boar_floor")
 			scene.character_class_instance = self
 			
 		"dummy":
 			scene = preload("res://dummy.tscn").instantiate()
+			scene.character_class_instance = self
+		"bird":
+			scene = preload("res://bird_shooter.tscn").instantiate()
 			scene.character_class_instance = self
 		_:
 			assert(false, "wrong type of character")
