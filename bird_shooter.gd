@@ -10,7 +10,9 @@ var moving = false
 var movement_x = Regular_value.new("birbx",0,0)
 var movement_y = Regular_value.new("birby",0,0)
 var movement_frames = 50
-var flee_frames = movement_frames / 2
+var flee_frames = movement_frames / 3
+var favorite_directions=[1]
+
 func _ready():
 	super()
 	nodeCollision = $CollisionShape2D
@@ -42,9 +44,9 @@ func process_addon(delta):
 	chose_behavior()
 
 func idle_behavior():
-	print("--------------------")
 	if not moving:
-		start_moving(calculate_movement_angle(2,100),speed,movement_frames)
+		var test = angle_by_cadran(1)
+		start_moving(calculate_movement_angle_RANDOM(120),speed,movement_frames)
 
 func attack_behavior():
 	switch_to_idle()
@@ -66,15 +68,7 @@ func find_behavior():
 
 func flee_behavior():
 	if not moving:
-		var direction_cadran = Vector2(into_sign(global_position.x - target_body.position.x) , into_sign(global_position.y - target_body.position.y)) 
-	
-		if abs(global_position.x - target_body.position.x) > abs(global_position.y - target_body.position.y):
-			direction_cadran.y = 0
-		else:
-			direction_cadran.x = 0
-		var banned_cadran = Vector2(into_sign(target_body.position.x - global_position.x  ) , into_sign(target_body.position.y - global_position.y  )) 
-		var movement_angle = calculate_movement_angle()
-		start_moving(movement_angle,speed,movement_frames)
+		start_moving(calculate_movement_angle_BY_TARGET(target_body.position,false,120),speed,flee_frames)
 
 func _on_vision_body_entered(body):
 	switch_to_flee()
@@ -112,6 +106,72 @@ func _on_hit(hitter = null):
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit",self)
 
+func calculate_movement_angle(wall_limit_range=0):
+	for i in favorite_directions:
+		var test_angle = angle_by_cadran(i)
+		if not is_wall_detected(test_angle,wall_limit_range):
+			var index_i = favorite_directions.find(i)
+			if index_i != len(favorite_directions)-1:
+				favorite_directions = remove_from_list_to_index(favorite_directions,index_i)
+			return test_angle
+	var cadran_list = [0,1,2,3]
+	var last_option = null
+	for i in favorite_directions:
+		cadran_list.erase(i)
+	cadran_list.shuffle()
+	if favorite_directions != []:
+		last_option=favorite_directions[0]
+		for i in cadran_list.duplicate():
+			var ordered_cadran_dict = {0:[1,3],1:[0,2],2:[1,3],3:[2,0]}
+			var number = favorite_directions.back()
+			if i in ordered_cadran_dict[number]:
+				cadran_list.insert(0,i)
+	for i in cadran_list:
+		if not is_wall_detected(i*PI/2,wall_limit_range):
+			favorite_directions.append(i)
+			return angle_by_cadran(i)
+		if cadran_list.find(i)==0 and last_option == null:
+			last_option = i
+	return angle_by_cadran(last_option)
+
+func calculate_movement_angle_RANDOM(wall_limit_range=0):
+	favorite_directions = []
+	return calculate_movement_angle(wall_limit_range)
+
+func calculate_movement_angle_BY_TARGET(target_position:Vector2,closing_in=true,wall_limit_range=0):
+	var direction_cadran
+	if not closing_in:
+		direction_cadran = Vector2(into_sign(global_position.x - target_position.x) , into_sign(global_position.y - target_position.y)) 
+	else:
+		direction_cadran = Vector2(into_sign(target_position.x - global_position.x) , into_sign(target_position.y - global_position.y)) 
+	if abs(global_position.x - target_body.position.x) > abs(global_position.y - target_body.position.y):
+		direction_cadran.y = 0
+	else:
+		direction_cadran.x = 0
+	var chosen_cadran = convert_vector_to_cadran(direction_cadran)
+	if chosen_cadran not in favorite_directions:
+		favorite_directions.pop_at(0)
+		favorite_directions.insert(0,chosen_cadran)
+	var tempo = calculate_movement_angle(wall_limit_range)
+	return tempo
+
+func remove_from_list_to_index(list,index):
+	var final_list = []
+	var i = 0
+	while i <= index:
+		final_list.append(list[i])
+		i+=1
+	return final_list
+
+func angle_by_cadran(cadran_number):
+	return cadran_number * PI/2 + rng.randf_range(-PI/6,PI/6)
+
+func is_wall_detected(chosen_angle,wall_limit_range):
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsRayQueryParameters2D.create(global_position, global_position+Vector2(cos(chosen_angle)*wall_limit_range,-sin(chosen_angle)*wall_limit_range))
+	var result = space_state.intersect_ray(query)
+	return result != {} and result["collider"] is TileMap
+			
 """
 func calculate_movement_angle(cadran_number=null,banned_cadrans=[],wall_detection=false,wall_limit_range=0):
 	var good_angle_found = false
@@ -138,12 +198,13 @@ func calculate_movement_angle(cadran_number=null,banned_cadrans=[],wall_detectio
 			good_angle_found = true
 	return tempo_angle
 """
+"""
 func calculate_movement_angle(cadran_number=null,wall_limit_range=0,wall_detection=true,banned_cadran=[]):
-	"""
+	
 	Calculate the angle of the bird movement at a random but can be oriented.
 	It uses a 4-sided-cadran to do so, going:
 	 0-rightish, 1-upish, 2-leftish, 3-downish, ish being that these are general directions, which are also randomised.
-	"""
+
 	if wall_detection == false and cadran_number != null:
 		return (cadran_number * PI/2 + rng.randf_range(-PI/4,PI/4))
 	else:
@@ -176,12 +237,12 @@ func calculate_movement_angle(cadran_number=null,wall_limit_range=0,wall_detecti
 			return angle_order_list[0]
 		else:
 			return tempo_angle
-	
+"""
 func start_moving(angle,movement_value,frame_data):
 	moving = true
 	movement_x = Regular_value.new("birbx",cos(angle)*movement_value,frame_data)
 	movement_x.start()
-	movement_y = Regular_value.new("birby",sin(angle)*movement_value,frame_data)
+	movement_y = Regular_value.new("birby",-sin(angle)*movement_value,frame_data)
 	movement_y.start()
 
 func not_on_floor_addon():

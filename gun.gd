@@ -3,6 +3,7 @@ var gun_centre_ecart=Vector2(10,15)
 var gun_scale=Vector2(0.8,0.8)
 var collision
 var user
+var blasting = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scale=gun_scale
@@ -16,14 +17,16 @@ func _process(delta):
 	pass
 
 func rotate_gun(point):
-	var angle=point.angle_to_point(get_global_mouse_position())
-	position=gun_centre_ecart*Vector2(cos(angle),sin(angle))
-	transform.x=Vector2(cos(angle),sin(angle))
-	transform.y=Vector2(-sin(angle),cos(angle))
-	scale=gun_scale
+	if not blasting:
+		var angle=point.angle_to_point(get_global_mouse_position())
+		position=gun_centre_ecart*Vector2(cos(angle),sin(angle))
+		transform.x=Vector2(cos(angle),sin(angle))
+		transform.y=Vector2(-sin(angle),cos(angle))
+		scale=gun_scale
 
 func blast():
 	#$blastArea/blastCollision.set_deferred("disabled",false)
+	blasting=true
 	$blast.visible=true
 	collision.disabled = false
 	$blastTimer.start()
@@ -35,6 +38,7 @@ func end_blast():
 	#$blastArea/blastCollision.set_deferred("disabled",true)
 	$blast.visible=false
 	collision.disabled = true
+	blasting=false
 
 func _on_body_entered(body):
 	if raycast_to_target(body):
