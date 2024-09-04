@@ -3,5 +3,5 @@ var spawn_point_list
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	spawn_point_list = [[$player_spawn,"player"]]
+	spawn_point_list = [[$player_spawn,"player"],[$bird_spawn,"bird"]]
 

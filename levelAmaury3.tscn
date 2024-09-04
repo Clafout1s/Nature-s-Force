@@ -16,3 +16,6 @@ position = Vector2(1429, 603)
 
 [node name="boar_spawn" type="Marker2D" parent="."]
 position = Vector2(557, 1064)
+
+[node name="bird_spawn" type="Marker2D" parent="."]
+position = Vector2(324, 411)
