@@ -177,11 +177,19 @@ func _on_hit(hitter=null,type="basic"):
 	hp-=1
 	
 func _on_death():
+
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
 	position = spawn_point
 	hp=1
 
+	#root_node.reset_level()
+	
+
 func dangerous_terrain_behavior(body):
 	body.emit_signal("hit")
+
+
+func _on_tree_exiting():
+	shotgun_cd_timer.stop()

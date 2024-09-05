@@ -22,7 +22,8 @@ func _process(delta):
 	#check_floor()
 	#check_wall()
 	if Input.is_action_just_pressed("return_menu"):
-		return_to_menu()
+		#return_to_menu()
+		reset_level()
 
 func return_to_menu():
 	add_child(main_menu)
@@ -69,4 +70,6 @@ func get_tile_from_tile_position(tile_position):
 	if actual_scene != null:
 		return actual_tilemap.get_cell_tile_data(0, tile_position)
 
-
+func reset_level():
+	delete_level_scene(actual_scene)
+	load_level_scene(actual_scene)

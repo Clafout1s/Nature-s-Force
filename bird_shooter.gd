@@ -227,3 +227,8 @@ func calculate_range(a:Vector2,b:Vector2):
 	Returns the direct range between two points in 2dimensions
 	"""
 	return sqrt( (b.x-a.x)**2 + (a.y-b.y)**2 )
+
+
+func _on_tree_exiting():
+	if bullet_instance != null:
+		bullet_instance.queue_free()
