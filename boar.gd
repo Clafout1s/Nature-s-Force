@@ -5,6 +5,7 @@ var target_in_vision
 var last_target_position
 var stunned = false
 var stun_recoil 
+var stun_attack_passed=false
 
 func _ready():
 	super()
@@ -16,7 +17,8 @@ func _ready():
 	speed = 200
 	shapeRotated = true
 	adaptShape()
-
+	hp = 3
+	
 func process_addon(delta):
 	super(delta)
 
@@ -84,10 +86,21 @@ func _on_vision_body_exited(body):
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
 	
-func _on_hit(hitter=null):
-	if not stunned:
+func _on_hit(hitter=null,type="basic"):
+	print(hitter)
+	if type == "blade":
+		hp-=1
 		
+		start_stun(hitter)
+		stun_attack_passed=true
+	else:
+		start_stun(hitter)
+	
+func start_stun(hitter):
+	if not stunned:
+			
 		stunned = true
+		stun_attack_passed=false
 		$stunTimer.start()
 		$damage_zone/CollisionShape2D.set_deferred("disabled",true)
 		switch_to_idle()

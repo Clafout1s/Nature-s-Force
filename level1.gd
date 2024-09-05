@@ -3,4 +3,4 @@ var spawn_point_list = []
 
 func _ready():
 	print(get_viewport_rect().size)
-	spawn_point_list = [[$player_spawn,"player"],[$bird_spawn,"bird"]]
+	spawn_point_list = [[$player_spawn,"player"],[$bird_spawn,"bird"],[$boar_spawn,"boar"]]

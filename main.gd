@@ -22,10 +22,13 @@ func _process(delta):
 	#check_floor()
 	#check_wall()
 	if Input.is_action_just_pressed("return_menu"):
-		add_child(main_menu)
-		delete_level_scene(actual_scene)
-		if has_node("bulletSlotsUI"):
-			remove_child($bulletSlotsUI)
+		return_to_menu()
+
+func return_to_menu():
+	add_child(main_menu)
+	delete_level_scene(actual_scene)
+	if has_node("bulletSlotsUI"):
+		remove_child($bulletSlotsUI)
 
 func switch(level_scene):
 	delete_level_scene(actual_scene)

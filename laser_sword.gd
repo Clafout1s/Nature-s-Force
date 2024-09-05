@@ -58,9 +58,9 @@ func _on_damage_zone_area_entered(area):
 func area_or_body_entered(node):
 	if user != null:
 		if raycast_to_target(node):
-			node.emit_signal("hit",user)
+			node.emit_signal("hit",user,"blade")
 	else:
-		node.emit_signal("hit",self)
+		node.emit_signal("hit",self,"blade")
 
 func raycast_to_target(target):
 	if target != null:

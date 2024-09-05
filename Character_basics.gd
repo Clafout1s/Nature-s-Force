@@ -10,11 +10,13 @@ var screen_size
 var tempoclamp
 var spawn_point = Vector2(0,0)
 signal hit(hitter)
+signal death
 var type = "ennemy"
 var direction = 0
 var character_class_instance
 var shapeCollision
 var shapeRotated = false
+var hp = 1
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
@@ -24,16 +26,22 @@ func _ready():
 	screen_size=get_viewport_rect().size
 	position = spawn_point
 	hit.connect(_on_hit)
+	death.connect(_on_death)
 	adaptShape()
 		
 
 func adaptShape():
 	if nodeCollision != null:
-		if shapeRotated:
-			shapeCollision = Vector2(nodeCollision.shape.height,nodeCollision.shape.radius)
-		else:
-			shapeCollision = Vector2(nodeCollision.shape.radius,nodeCollision.shape.height)
-
+		if nodeCollision.shape is CapsuleShape2D:
+			if shapeRotated:
+				shapeCollision = Vector2(nodeCollision.shape.height,nodeCollision.shape.radius)
+			else:
+				shapeCollision = Vector2(nodeCollision.shape.radius,nodeCollision.shape.height)
+		elif nodeCollision.shape is RectangleShape2D:
+			if shapeRotated:
+				shapeCollision = Vector2(nodeCollision.shape.size.y,nodeCollision.shape.size.x)
+			else:
+				shapeCollision = Vector2(nodeCollision.shape.size.x,nodeCollision.shape.size.y)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
@@ -56,13 +64,18 @@ func _physics_process(delta):
 		
 	move_and_slide()
 	velocity = Vector2(0,0)
+	if hp <= 0:
+		emit_signal("death")
 
 func tempoclamp_addon_x():
 	pass
 func tempoclamp_addon_y():
 	pass
-func _on_hit(hitter=null):
-	pass
+func _on_hit(hitter=null,type="basic"):
+	hp-=1
+
+func _on_death():
+	queue_free()
 
 func process_addon(delta):
 	exp_gravity += gravity*delta

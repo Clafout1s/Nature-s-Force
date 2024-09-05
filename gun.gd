@@ -1,5 +1,5 @@
 extends Area2D
-var gun_centre_ecart=Vector2(10,15)
+var gun_centre_ecart=Vector2(15,17)
 var gun_scale=Vector2(0.8,0.8)
 var collision
 var user

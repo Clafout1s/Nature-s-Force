@@ -32,6 +32,8 @@ func _init(nid,ntype,nroot):
 		"bird":
 			scene = preload("res://bird_shooter.tscn").instantiate()
 			scene.character_class_instance = self
+		"flag":
+			scene = preload("res://win_flag.tscn").instantiate()
 		_:
 			assert(false, "wrong type of character")
 func add_character():

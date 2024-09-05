@@ -3,6 +3,7 @@ extends Control
 var root_node
 var level1 = preload("res://level1.tscn").instantiate()
 var level2 = preload("res://level2.tscn").instantiate()
+var level4 = preload("res://level4.tscn").instantiate()
 var levelAmaury1 = preload("res://levelAmaury1.tscn").instantiate()
 var levelAmaury2 = preload("res://levelAmaury2.tscn").instantiate()
 var levelAmaury3 = preload("res://levelAmaury3.tscn").instantiate()
@@ -26,4 +27,10 @@ func _on_level_1_pressed():
 
 func _on_level_am_3_pressed():
 	root_node.load_level_scene(levelAmaury3)
+	root_node.remove_child(self)
+
+
+
+func _on_level_4_pressed():
+	root_node.load_level_scene(level4)
 	root_node.remove_child(self)

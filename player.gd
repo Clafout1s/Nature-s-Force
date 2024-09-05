@@ -8,8 +8,8 @@ var just_jumping = false
 var is_jumping=false
 var shotgun_value = 7000
 var shotgun_angle=0
-var shotgun_burst_frames=4
-var shotgun_deceleration_frames=20
+var shotgun_burst_frames=5
+var shotgun_deceleration_frames=25
 var shotgun_cd_timer
 var shotgun_slots_init = 2
 var shotgun_slots
@@ -35,6 +35,7 @@ func _ready():
 	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
 	add_child(sword_instance)
 	nodeCollision = $CollisionShape2D
+	nodeSprite = $mainCharac
 	adaptShape()
 	
 	
@@ -90,8 +91,12 @@ func process_addon(delta):
 			is_jumping = false
 		velocity.y+=jump_velocity
 	
-	if direction == 0 or not has_same_sign(direction,velocity.x):
-		direction = into_sign(velocity.x)
+	if not has_same_sign(direction,nodeSprite.scale.x) and direction != 0:
+		swap()
+
+func swap():
+	nodeSprite.scale.x *= -1
+	nodeCollision.scale.x *= -1
 
 func on_floor_addon():
 	exp_gravity = 0
@@ -168,11 +173,15 @@ func reset_shotgun_slots():
 		shotgun_slots_UI.switch_to_plain_shell()
 	shotgun_slots = shotgun_slots_init
 	
-func _on_hit(hitter=null):
+func _on_hit(hitter=null,type="basic"):
+	hp-=1
+	
+func _on_death():
 	shotgun_instance_x.global_end()
 	shotgun_instance_y.global_end()
 	velocity=Vector2(0,0)
 	position = spawn_point
+	hp=1
 
 func dangerous_terrain_behavior(body):
 	body.emit_signal("hit")

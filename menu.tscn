@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bbovxyc4heoxd"]
+[gd_scene load_steps=7 format=3 uid="uid://bbovxyc4heoxd"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_qjxoi"]
 [ext_resource type="Texture2D" uid="uid://dvc42lek4bapx" path="res://sprites/level_pictures/level2.png" id="2_njya5"]
 [ext_resource type="Texture2D" uid="uid://c7w4jp02nshwp" path="res://sprites/level_pictures/level1.png" id="3_avoon"]
+[ext_resource type="Texture2D" uid="uid://gv6axsm50qgr" path="res://sprites/shellEmpty.png" id="4_edogj"]
 
 [sub_resource type="Gradient" id="Gradient_mnyhr"]
 
@@ -25,7 +26,7 @@ offset_bottom = 1082.0
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 layout_mode = 2
-columns = 2
+columns = 3
 
 [node name="level1" type="TextureButton" parent="MarginContainer/GridContainer"]
 layout_mode = 2
@@ -50,6 +51,15 @@ size_flags_vertical = 3
 texture_normal = SubResource("GradientTexture2D_8cean")
 stretch_mode = 5
 
+[node name="level4" type="TextureButton" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("4_edogj")
+ignore_texture_size = true
+stretch_mode = 5
+
 [connection signal="pressed" from="MarginContainer/GridContainer/level1" to="." method="_on_level_1_pressed"]
 [connection signal="pressed" from="MarginContainer/GridContainer/level2" to="." method="_on_level_2_pressed"]
 [connection signal="pressed" from="MarginContainer/GridContainer/levelAM3" to="." method="_on_level_am_3_pressed"]
+[connection signal="pressed" from="MarginContainer/GridContainer/level4" to="." method="_on_level_4_pressed"]

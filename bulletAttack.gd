@@ -2,7 +2,7 @@ extends Area2D
 
 signal hit
 var distance_speed = 1500
-var frame_speed = 200
+var frame_speed = 400
 var angle = 180
 var bullet_scale = Vector2(0.5,0.5)
 signal hit_something
@@ -12,6 +12,7 @@ var bullet_movement_y
 var root_node
 var shooting = false
 var body_black_list = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	global_position = Vector2( 1000,500)
@@ -33,8 +34,8 @@ func _process(delta):
 func launch():
 	end_bullet(true)
 	$Sprite2D.visible = true
-	$Sprite2D.global_rotation = angle+3.14
-	$CollisionShape2D.global_rotation = angle+3.14
+	$Sprite2D.global_rotation = angle + 3.14
+	$CollisionShape2D.global_rotation = angle  + 1.7
 	$CollisionShape2D.set_deferred("disabled",false)
 	bullet_movement_x = Regular_value.new("bullet",distance_speed * float(cos(angle)),frame_speed)
 	bullet_movement_y = Regular_value.new("bullet",distance_speed * float(sin(angle)),frame_speed)
@@ -63,8 +64,9 @@ func add_to_black_list(body):
 func _on_hit_something(body):
 	pass
 	
-func _on_hit(body = null):
-	end_bullet()
+func _on_hit(body = null,type="basic"):
+	if type == "blade":
+		end_bullet()
 
 func _on_ending_bullet():
 	pass # Replace with function body.

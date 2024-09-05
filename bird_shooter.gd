@@ -27,7 +27,7 @@ func _ready():
 func analyse_and_switch():
 	if moving == true and not movement_x.activated and not movement_y.activated:
 		moving = false
-	if state != "flee" and target_body!= null and calculate_range(global_position,target_body.global_position)<=flee_start_range:
+	if state != "flee" and target_body!= null and raycast_to_target() and calculate_range(global_position,target_body.global_position)<=flee_start_range:
 		switch_to_flee()
 	if state == "idle":
 		if raycast_to_target():
@@ -100,7 +100,7 @@ func _on_hit_something(body):
 func _on_reload_timer_timeout():
 	reloading = false
 
-func _on_hit(hitter = null):
+func _on_hit(hitter = null,type="basic"):
 	stunned = true
 	queue_free()
 

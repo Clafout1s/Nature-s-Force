@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dlux5nbghwajw"]
 
 [ext_resource type="Script" path="res://boar.gd" id="1_dvn30"]
-[ext_resource type="Texture2D" uid="uid://do5ilqapu2xr7" path="res://sprites/boar.png" id="2_vbvcc"]
+[ext_resource type="Texture2D" uid="uid://hyii0ed6wg24" path="res://sprites/boarv2.png" id="2_cgyvl"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kfchw"]
 radius = 20.6667
@@ -27,7 +27,7 @@ shape = SubResource("CapsuleShape2D_kfchw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -8)
-texture = ExtResource("2_vbvcc")
+texture = ExtResource("2_cgyvl")
 flip_h = true
 
 [node name="vision" type="Area2D" parent="."]
