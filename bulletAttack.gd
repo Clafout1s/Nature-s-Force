@@ -12,6 +12,7 @@ var bullet_movement_y
 var root_node
 var shooting = false
 var body_black_list = []
+var already_exists = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,13 +26,16 @@ func _ready():
 	$CollisionShape2D.disabled = true
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	var movement_update = Vector2(bullet_movement_x.return_value(),bullet_movement_y.return_value())
 	global_position += movement_update
 	if shooting == true and Vector2(bullet_movement_x.return_value(), bullet_movement_y.return_value()) == Vector2(0,0):
 		end_bullet()
 	
+
 func launch():
+	if not already_exists:
+		already_exists = true
 	end_bullet(true)
 	$Sprite2D.visible = true
 	$Sprite2D.global_rotation = angle + 3.14
@@ -61,10 +65,10 @@ func add_to_black_list(body):
 	if body not in body_black_list:
 		body_black_list.append(body)
 
-func _on_hit_something(body):
+func _on_hit_something(_body):
 	pass
 	
-func _on_hit(body = null,type="basic"):
+func _on_hit(_body = null,type="basic"):
 	if type == "blade":
 		end_bullet()
 

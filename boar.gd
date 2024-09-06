@@ -79,16 +79,16 @@ func _on_vision_body_entered(body):
 	target_body = body
 	target_in_vision = true
 
-func _on_vision_body_exited(body):
+func _on_vision_body_exited(_body):
 	target_in_vision = false
 	
 
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
 	
-func _on_hit(hitter=null,type="basic"):
+func _on_hit(hitter=null,damage_type="basic"):
 	print(hitter)
-	if type == "blade":
+	if damage_type == "blade":
 		hp-=1
 		
 		start_stun(hitter)

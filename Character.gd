@@ -46,11 +46,9 @@ func add_character():
 	
 func remove_character():
 	root.remove_child(scene)
+	scene.queue_free()
 	placed = false
 	remove_from_list(stock_list)
-	if type == "boar":
-		remove_from_list(root.need_floor_detection_list)
-		remove_from_list(root.need_wall_detection_list)
 
 func remove_from_list(list):
 	for i in range(len(list)):

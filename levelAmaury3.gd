@@ -6,6 +6,4 @@ func _ready():
 	spawn_point_list=[[$player_spawn,"player"],[$boar_spawn,"boar"]]
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+

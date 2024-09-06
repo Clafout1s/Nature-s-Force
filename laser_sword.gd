@@ -16,7 +16,7 @@ func _ready():
 	disable_blade()
 	rotate_sword(0)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	if slashing:
 		frame_count -= 1
 		if frame_count <=0:

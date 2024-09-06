@@ -11,19 +11,14 @@ var actual_scene
 var actual_tilemap
 var effects_list = ["dangerous"]
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	add_child(main_menu)
-	#load_level_scene(main_menu.levelAmaury3)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	#check_floor()
-	#check_wall()
+func _process(_delta):
 	if Input.is_action_just_pressed("return_menu"):
-		#return_to_menu()
-		reset_level()
+		return_to_menu()
+		#reset_level()
 
 func return_to_menu():
 	add_child(main_menu)

@@ -13,7 +13,7 @@ func _ready():
 	#$blastArea/blastCollision.set_deferred("disabled",true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func rotate_gun(point):
@@ -29,7 +29,7 @@ func blast():
 	blasting=true
 	$blast.visible=true
 	collision.disabled = false
-	$blastTimer.start()
+	#$blastTimer.start()
 
 func _on_blast_timer_timeout():
 	end_blast()

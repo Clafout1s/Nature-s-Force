@@ -41,7 +41,7 @@ func analyse_and_switch():
 		if calculate_range(global_position,target_body.global_position) > flee_start_range:
 			switch_to_idle()
 
-func process_addon(delta):
+func process_addon(_delta):
 	velocity.x = movement_x.return_value()
 	velocity.y = movement_y.return_value()
 	analyse_and_switch()
@@ -75,19 +75,22 @@ func _on_vision_body_entered(body):
 	target_body = body
 	target_in_sight = true
 
-func _on_vision_body_exited(body):
+func _on_vision_body_exited(_body):
 	target_in_sight = false
 	switch_to_idle()
 
 func shoot(target):
 	"Creates a bullet that goes to the target"
-	root_node.add_child(bullet_instance)
+	if not bullet_instance.already_exists:
+		root_node.add_child(bullet_instance)
+		bullet_instance.hit_something.connect(_on_hit_something)
+		bullet_instance.ending_bullet.connect(_on_bullet_end)
+		bullet_instance.add_to_black_list(self)
+	
 	bullet_instance.global_position = global_position + Vector2(shapeCollision.x * direction,0)
 	bullet_instance.angle = global_position.angle_to_point(target.global_position)
-	bullet_instance.add_to_black_list(self)
 	bullet_instance.launch()
-	bullet_instance.hit_something.connect(_on_hit_something)
-	bullet_instance.ending_bullet.connect(_on_bullet_end)
+	
 
 func _on_bullet_end():
 	reloading = true
@@ -100,7 +103,7 @@ func _on_hit_something(body):
 func _on_reload_timer_timeout():
 	reloading = false
 
-func _on_hit(hitter = null,type="basic"):
+func _on_hit(_hitter = null,_damage_type="basic"):
 	stunned = true
 	queue_free()
 
@@ -196,7 +199,7 @@ func is_wall_detected(chosen_angle,wall_limit_range):
 	"""
 	Returns true if a wall is detected in range (wall_limit_range)
 	"""
-	var space_state = get_world_2d().direct_space_state
+	space_state = get_world_2d().direct_space_state
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position+Vector2(cos(chosen_angle)*wall_limit_range,-sin(chosen_angle)*wall_limit_range))
 	var result = space_state.intersect_ray(query)
 	return result != {} and result["collider"] is TileMap

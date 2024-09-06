@@ -26,7 +26,7 @@ func _ready():
 	set_floor_constant_speed_enabled(true)
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)
-	$gun/blastTimer.wait_time=shotgun_burst_frames/60
+	$gun/blastTimer.wait_time=shotgun_burst_frames/float(60)
 	$gun.user = self
 	shotgun_cd_timer = $ShotgunCd
 	type = "player"
@@ -37,19 +37,21 @@ func _ready():
 	nodeCollision = $CollisionShape2D
 	nodeSprite = $mainCharac
 	adaptShape()
-	
+	print(shotgun_instance_x.just_finished)
+	shotgun_instance_x.just_finished.connect(end_shotgun_blast)
+	shotgun_instance_y.just_finished.connect(end_shotgun_blast)
 	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
-			shotgun_instance_x.global_end()
+			end_shotgun_blast(true,false)
 func tempoclamp_addon_y():
 	if shotgun_instance_y.activated:
-			shotgun_instance_y.global_end()
+			end_shotgun_blast(false,true)
 	if is_jumping:
 		is_jumping = false
 
 func process_addon(delta):
-	detect_terrain_effect(position,shapeCollision,self)
+	detect_terrain_effect(self)
 	if just_jumping:
 		just_jumping = false
 	direction = Input.get_axis("left", "right")
@@ -62,10 +64,10 @@ func process_addon(delta):
 	
 	if shotgun_instance_x.activated:
 		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
-			shotgun_instance_x.global_end()
+			end_shotgun_blast(true,false)
 	if shotgun_instance_y.activated:
 		if has_same_sign(raycastCollisions().y,shotgun_instance_y.value_init) and raycastCollisions().y != 0:
-			shotgun_instance_y.global_end()
+			end_shotgun_blast(false,true)
 	
 	if not shotgun_instance_x.bursting or not shotgun_instance_y.bursting:
 		exp_gravity+=gravity * delta
@@ -173,20 +175,23 @@ func reset_shotgun_slots():
 		shotgun_slots_UI.switch_to_plain_shell()
 	shotgun_slots = shotgun_slots_init
 	
-func _on_hit(hitter=null,type="basic"):
-	hp-=1
-	
 func _on_death():
-
-	shotgun_instance_x.global_end()
-	shotgun_instance_y.global_end()
+	"""
+	end_shotgun_blast(true,true)
 	velocity=Vector2(0,0)
 	position = spawn_point
 	hp=1
-
-	#root_node.reset_level()
+	"""
+	root_node.reset_level()
 	
-
+func end_shotgun_blast(x=false,y=false):
+	print("ending shot")
+	$gun.end_blast()
+	if x:
+		shotgun_instance_x.global_end()
+	if y:
+		shotgun_instance_y.global_end()
+	
 func dangerous_terrain_behavior(body):
 	body.emit_signal("hit")
 

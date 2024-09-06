@@ -43,7 +43,7 @@ func adaptShape():
 			else:
 				shapeCollision = Vector2(nodeCollision.shape.size.x,nodeCollision.shape.size.y)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _physics_process(_delta):
 	tempoclamp=Vector2(clamp(position.x,0,screen_size.x),clamp(position.y,0,screen_size.y))
 	if position.x != tempoclamp.x:
 		position.x=tempoclamp.x
@@ -55,7 +55,7 @@ func _physics_process(delta):
 			position.y = tempoclamp.y
 		tempoclamp_addon_y()
 	
-	process_addon(delta)
+	process_addon(_delta)
 	
 	if is_on_floor():
 		on_floor_addon()
@@ -71,7 +71,7 @@ func tempoclamp_addon_x():
 	pass
 func tempoclamp_addon_y():
 	pass
-func _on_hit(hitter=null,type="basic"):
+func _on_hit(_hitter=null,_type="basic"):
 	hp-=1
 
 func _on_death():
@@ -131,7 +131,7 @@ func no_ground_detection(bodyPosition,bodyShape):
 		return false
 
 
-func detect_terrain_effect(bodyPosition,bodyShape,body):
+func detect_terrain_effect(body):
 	
 	for i in body.get_slide_collision_count():
 		if body.get_slide_collision(i).get_collider() is TileMap:
@@ -143,6 +143,6 @@ func detect_terrain_effect(bodyPosition,bodyShape,body):
 				if tile.get_custom_data("dangerous"):
 					dangerous_terrain_behavior(body)
 
-func dangerous_terrain_behavior(body):
+func dangerous_terrain_behavior(_body):
 	pass
 	

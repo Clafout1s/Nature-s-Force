@@ -6,10 +6,5 @@ func _ready():
 	root_node = get_tree().root.get_child(0)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _on_area_2d_body_entered(body):
+func _on_area_2d_body_entered(_body):
 	root_node.return_to_menu()

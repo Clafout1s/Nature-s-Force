@@ -11,10 +11,11 @@ var value_counter = -1
 var activated = false
 var bursting = false
 var decelerating = false
-var just_finished=false
+#var just_finished=false
 var has_deceleration
 var followup
 var origin
+signal just_finished
 
 func _init(nid,nvalue_init,nnb_frames,nhas_deceleration=false,nnb_frames_deceleration=0,nvalue_deceleration=nvalue_init):
 	id=nid
@@ -31,7 +32,6 @@ func start():
 	activated = true
 	bursting=true
 	decelerating=false
-	just_finished=false
 	value = value_init/nb_frames
 	value_counter = 0
 
@@ -41,10 +41,10 @@ func end():
 	if has_deceleration:
 		start_deceleration()
 	else:
-		just_finished=true
 		activated = false
 		reset_values()
 		switch_to_followup()
+		emit_signal("just_finished")
 
 func return_value():
 	if activated and bursting:
@@ -54,15 +54,12 @@ func return_value():
 			return 0
 		return value
 	elif activated and decelerating:
-		if just_finished:
-			just_finished = false
 		value_counter=move_toward(value_counter,0,abs(value))
 		if value_counter == 0:
 			end_deceleration()
 			return 0
 		return value_counter
 	else:
-		just_finished=true
 		return 0
 	
 func start_deceleration():
@@ -77,19 +74,14 @@ func start_deceleration():
 func end_deceleration():
 	decelerating = false
 	activated = false
-	just_finished=true
 	reset_values()
+	emit_signal("just_finished")
+	print("END OF SHOT")
 	
 func reset_values():
 	value=-1
 	value_counter=-1
 
-func has_just_finished():
-	if just_finished:
-		just_finished=false
-		return true
-	else:
-		return just_finished 
 """
 func change_values(nvalue_init,ntps=null,ndtps=null):
 	if not activated or just_finished:
@@ -132,7 +124,6 @@ func unpack_attributes(pack):
 	
 	activated=false
 	decelerating=false
-	just_finished=false
 	reset_values()
 
 func global_end():
