@@ -15,7 +15,7 @@ layer_0/tile_data = PackedInt32Array(4063248, 196609, 1, 4128784, 196609, 1, 419
 position = Vector2(438, 938)
 
 [node name="boar_spawn" type="Marker2D" parent="."]
-position = Vector2(1717, 337)
+position = Vector2(922, 942)
 
 [node name="bird_spawn" type="Marker2D" parent="."]
-position = Vector2(1110, 387)
+position = Vector2(1871, 423)

@@ -4,22 +4,22 @@
 [ext_resource type="Texture2D" uid="uid://bilowro5wtsx4" path="res://sprites/flybird.png" id="2_r83gt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cfk10"]
-size = Vector2(26, 20)
+size = Vector2(38, 29)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ymbba"]
-size = Vector2(22, 27.9999)
+size = Vector2(31.9999, 41)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1s2op"]
 radius = 707.554
 
 [node name="Character_basics" type="CharacterBody2D"]
-scale = Vector2(-1, 1)
+scale = Vector2(-1.5, 1.5)
 collision_layer = 2
 collision_mask = 17
 script = ExtResource("1_56wbc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, -1)
+position = Vector2(3, -4)
 shape = SubResource("RectangleShape2D_cfk10")
 debug_color = Color(0.992157, 0, 0.243137, 0.419608)
 
@@ -29,13 +29,12 @@ collision_layer = 8
 collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="damage_zone"]
-position = Vector2(-0.999951, -0.999995)
+position = Vector2(-3.00005, -2.50005)
 shape = SubResource("RectangleShape2D_ymbba")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
 position = Vector2(1, 5)
-scale = Vector2(0.7, 0.7)
 texture = ExtResource("2_r83gt")
 
 [node name="vision" type="Area2D" parent="."]

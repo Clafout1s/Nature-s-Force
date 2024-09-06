@@ -24,18 +24,18 @@ func rotate_gun(point):
 		transform.y=Vector2(-sin(angle),cos(angle))
 		scale=gun_scale
 
-func blast():
-	#$blastArea/blastCollision.set_deferred("disabled",false)
+func blast(point=null):
+	if not point == null:
+		rotate_gun(point)
 	blasting=true
 	$blast.visible=true
 	collision.disabled = false
-	#$blastTimer.start()
+	$blastTimer.start()
 
 func _on_blast_timer_timeout():
 	end_blast()
 
 func end_blast():
-	#$blastArea/blastCollision.set_deferred("disabled",true)
 	$blast.visible=false
 	collision.disabled = true
 	blasting=false

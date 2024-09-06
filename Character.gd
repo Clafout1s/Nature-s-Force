@@ -45,8 +45,10 @@ func add_character():
 		root.need_wall_detection_list.append([self,"boar_wall"])
 	
 func remove_character():
-	root.remove_child(scene)
-	scene.queue_free()
+	if is_instance_valid(scene):
+		scene.queue_free()
+		root.remove_child(scene)
+		
 	placed = false
 	remove_from_list(stock_list)
 

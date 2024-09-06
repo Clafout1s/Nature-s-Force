@@ -8,6 +8,7 @@ var sprite
 var slashing = false
 var frame_count = slash_frames
 var user
+var cooldown = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scale = sword_scale
@@ -30,13 +31,16 @@ func rotate_sword(angle):
 	scale=sword_scale
 
 func start_slash(point):
-	var angle=point.angle_to_point(get_global_mouse_position())
-	rotate_sword(angle)
-	unable_blade()
+	if not cooldown:
+		var angle=point.angle_to_point(get_global_mouse_position())
+		rotate_sword(angle)
+		unable_blade()
+		$cd.start()
 	
 
 func end_slash():
 	disable_blade()
+	cooldown = true
 
 func disable_blade():
 	sprite.visible = false
@@ -70,4 +74,5 @@ func raycast_to_target(target):
 			return true
 	return false
 
-
+func _on_cd_timeout():
+	cooldown = false

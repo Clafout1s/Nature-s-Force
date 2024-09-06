@@ -4,7 +4,7 @@ signal hit
 var distance_speed = 1500
 var frame_speed = 400
 var angle = 180
-var bullet_scale = Vector2(0.5,0.5)
+var bullet_scale = Vector2(0.4,0.4)
 signal hit_something
 signal ending_bullet
 var bullet_movement_x

@@ -26,7 +26,7 @@ func _ready():
 	set_floor_constant_speed_enabled(true)
 	set_floor_snap_length(10)
 	set_floor_max_angle(0.9)
-	$gun/blastTimer.wait_time=shotgun_burst_frames/float(60)
+	$gun/blastTimer.wait_time=2*shotgun_burst_frames/float(60)
 	$gun.user = self
 	shotgun_cd_timer = $ShotgunCd
 	type = "player"
@@ -37,9 +37,8 @@ func _ready():
 	nodeCollision = $CollisionShape2D
 	nodeSprite = $mainCharac
 	adaptShape()
-	print(shotgun_instance_x.just_finished)
-	shotgun_instance_x.just_finished.connect(end_shotgun_blast)
-	shotgun_instance_y.just_finished.connect(end_shotgun_blast)
+	#shotgun_instance_x.just_finished.connect(end_shotgun_natural)
+	#shotgun_instance_y.just_finished.connect(end_shotgun_natural)
 	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -95,7 +94,9 @@ func process_addon(delta):
 	
 	if not has_same_sign(direction,nodeSprite.scale.x) and direction != 0:
 		swap()
-
+	if shotgun_instance_x.just_finished or shotgun_instance_y.just_finished:
+		end_shotgun_blast(false,false,true)
+	
 func swap():
 	nodeSprite.scale.x *= -1
 	nodeCollision.scale.x *= -1
@@ -111,7 +112,8 @@ func not_on_floor_addon():
 	pass
 func shotgun_dash():
 	if Input.is_action_just_pressed("action1") and not is_shotgun_on_cd() and not shotgun_slots <= 0:
-		$gun.blast()
+		$gun.end_blast()
+		$gun.blast(position)
 		shotgun_slots-=1
 		shotgun_slots_UI.switch_to_empty_shell()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
@@ -183,10 +185,15 @@ func _on_death():
 	hp=1
 	"""
 	root_node.reset_level()
-	
-func end_shotgun_blast(x=false,y=false):
+
+func end_shotgun_natural():
 	print("ending shot")
-	$gun.end_blast()
+	end_shotgun_blast()
+
+func end_shotgun_blast(x=false,y=false,end_blast=false):
+	if end_blast:
+		pass
+		#$gun.end_blast()
 	if x:
 		shotgun_instance_x.global_end()
 	if y:

@@ -11,20 +11,20 @@ collision_mask = 10
 script = ExtResource("1_ff1e0")
 
 [node name="blastCollision" type="CollisionPolygon2D" parent="."]
-position = Vector2(-8, -1)
-scale = Vector2(1.41477, 1.09043)
-polygon = PackedVector2Array(15.5502, -2.75121, 65.7351, -13.756, 65.7351, 11.9219)
+position = Vector2(-7.88725, -1)
+scale = Vector2(1.18686, 1.09043)
+polygon = PackedVector2Array(17.5987, -2.75121, 65.6245, -15.5902, 65.6245, 13.756)
 
 [node name="gun" type="Sprite2D" parent="."]
 texture = ExtResource("2_evgh5")
 
 [node name="blast" type="Sprite2D" parent="."]
-position = Vector2(35.625, 0)
-scale = Vector2(1.66797, 0.992187)
+position = Vector2(32, 0)
+scale = Vector2(1.30859, 0.992187)
 texture = ExtResource("3_ji5gw")
 
 [node name="blastTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.5
 one_shot = true
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
