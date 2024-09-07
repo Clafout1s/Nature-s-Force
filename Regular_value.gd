@@ -4,10 +4,14 @@ class_name Regular_value
 var id
 var value_init
 var nb_frames
-var value_deceleration
-var nb_frames_deceleration
+var deceleration_movement_value
+var deceleration_frames
+var deceleration_value
 var value = -1
 var value_counter = -1
+var frame_counter = -1
+var second_frame_counter
+var step
 var activated = false
 var bursting = false
 var decelerating = false
@@ -15,17 +19,27 @@ var just_finished=false
 var has_deceleration
 var followup
 var origin
+var deceleration_direction
+var test = 0
 #signal just_finished
 
-func _init(nid,nvalue_init,nnb_frames,nhas_deceleration=false,nnb_frames_deceleration=0,nvalue_deceleration=nvalue_init):
+func _init(nid,nvalue_init,nnb_frames,nhas_deceleration=false,ndeceleration_movement_value=null,ndeceleration_frames=1, ndeceleration_value=null):
 	id=nid
 	value_init=nvalue_init
 	nb_frames=nnb_frames
 	has_deceleration=nhas_deceleration
-	value_deceleration = nvalue_deceleration
-	nb_frames_deceleration=nnb_frames_deceleration
-	#just_finished.connect(test_just_finished)
-	self.add_origin(self.pack_attributes(self))
+	if ndeceleration_movement_value == null:
+		
+		deceleration_movement_value = 0
+	else:
+		deceleration_movement_value = ndeceleration_movement_value
+	deceleration_frames=ndeceleration_frames
+	deceleration_direction = into_sign(deceleration_movement_value)
+	if ndeceleration_value == null:
+		deceleration_value = deceleration_movement_value / float(deceleration_frames) 
+	else: 
+		deceleration_value = ndeceleration_value
+	#self.add_origin(self.pack_attributes(self))
 		
 func start():
 	reset_values()
@@ -43,7 +57,7 @@ func end():
 	else:
 		activated = false
 		reset_values()
-		switch_to_followup()
+		#switch_to_followup()
 		just_finished = true
 		#emit_signal("just_finished")
 
@@ -55,11 +69,21 @@ func return_value():
 			return 0
 		return value
 	elif activated and decelerating:
-		value_counter=move_toward(value_counter,0,abs(value))
-		if value_counter == 0:
+		"""
+		var tempoplus = value / (2**frame_counter)
+		var tempominus = value / (2**( (deceleration_frames-1)-frame_counter )) 
+		value_counter = value + tempoplus - tempominus
+		frame_counter+=1
+		"""
+		var tempo = value_counter + value * second_frame_counter
+		second_frame_counter -= step
+		frame_counter+=1
+		if id == "shotgun_x":
+			print(id," calcul ",tempo," value ",value * second_frame_counter)
+		if frame_counter >= deceleration_frames:
 			end_deceleration()
 			return 0
-		return value_counter
+		return tempo
 	else:
 		return 0
 	
@@ -69,21 +93,78 @@ func start_deceleration():
 		activated=true
 		bursting=false
 		decelerating = true
-		value_counter =  value_deceleration / nb_frames
-		value = value_deceleration / nb_frames/ nb_frames_deceleration
-
+		
+		value_counter = deceleration_movement_value / deceleration_frames
+		
+		if deceleration_frames % 2 == 0:
+			step = 2
+			second_frame_counter = deceleration_frames-1
+			value = value_counter / deceleration_frames
+		else:
+			step = 1
+			second_frame_counter = deceleration_frames / int(2)
+			value = value_counter / (deceleration_frames/int(2))
+			
+		frame_counter = 0
+		"""
+		frame_counter = 0
+		value_counter = 0
+		value = deceleration_movement_value / deceleration_frames
+		"""
+		
+		if id == "shotgun_x":
+			print("depart ",deceleration_movement_value," ",value_counter," ",value)
+		
+		#deceleration_direction = into_sign(value_counter)
+		
 func end_deceleration():
 	decelerating = false
 	activated = false
 	reset_values()
 	#emit_signal("just_finished")
 	just_finished = true
+	if id == "shotgun_x":
+		print(test)
 	
 func reset_values():
 	value=-1
 	value_counter=-1
+	frame_counter = -1
 	just_finished = false
 
+func global_end():
+	if self.bursting:
+		self.end()
+	elif self.decelerating:
+		self.end_deceleration()
+
+func has_same_sign(f1:float,f2:float):
+	return f1<0 and f2<0 or f1>0 and f2>0
+
+func into_sign(f1:float):
+	f1 = int(f1)
+	if f1<0:
+		return -1
+	elif f1>0:
+		return 1
+	else:
+		return 0
+
+func sum_from_num_to_one(num:int):
+	assert(num>0,"num must be bigger than 0")
+	var final_result = 0
+	while num > 0:
+		final_result+=num
+		num-=1
+	return final_result
+
+func calculate_starting_deceleration_value(movement,frames,value):
+	#assert( abs(value) <= abs(movement/float(frames)), "Value doit être plus petit")
+	var starting_value = movement + (value * ((frames +1 ) * frames)/2)
+	starting_value = starting_value / frames
+	if id == "shotgun_x":
+		print(id," big first value: ",deceleration_movement_value," frames ",deceleration_frames," starting value: ",starting_value)
+	return starting_value
 """
 func change_values(nvalue_init,ntps=null,ndtps=null):
 	if not activated or just_finished:
@@ -94,7 +175,7 @@ func change_values(nvalue_init,ntps=null,ndtps=null):
 		if ndtps != null:
 			dtps = ndtps
 			dtpf = dtps * 60
-"""
+
 func add_followup(pack):
 	if followup == null:
 		followup=pack
@@ -127,12 +208,5 @@ func unpack_attributes(pack):
 	activated=false
 	decelerating=false
 	reset_values()
+"""
 
-func global_end():
-	if self.bursting:
-		self.end()
-	elif self.decelerating:
-		self.end_deceleration()
-
-func test_just_finished():
-	print("just finished")

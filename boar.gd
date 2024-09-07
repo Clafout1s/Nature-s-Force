@@ -87,7 +87,6 @@ func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
 	
 func _on_hit(hitter=null,damage_type="basic"):
-	print(hitter)
 	if damage_type == "blade":
 		hp-=1
 		
@@ -105,10 +104,10 @@ func start_stun(hitter):
 		$damage_zone/CollisionShape2D.set_deferred("disabled",true)
 		switch_to_idle()
 		if hitter == null:
-			stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,10)
+			stun_recoil = Regular_value.new("boar recoil",-direction * 4000,5,true,400*-direction,10)
 		else:
 			var dir = into_sign(position.x - hitter.global_position.x)
-			stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,10)
+			stun_recoil = Regular_value.new("boar recoil",dir * 4000,5,true,400*dir,10)
 		stun_recoil.start()
 
 func _on_stun_timer_timeout():

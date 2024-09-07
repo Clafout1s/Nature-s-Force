@@ -9,14 +9,15 @@ var is_jumping=false
 var shotgun_value = 7000
 var shotgun_angle=0
 var shotgun_burst_frames=5
-var shotgun_deceleration_frames=25
+var shotgun_deceleration_movement = 15000
+var shotgun_deceleration_frames=20
 var shotgun_cd_timer
 var shotgun_slots_init = 2
 var shotgun_slots
 var shotgun_slots_UI
 var shotgun_slots_UI_instance = preload("res://bulletSlotsUI.tscn").instantiate()
-var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
-var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
+var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*direction,shotgun_deceleration_frames)
+var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*direction,shotgun_deceleration_frames)
 var sword_instance = preload("res://laser_sword.tscn").instantiate()
 
 
@@ -117,8 +118,8 @@ func shotgun_dash():
 		shotgun_slots-=1
 		shotgun_slots_UI.switch_to_empty_shell()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
-		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
-		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_frames)
+		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*-cos(shotgun_angle),shotgun_deceleration_frames)
+		shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*-sin(shotgun_angle),shotgun_deceleration_frames)
 		shotgun_instance_x.start()
 		shotgun_instance_y.start()
 
@@ -187,7 +188,6 @@ func _on_death():
 	root_node.reset_level()
 
 func end_shotgun_natural():
-	print("ending shot")
 	end_shotgun_blast()
 
 func end_shotgun_blast(x=false,y=false,end_blast=false):

@@ -8,7 +8,6 @@ func _ready():
 
 func get_numero():
 	super()
-	print("alrighty")
 	
 func _process(delta):
 	move_and_slide()
