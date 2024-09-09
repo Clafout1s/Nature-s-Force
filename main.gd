@@ -5,8 +5,6 @@ var root_node
 
 var main_menu = preload("res://menu.tscn").instantiate()
 var character_list=[] 
-var need_wall_detection_list = []
-var need_floor_detection_list = []
 var actual_scene 
 var actual_tilemap
 var effects_list = ["dangerous"]
@@ -37,7 +35,10 @@ func spawn_to_position_markers(level_scene):
 	if "spawn_point_list" in level_scene:
 		var spawn_list = level_scene.spawn_point_list
 		for i in range(len(spawn_list)):
-			var new_charac = Character.new(str(spawn_list[i][0]),spawn_list[i][1],root_node)
+			var special_rules = []
+			if len(spawn_list[i]) > 2:
+				special_rules = spawn_list[i][2]
+			var new_charac = Character.new(str(spawn_list[i][0]),spawn_list[i][1],root_node,special_rules)
 			new_charac.add_character()
 			new_charac.scene.position = spawn_list[i][0].position
 			if "spawn_point" in new_charac.scene:
@@ -53,6 +54,7 @@ func load_level_scene(level_scene):
 func delete_level_scene(level_scene):
 	remove_child(level_scene)
 	var character_list_2 = character_list.duplicate()
+	print("deleting all ",len(character_list))
 	for character in character_list_2:
 		character.remove_character()
 
@@ -68,3 +70,12 @@ func get_tile_from_tile_position(tile_position):
 func reset_level():
 	delete_level_scene(actual_scene)
 	load_level_scene(actual_scene)
+
+func get_actual_level():
+	return actual_scene
+
+func search_and_delete_character(target_charac_scene):
+	for character in character_list:
+		if character.scene == target_charac_scene:
+			character.remove_character()
+			

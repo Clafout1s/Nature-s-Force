@@ -1,5 +1,6 @@
 extends CharacterBody2D
 class_name Character_basics
+var character_name
 var root_node
 var nodeCollision
 var nodeSprite
@@ -28,7 +29,7 @@ func _ready():
 	hit.connect(_on_hit)
 	death.connect(_on_death)
 	adaptShape()
-		
+	assert(character_name != null,"You need to add a name to this character")
 
 func adaptShape():
 	if nodeCollision != null:
@@ -75,7 +76,7 @@ func _on_hit(_hitter=null,_type="basic"):
 	hp-=1
 
 func _on_death():
-	queue_free()
+	root_node.search_and_delete_character(self)
 
 func process_addon(delta):
 	exp_gravity += gravity*delta

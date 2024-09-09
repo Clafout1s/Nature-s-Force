@@ -15,6 +15,7 @@ var favorite_directions=[1]
 var flee_start_range = 500
 
 func _ready():
+	character_name = "bird"
 	super()
 	nodeCollision = $CollisionShape2D
 	nodeSprite = $Sprite2D
@@ -105,7 +106,7 @@ func _on_reload_timer_timeout():
 
 func _on_hit(_hitter = null,_damage_type="basic"):
 	stunned = true
-	queue_free()
+	emit_signal("death")
 
 func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit",self)

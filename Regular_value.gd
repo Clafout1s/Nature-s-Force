@@ -69,17 +69,9 @@ func return_value():
 			return 0
 		return value
 	elif activated and decelerating:
-		"""
-		var tempoplus = value / (2**frame_counter)
-		var tempominus = value / (2**( (deceleration_frames-1)-frame_counter )) 
-		value_counter = value + tempoplus - tempominus
-		frame_counter+=1
-		"""
 		var tempo = value_counter + value * second_frame_counter
 		second_frame_counter -= step
 		frame_counter+=1
-		if id == "shotgun_x":
-			print(id," calcul ",tempo," value ",value * second_frame_counter)
 		if frame_counter >= deceleration_frames:
 			end_deceleration()
 			return 0
@@ -106,16 +98,7 @@ func start_deceleration():
 			value = value_counter / (deceleration_frames/int(2))
 			
 		frame_counter = 0
-		"""
-		frame_counter = 0
-		value_counter = 0
-		value = deceleration_movement_value / deceleration_frames
-		"""
-		
-		if id == "shotgun_x":
-			print("depart ",deceleration_movement_value," ",value_counter," ",value)
-		
-		#deceleration_direction = into_sign(value_counter)
+
 		
 func end_deceleration():
 	decelerating = false
@@ -123,8 +106,6 @@ func end_deceleration():
 	reset_values()
 	#emit_signal("just_finished")
 	just_finished = true
-	if id == "shotgun_x":
-		print(test)
 	
 func reset_values():
 	value=-1
@@ -150,21 +131,6 @@ func into_sign(f1:float):
 	else:
 		return 0
 
-func sum_from_num_to_one(num:int):
-	assert(num>0,"num must be bigger than 0")
-	var final_result = 0
-	while num > 0:
-		final_result+=num
-		num-=1
-	return final_result
-
-func calculate_starting_deceleration_value(movement,frames,value):
-	#assert( abs(value) <= abs(movement/float(frames)), "Value doit être plus petit")
-	var starting_value = movement + (value * ((frames +1 ) * frames)/2)
-	starting_value = starting_value / frames
-	if id == "shotgun_x":
-		print(id," big first value: ",deceleration_movement_value," frames ",deceleration_frames," starting value: ",starting_value)
-	return starting_value
 """
 func change_values(nvalue_init,ntps=null,ndtps=null):
 	if not activated or just_finished:

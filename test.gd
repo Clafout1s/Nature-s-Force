@@ -1,7 +1,10 @@
-extends CharacterBody2D
+extends Node2D
 
-class_name Test
-var numero = 3
+func _ready():
+	pass
 
-func get_numero():
-	print(numero)
+func _process(_delta):
+	if Input.is_action_just_pressed("debug"):
+		var list = ["a","b","c"]
+		for i in range(3):
+			print(list[i])

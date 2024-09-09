@@ -8,6 +8,7 @@ var stun_recoil
 var stun_attack_passed=false
 
 func _ready():
+	character_name = "boar"
 	super()
 	space_state= get_world_2d().direct_space_state
 	nodeCollision = $CollisionShape2D

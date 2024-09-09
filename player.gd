@@ -22,6 +22,7 @@ var sword_instance = preload("res://laser_sword.tscn").instantiate()
 
 
 func _ready():
+	character_name = "player"
 	super()
 	speed = 500
 	set_floor_constant_speed_enabled(true)
