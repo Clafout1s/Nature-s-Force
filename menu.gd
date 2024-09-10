@@ -10,7 +10,7 @@ var levelAmaury3 = preload("res://levelAmaury3.tscn").instantiate()
 # Called when the node enters the scene trepasse for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	
+	print(anchors_preset==PRESET_FULL_RECT)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -34,3 +34,7 @@ func _on_level_am_3_pressed():
 func _on_level_4_pressed():
 	root_node.load_level_scene(level4)
 	root_node.remove_child(self)
+
+
+func _on_button_pressed():
+	root_node.quit_game()

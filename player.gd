@@ -34,13 +34,12 @@ func _ready():
 	type = "player"
 	shotgun_slots = shotgun_slots_init
 	root_node.add_child(shotgun_slots_UI_instance)
-	shotgun_slots_UI = root_node.get_node("bulletSlotsUI")
+	shotgun_slots_UI = shotgun_slots_UI_instance
+	print(shotgun_slots_UI)
 	add_child(sword_instance)
 	nodeCollision = $CollisionShape2D
 	nodeSprite = $mainCharac
 	adaptShape()
-	#shotgun_instance_x.just_finished.connect(end_shotgun_natural)
-	#shotgun_instance_y.just_finished.connect(end_shotgun_natural)
 	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -59,6 +58,9 @@ func process_addon(delta):
 	$gun.rotate_gun(position)
 	shotgun_dash()
 	sword_attack()
+	
+	if Input.is_action_just_pressed("debug"):
+		print(shotgun_slots_UI)
 	
 	velocity.x=shotgun_instance_x.return_value()
 	velocity.y=shotgun_instance_y.return_value()
@@ -117,6 +119,8 @@ func shotgun_dash():
 		$gun.end_blast()
 		$gun.blast(position)
 		shotgun_slots-=1
+		root_node.print_tree_pretty()
+		print(shotgun_slots_UI)
 		shotgun_slots_UI.switch_to_empty_shell()
 		shotgun_angle =position.angle_to_point(get_global_mouse_position())
 		shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*-cos(shotgun_angle),shotgun_deceleration_frames)
@@ -206,3 +210,8 @@ func dangerous_terrain_behavior(body):
 
 func _on_tree_exiting():
 	shotgun_cd_timer.stop()
+	shotgun_slots_UI_instance.queue_free()
+	root_node.remove_child.call_deferred(shotgun_slots_UI)
+	
+	
+	

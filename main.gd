@@ -19,10 +19,10 @@ func _process(_delta):
 		#reset_level()
 
 func return_to_menu():
+	print_tree_pretty()
 	add_child(main_menu)
 	delete_level_scene(actual_scene)
-	if has_node("bulletSlotsUI"):
-		remove_child($bulletSlotsUI)
+	print_tree_pretty()
 
 func switch(level_scene):
 	delete_level_scene(actual_scene)
@@ -79,3 +79,6 @@ func search_and_delete_character(target_charac_scene):
 		if character.scene == target_charac_scene:
 			character.remove_character()
 			
+func quit_game():
+	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+	get_tree().quit()
