@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://bbovxyc4heoxd"]
+[gd_scene load_steps=12 format=3 uid="uid://bbovxyc4heoxd"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_qjxoi"]
 [ext_resource type="Texture2D" uid="uid://dvc42lek4bapx" path="res://sprites/level_pictures/level2.png" id="2_njya5"]
 [ext_resource type="Texture2D" uid="uid://c7w4jp02nshwp" path="res://sprites/level_pictures/level1.png" id="3_avoon"]
+[ext_resource type="Texture2D" uid="uid://ragn1r67nqlp" path="res://sprites/checkmark.png" id="3_tm57r"]
 [ext_resource type="Texture2D" uid="uid://gv6axsm50qgr" path="res://sprites/shellEmpty.png" id="4_edogj"]
 
 [sub_resource type="FontFile" id="FontFile_wltan"]
@@ -119,6 +120,20 @@ texture_normal = ExtResource("3_avoon")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level1"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_tm57r")
+
 [node name="level2" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -127,12 +142,40 @@ texture_normal = ExtResource("2_njya5")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="levelAM3" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level2"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_tm57r")
+
+[node name="level3" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture_normal = SubResource("GradientTexture2D_8cean")
 stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level3"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_tm57r")
 
 [node name="level4" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -141,6 +184,20 @@ size_flags_vertical = 3
 texture_normal = ExtResource("4_edogj")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level4"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_tm57r")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -173,8 +230,13 @@ theme_override_fonts/font = SubResource("FontFile_e4htr")
 theme_override_font_sizes/font_size = 80
 text = "Quit the game"
 
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level1" to="." method="_on_level_1_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level2" to="." method="_on_level_2_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/levelAM3" to="." method="_on_level_am_3_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level3" to="." method="_on_level_3_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level4" to="." method="_on_level_4_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/Button" to="." method="_on_button_pressed"]

@@ -19,10 +19,8 @@ func _process(_delta):
 		#reset_level()
 
 func return_to_menu():
-	print_tree_pretty()
 	add_child(main_menu)
 	delete_level_scene(actual_scene)
-	print_tree_pretty()
 
 func switch(level_scene):
 	delete_level_scene(actual_scene)
@@ -54,7 +52,6 @@ func load_level_scene(level_scene):
 func delete_level_scene(level_scene):
 	remove_child(level_scene)
 	var character_list_2 = character_list.duplicate()
-	print("deleting all ",len(character_list))
 	for character in character_list_2:
 		character.remove_character()
 
@@ -78,7 +75,12 @@ func search_and_delete_character(target_charac_scene):
 	for character in character_list:
 		if character.scene == target_charac_scene:
 			character.remove_character()
-			
+
+func win_level_and_return_menu():
+	var level = actual_scene
+	return_to_menu()
+	main_menu.show_checkmark(level)
+
 func quit_game():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()

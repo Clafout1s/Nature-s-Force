@@ -15,7 +15,7 @@ func _process(_delta):
 			unlock()
 
 func _on_area_2d_body_entered(_body):
-	root_node.return_to_menu()
+	root_node.win_level_and_return_menu()
 
 func lock():
 	$Sprite2D.visible = false
