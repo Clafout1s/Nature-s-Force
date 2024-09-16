@@ -10,7 +10,9 @@ var action = ""
 var last_action = ""
 var action_ended = true
 var movement_instance_x = null
+var movement_instance_y = null
 var target
+var debug_block = true
 func _ready():
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
 	switch_sprite("base",$base1)
@@ -20,17 +22,24 @@ func _ready():
 	
 	
 func _physics_process(delta):
-
+	if Input.is_action_just_pressed("debug"):
+		debug_block = false
+	if not debug_block:
+		jump_action(1)
+		print(velocity)
+		
+	"""
 	chose_state()
 	chose_action_by_state()
 	apply_action()
+	
+	"""
 	move_and_slide()
 
 func chose_state():
-	if state == "idle":
-		if Input.is_action_just_pressed("debug"):
-			switch_state("close_combat")
-	elif state == "close_combat":
+	state = "close_combat"
+	
+	if state == "close_combat":
 		pass
 	elif state == "far_combat":
 		pass
@@ -132,9 +141,6 @@ func walk_action(direction):
 	if ending:
 		reset_timer_count()
 
-func jump_attack():
-	pass
-
 func canon_attack():
 	pass
 
@@ -165,6 +171,38 @@ func end_action():
 	reset_timer_count()
 	last_action = action
 	action = ""
+
+func jump_action(direction):
+	var time_end = 0
+	var ending = false
+	var segment_speed=1000
+	var total_frames=60
+	var n=60
+	var deg_angle=180/float(n)
+	print(deg_angle)
+	var segment_frames =total_frames/n
+	if segment_frames==0:
+		segment_frames = 1
+	print(timer_count)
+	if timer_count[1] == segment_frames or timer_count==[0,0]:
+		timer_count[0]+=1
+		timer_count[1]=0
+		movement_instance_x = Regular_value.new("jump x",direction*segment_speed*cos(float(deg_to_rad(deg_angle * (timer_count[0]+1)))),segment_frames)
+		movement_instance_x.start()
+		movement_instance_y = Regular_value.new("jump y",-segment_speed*sin(deg_to_rad(float(deg_angle * (timer_count[0]+1)))),segment_frames)
+		movement_instance_y.start()
+		time_end = 0
+	elif timer_count[0]==n-1:
+		end_action()
+		ending = true
+		debug_block = true
+		movement_instance_x.global_end()
+		movement_instance_y.global_end()
+		velocity = Vector2(0,0)
+	else:
+		timer_count[1]+=1
+		velocity.x = movement_instance_x.return_value()
+		velocity.y = movement_instance_y.return_value()
 
 func random_oriented_choice(options_dict,bandict={} ):
 	assert (options_dict !={}, "options_dict must not be empty")
