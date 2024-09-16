@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-const speed = 300
+var speed = 3000
+var frame_speed = 30
 var state = "idle"
 var sprites_in_use = {"base":null,"armL":null,"armR":null,"canon":null}
 var body_parts_dict={}
@@ -8,6 +9,8 @@ var timer_count=[0,0]
 var action = ""
 var last_action = ""
 var action_ended = true
+var movement_instance_x = null
+var target
 func _ready():
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
 	switch_sprite("base",$base1)
@@ -17,27 +20,43 @@ func _ready():
 	
 	
 func _physics_process(delta):
-	chose_behavior()
-	act_behavior()
+
+	chose_state()
+	chose_action_by_state()
 	apply_action()
 	move_and_slide()
 
-func chose_behavior():
+func chose_state():
 	if state == "idle":
 		if Input.is_action_just_pressed("debug"):
-			switch_state("close_attack")
+			switch_state("close_combat")
+	elif state == "close_combat":
+		pass
+	elif state == "far_combat":
+		pass
+	elif state== "blocked":
+		pass
 
-func act_behavior():
+func chose_action_by_state():
+	var proportion_dict = {}
+	var banlist={}
 	match state:
 		"idle":
-			idle_behavior()
-		"close_attack":
-			var rng=RandomNumberGenerator.new()
-			var random = rng.randi_range(1,100)
-			if random<80 and last_action != "blade_attack":
-				switch_action("blade_attack")
-			else:
-				switch_action("wait")
+			proportion_dict = {"wait":100}
+		"close_combat":
+			var range = 100
+			var close_range = 50
+			var distant_range = 1000
+			
+			if range<=close_range:
+				proportion_dict = {"blade_attack":70,"jump r":10,"walk r":10,"wait":10}
+				banlist = {"blade_attack":last_action=="blade_attack","jump r":last_action=="jump r"}
+			elif close_range<range and range<distant_range:
+				proportion_dict = {"walk l":60,"jump l":20,"blade_attack":10,"walk r":10}
+				banlist = {"blade_attack":last_action=="blade_attack","jump l":last_action=="jump l"}
+	assert(proportion_dict!={},"Proportion_dict must have at least 1 tuple")
+	switch_action(random_oriented_choice(proportion_dict,banlist))
+				
 
 func switch_state(new_state:String):
 	state = new_state
@@ -55,10 +74,7 @@ func show_sprite(part,this_sprite):
 
 func hide_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
-		this_sprite.visible = false
-
-func idle_behavior():
-	switch_sprite("armL",$arm1L)
+		this_sprite.visible = false	
 
 func blade_attack():
 	var time_end = 0
@@ -80,13 +96,33 @@ func blade_attack():
 		reset_timer_count()
 
 func wait_action():
-	print(timer_count)
 	var time_end = 0
 	var ending = false
 	match timer_count[0]:
 		0:
 			time_end = 60
 		1:
+			end_action()
+			ending = true
+	if timer_count[1] >= time_end:
+		timer_count[0]+=1
+		timer_count[1]=-1
+	timer_count[1]+=1
+	if ending:
+		reset_timer_count()
+
+func walk_action(direction):
+	var time_end = 0
+	var ending = false
+	match timer_count[0]:
+		0:
+			movement_instance_x = Regular_value.new("Ramachnid walk x",speed*direction,frame_speed)
+			movement_instance_x.start()
+			time_end = 0
+		1:
+			time_end = frame_speed
+			velocity.x = movement_instance_x.return_value()
+		2:
 			end_action()
 			ending = true
 	if timer_count[1] >= time_end:
@@ -111,6 +147,15 @@ func apply_action():
 			blade_attack()
 		"wait":
 			wait_action()
+		"walk l":
+			walk_action(-1)
+		"walk r":
+			walk_action(1)
+		"switch distant":
+			end_action()
+			switch_state("distant")
+		_:
+			wait_action()
 
 func switch_action(act):
 	if action == "":
@@ -120,3 +165,25 @@ func end_action():
 	reset_timer_count()
 	last_action = action
 	action = ""
+
+func random_oriented_choice(options_dict,bandict={} ):
+	assert (options_dict !={}, "options_dict must not be empty")
+	for option in bandict.keys():
+		if bandict[option]:
+			options_dict.erase(option)
+	var added=0
+	var last_option
+	for option in options_dict:
+		options_dict[option]+=added
+		added = options_dict[option]
+		last_option = option
+	var return_value = last_option
+	var random = RandomNumberGenerator.new().randi_range(1,options_dict[last_option])
+	var tested_option
+	for option in options_dict.keys():
+		tested_option = options_dict[option]
+		if tested_option >= random and tested_option < options_dict[return_value]:
+			return_value = option
+	return return_value
+	
+			
