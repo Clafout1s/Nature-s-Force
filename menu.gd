@@ -12,7 +12,7 @@ var level_to_button_dict
 # Called when the node enters the scene trepasse for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	level_to_button_dict = {level1:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/level1,level2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/level2,levelAmaury2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/level3,level4:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/level4}
+	level_to_button_dict = {level1:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1,level2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2,levelAmaury2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3,level4:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4}
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
@@ -24,7 +24,6 @@ func _on_level_2_pressed():
 func _on_level_1_pressed():
 	root_node.load_level_scene(level1)
 	root_node.remove_child(self)
-	print(level1)
 
 
 func _on_level_3_pressed():
@@ -42,9 +41,6 @@ func _on_button_pressed():
 	root_node.quit_game()
 
 func show_checkmark(level):
-	print_tree_pretty()
-	print(level_to_button_dict)
 	var level_button = level_to_button_dict[level]
-	print(level_button)
 	level_button.get_node("TextureRect").visible = true
 

@@ -1,10 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://bbovxyc4heoxd"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_qjxoi"]
-[ext_resource type="Texture2D" uid="uid://dvc42lek4bapx" path="res://sprites/level_pictures/level2.png" id="2_njya5"]
-[ext_resource type="Texture2D" uid="uid://c7w4jp02nshwp" path="res://sprites/level_pictures/level1.png" id="3_avoon"]
+[ext_resource type="Texture2D" uid="uid://mm6ebhu46auy" path="res://sprites/level_pictures/level1bis.png" id="2_xkg55"]
 [ext_resource type="Texture2D" uid="uid://ragn1r67nqlp" path="res://sprites/checkmark.png" id="3_tm57r"]
-[ext_resource type="Texture2D" uid="uid://gv6axsm50qgr" path="res://sprites/shellEmpty.png" id="4_edogj"]
+[ext_resource type="Texture2D" uid="uid://dyqby3eonhucw" path="res://sprites/level_pictures/level2bis.png" id="4_1xnxw"]
+[ext_resource type="Texture2D" uid="uid://bftldqsmui6vt" path="res://sprites/level_pictures/level3.png" id="5_pp26m"]
+[ext_resource type="Texture2D" uid="uid://cp7ux12chup87" path="res://sprites/level_pictures/level4.png" id="6_rvwbj"]
 
 [sub_resource type="FontFile" id="FontFile_wltan"]
 cache/0/120/0/ascent = 0.0
@@ -28,11 +29,6 @@ font_size = 120
 outline_size = 35
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="Gradient" id="Gradient_mnyhr"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_8cean"]
-gradient = SubResource("Gradient_mnyhr")
-
 [sub_resource type="FontFile" id="FontFile_ukrn5"]
 cache/0/80/0/ascent = 0.0
 cache/0/80/0/descent = 0.0
@@ -41,6 +37,7 @@ cache/0/80/0/underline_thickness = 0.0
 cache/0/80/0/scale = 1.0
 cache/0/80/0/kerning_overrides/80/0 = Vector2(0, 0)
 cache/0/80/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/70/0 = Vector2(0, 0)
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
@@ -48,6 +45,53 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/80/0 = Vector2(0, 0)
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/70/0 = Vector2(0, 0)
+cache/0/70/0/ascent = 0.0
+cache/0/70/0/descent = 0.0
+cache/0/70/0/underline_position = 0.0
+cache/0/70/0/underline_thickness = 0.0
+cache/0/70/0/scale = 1.0
+cache/0/70/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/70/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="FontFile_tu03n"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/60/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/70/0 = Vector2(0, 0)
+cache/0/80/0/ascent = 0.0
+cache/0/80/0/descent = 0.0
+cache/0/80/0/underline_position = 0.0
+cache/0/80/0/underline_thickness = 0.0
+cache/0/80/0/scale = 1.0
+cache/0/80/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/60/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/70/0 = Vector2(0, 0)
+cache/0/60/0/ascent = 0.0
+cache/0/60/0/descent = 0.0
+cache/0/60/0/underline_position = 0.0
+cache/0/60/0/underline_thickness = 0.0
+cache/0/60/0/scale = 1.0
+cache/0/60/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/60/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/60/0/kerning_overrides/60/0 = Vector2(0, 0)
+cache/0/60/0/kerning_overrides/70/0 = Vector2(0, 0)
+cache/0/70/0/ascent = 0.0
+cache/0/70/0/descent = 0.0
+cache/0/70/0/underline_position = 0.0
+cache/0/70/0/underline_thickness = 0.0
+cache/0/70/0/scale = 1.0
+cache/0/70/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/60/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/70/0 = Vector2(0, 0)
 
 [sub_resource type="FontFile" id="FontFile_e4htr"]
 cache/0/80/0/ascent = 0.0
@@ -57,6 +101,7 @@ cache/0/80/0/underline_thickness = 0.0
 cache/0/80/0/scale = 1.0
 cache/0/80/0/kerning_overrides/80/0 = Vector2(0, 0)
 cache/0/80/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/70/0 = Vector2(0, 0)
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
@@ -64,6 +109,15 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/80/0 = Vector2(0, 0)
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/70/0 = Vector2(0, 0)
+cache/0/70/0/ascent = 0.0
+cache/0/70/0/descent = 0.0
+cache/0/70/0/underline_position = 0.0
+cache/0/70/0/underline_thickness = 0.0
+cache/0/70/0/scale = 1.0
+cache/0/70/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/70/0/kerning_overrides/70/0 = Vector2(0, 0)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -112,15 +166,24 @@ layout_mode = 2
 size_flags_vertical = 3
 columns = 3
 
-[node name="level1" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture_normal = ExtResource("3_avoon")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="level1" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xkg55")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level1"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1"]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -134,15 +197,24 @@ grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("3_tm57r")
 
-[node name="level2" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture_normal = ExtResource("2_njya5")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="level2" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("4_1xnxw")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level2"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2"]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -156,14 +228,24 @@ grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("3_tm57r")
 
-[node name="level3" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture_normal = SubResource("GradientTexture2D_8cean")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="level3" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("5_pp26m")
+ignore_texture_size = true
 stretch_mode = 5
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level3"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3"]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -177,15 +259,24 @@ grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("3_tm57r")
 
-[node name="level4" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
+[node name="MarginContainer4" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture_normal = ExtResource("4_edogj")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="level4" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("6_rvwbj")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level4"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4"]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -214,8 +305,19 @@ theme_override_constants/margin_right = 15
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_ukrn5")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 70
 text = "Tutorial"
+
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 20
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("FontFile_tu03n")
+theme_override_font_sizes/font_size = 70
+text = "Credits"
 
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -227,7 +329,7 @@ theme_override_constants/margin_right = 30
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_e4htr")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 70
 text = "Quit the game"
 
 [node name="background" type="TextureRect" parent="."]
@@ -235,8 +337,8 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level1" to="." method="_on_level_1_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level2" to="." method="_on_level_2_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level3" to="." method="_on_level_3_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/level4" to="." method="_on_level_4_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2" to="." method="_on_level_2_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3" to="." method="_on_level_3_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4" to="." method="_on_level_4_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/Button" to="." method="_on_button_pressed"]

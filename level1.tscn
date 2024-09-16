@@ -1,10 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://bd4d04rqdpn52"]
+[gd_scene load_steps=4 format=3 uid="uid://bd4d04rqdpn52"]
 
 [ext_resource type="TileSet" uid="uid://bdf6gslx6cehj" path="res://basic_tileset.tres" id="1_fhd47"]
 [ext_resource type="Script" path="res://level1.gd" id="1_s8dgx"]
+[ext_resource type="Texture2D" uid="uid://bvheihmvl447p" path="res://sprites/Background.png" id="2_0r143"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_s8dgx")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("2_0r143")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("1_fhd47")
