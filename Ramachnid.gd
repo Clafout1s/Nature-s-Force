@@ -14,8 +14,8 @@ var movement_instance_y = null
 var target
 var debug_block = true
 var jump_gravity = 30
-var jump_initial_speed = 500
-var jump_speed_x = 400
+var jump_initial_speed = 600
+var jump_speed_x = 500
 var jump_starting_y
 var jump_starting_x
 
@@ -29,7 +29,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("debug"):
 		debug_block = false
 	if not debug_block:
-		new_jump_action(1)
+		new_jump_action(0)
 		
 	"""
 	chose_state()
@@ -176,22 +176,49 @@ func end_action():
 	action = ""
 
 func new_jump_action(direction):
-	if timer_count==[0,0]:
-		jump_starting_y = position.y
-		jump_starting_x = position.x
+	assert(direction in [1,0,-1],"direction is either 0, 1 or -1")
+	var time_end = 0
+	var ending = false
+	match timer_count[0]:
+		0:
+			time_end = 30
+			switch_sprite("base",$base2)
+			switch_sprite("armL",$arm2L)
+			switch_sprite("armR",$arm2R)
+		1:
+			time_end = 0
+			jump_starting_y = position.y
+			jump_starting_x = position.x
+			velocity.y = -jump_initial_speed 
+			velocity.x = jump_speed_x* direction
+		2:
+			time_end = 120 #big value, not used
+			switch_sprite("base",$base3)
+			switch_sprite("armL",$arm3L)
+			switch_sprite("armR",$arm3R)
+			if position.y >= jump_starting_y:
+				timer_count[0]+=1
+				timer_count[1]=-1
+			velocity.y += jump_gravity
+		3:
+			time_end = 10
+			switch_sprite("base",$base2)
+			switch_sprite("armL",$arm2L)
+			switch_sprite("armR",$arm2R)
+			velocity=Vector2(0,0)
+		4:
+			end_action()
+			ending = true
+			debug_block = true
+			switch_sprite("base",$base1)
+			switch_sprite("armL",$arm1L)
+			switch_sprite("armR",$arm1R)
+	if timer_count[1] >= time_end:
 		timer_count[0]+=1
-		velocity.y = -jump_initial_speed 
-		velocity.x = jump_speed_x* direction
-	elif position.y >= jump_starting_y and timer_count[1]!=0:
-		print(timer_count)
-		print(jump_starting_x - position.x)
-		end_action()
-		debug_block = true
-		velocity=Vector2(0,0)
-	else:
-		timer_count[1]+=1
-		print(velocity.x)
-		velocity.y += jump_gravity
+		timer_count[1]=-1
+	timer_count[1]+=1
+	if ending:
+		reset_timer_count()
 
 func random_oriented_choice(options_dict,bandict={} ):
 	assert (options_dict !={}, "options_dict must not be empty")
