@@ -1,7 +1,7 @@
 
 extends Character_basics
 #en outre j'aime beaucoup mon papa qui est le meilleur papa du monde et qui fait caca
-var jump_height=100.0
+var jump_height=110.0
 var jump_time=0.35
 var jump_velocity= -(2.0 * jump_height) / jump_time
 var just_jumping = false

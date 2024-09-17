@@ -47,6 +47,7 @@ func start():
 	bursting=true
 	decelerating=false
 	value = value_init/nb_frames
+	print(value)
 	value_counter = 0
 
 func end():
@@ -64,7 +65,7 @@ func end():
 func return_value():
 	if activated and bursting:
 		value_counter+=value
-		if abs(value_counter) >= abs(value_init):
+		if abs(value_counter) > abs(value_init):
 			end()
 			return 0
 		return value
@@ -74,7 +75,7 @@ func return_value():
 		frame_counter+=1
 		if frame_counter >= deceleration_frames:
 			end_deceleration()
-			return 0
+			return tempo
 		return tempo
 	else:
 		return 0

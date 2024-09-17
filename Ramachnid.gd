@@ -13,20 +13,23 @@ var movement_instance_x = null
 var movement_instance_y = null
 var target
 var debug_block = true
+var jump_gravity = 30
+var jump_initial_speed = 500
+var jump_speed_x = 400
+var jump_starting_y
+var jump_starting_x
+
 func _ready():
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
 	switch_sprite("base",$base1)
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
-	
-	
 func _physics_process(delta):
 	if Input.is_action_just_pressed("debug"):
 		debug_block = false
 	if not debug_block:
-		jump_action(1)
-		print(velocity)
+		new_jump_action(1)
 		
 	"""
 	chose_state()
@@ -172,37 +175,23 @@ func end_action():
 	last_action = action
 	action = ""
 
-func jump_action(direction):
-	var time_end = 0
-	var ending = false
-	var segment_speed=1000
-	var total_frames=60
-	var n=60
-	var deg_angle=180/float(n)
-	print(deg_angle)
-	var segment_frames =total_frames/n
-	if segment_frames==0:
-		segment_frames = 1
-	print(timer_count)
-	if timer_count[1] == segment_frames or timer_count==[0,0]:
+func new_jump_action(direction):
+	if timer_count==[0,0]:
+		jump_starting_y = position.y
+		jump_starting_x = position.x
 		timer_count[0]+=1
-		timer_count[1]=0
-		movement_instance_x = Regular_value.new("jump x",direction*segment_speed*cos(float(deg_to_rad(deg_angle * (timer_count[0]+1)))),segment_frames)
-		movement_instance_x.start()
-		movement_instance_y = Regular_value.new("jump y",-segment_speed*sin(deg_to_rad(float(deg_angle * (timer_count[0]+1)))),segment_frames)
-		movement_instance_y.start()
-		time_end = 0
-	elif timer_count[0]==n-1:
+		velocity.y = -jump_initial_speed 
+		velocity.x = jump_speed_x* direction
+	elif position.y >= jump_starting_y and timer_count[1]!=0:
+		print(timer_count)
+		print(jump_starting_x - position.x)
 		end_action()
-		ending = true
 		debug_block = true
-		movement_instance_x.global_end()
-		movement_instance_y.global_end()
-		velocity = Vector2(0,0)
+		velocity=Vector2(0,0)
 	else:
 		timer_count[1]+=1
-		velocity.x = movement_instance_x.return_value()
-		velocity.y = movement_instance_y.return_value()
+		print(velocity.x)
+		velocity.y += jump_gravity
 
 func random_oriented_choice(options_dict,bandict={} ):
 	assert (options_dict !={}, "options_dict must not be empty")
