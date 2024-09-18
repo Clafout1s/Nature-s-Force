@@ -47,7 +47,6 @@ func start():
 	bursting=true
 	decelerating=false
 	value = value_init/nb_frames
-	print(value)
 	value_counter = 0
 
 func end():

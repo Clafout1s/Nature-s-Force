@@ -7,6 +7,7 @@ var level4 = preload("res://level4.tscn").instantiate()
 var levelAmaury1 = preload("res://levelAmaury1.tscn").instantiate()
 var levelAmaury2 = preload("res://levelAmaury2.tscn").instantiate()
 var levelAmaury3 = preload("res://levelAmaury3.tscn").instantiate()
+var levelRamachnid = preload("res://levelRamachnid.tscn").instantiate()
 var level_list= [level1,level2,level4,levelAmaury1,levelAmaury2,levelAmaury3]
 var level_to_button_dict
 # Called when the node enters the scene trepasse for the first time.
@@ -44,3 +45,8 @@ func show_checkmark(level):
 	var level_button = level_to_button_dict[level]
 	level_button.get_node("TextureRect").visible = true
 
+
+
+func _on_level_ramachnid_pressed():
+	root_node.load_level_scene(levelRamachnid)
+	root_node.remove_child(self)

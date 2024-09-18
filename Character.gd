@@ -22,6 +22,8 @@ func _init(nid,ntype,nroot,special_rules=[]):
 			scene = preload("res://player.tscn").instantiate() 
 			#adapted_positions_list.append("player_floor")
 			scene.character_class_instance = self
+			if "hp_boss" in special_rules:
+				scene.hp = 3
 		"boar":
 			scene = preload("res://boar.tscn").instantiate()
 			#adapted_positions_list.append("boar_wall")
@@ -39,6 +41,11 @@ func _init(nid,ntype,nroot,special_rules=[]):
 			scene.character_class_instance = self
 			if "need_unlock" in special_rules:
 				scene.needs_unlocking = true
+		"Ramachnid":
+			scene=preload("res://Ramachnid.tscn").instantiate()
+			var target = get_in_list("player")
+			if not target == null:
+				scene.target = target.scene
 		_:
 			assert(false, "wrong type of character")
 func add_character():
@@ -65,4 +72,9 @@ func remove_from_list(list):
 			finished = true
 		i+=1
 		
+func get_in_list(character_name):
+	for i in stock_list:
+		if i.scene.character_name==character_name:
+			return i
+	return null
 

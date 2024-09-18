@@ -29,6 +29,6 @@ func unlock():
 
 func are_all_ennemies_dead():
 	for character in root_node.character_list:
-		if character.scene.character_name in ["bird","boar"]:
+		if character.scene.character_name in ["bird","boar","Ramachnid"]:
 			return false
 	return true

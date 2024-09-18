@@ -20,7 +20,13 @@ var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgu
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*direction,shotgun_deceleration_frames)
 var sword_instance = preload("res://laser_sword.tscn").instantiate()
 
-
+var invuln_frames_start = 360
+var invuln_frames = 0
+var invuln_gravity = 30
+var invuln = false
+var invuln_direction
+var invuln_begin_speed = Vector2(500,500)
+var  collision_mask_list = []
 func _ready():
 	character_name = "player"
 	super()
@@ -50,53 +56,56 @@ func tempoclamp_addon_y():
 		is_jumping = false
 
 func process_addon(delta):
-	detect_terrain_effect(self)
-	if just_jumping:
-		just_jumping = false
-	direction = Input.get_axis("left", "right")
-	$gun.rotate_gun(position)
-	shotgun_dash()
-	sword_attack()
-	
-	velocity.x=shotgun_instance_x.return_value()
-	velocity.y=shotgun_instance_y.return_value()
-	
-	if shotgun_instance_x.activated:
-		if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
-			end_shotgun_blast(true,false)
-	if shotgun_instance_y.activated:
-		if has_same_sign(raycastCollisions().y,shotgun_instance_y.value_init) and raycastCollisions().y != 0:
-			end_shotgun_blast(false,true)
-	
-	if not shotgun_instance_x.bursting or not shotgun_instance_y.bursting:
-		exp_gravity+=gravity * delta
-		velocity.y+=exp_gravity
+	if invuln:
+		during_invuln()
+	else: 
+		detect_terrain_effect(self)
+		if just_jumping:
+			just_jumping = false
+		direction = Input.get_axis("left", "right")
+		$gun.rotate_gun(position)
+		shotgun_dash()
+		sword_attack()
+		
+		velocity.x=shotgun_instance_x.return_value()
+		velocity.y=shotgun_instance_y.return_value()
+		
+		if shotgun_instance_x.activated:
+			if has_same_sign(raycastCollisions().x,shotgun_instance_x.value_init) and raycastCollisions().x != 0:
+				end_shotgun_blast(true,false)
+		if shotgun_instance_y.activated:
+			if has_same_sign(raycastCollisions().y,shotgun_instance_y.value_init) and raycastCollisions().y != 0:
+				end_shotgun_blast(false,true)
+		
+		if not shotgun_instance_x.bursting or not shotgun_instance_y.bursting:
+			exp_gravity+=gravity * delta
+			velocity.y+=exp_gravity
 
-		if shotgun_instance_x.decelerating :
-			if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=speed and direction!=0 :
-				shotgun_instance_x.end_deceleration()
+			if shotgun_instance_x.decelerating :
+				if has_same_sign(direction,shotgun_instance_x.value_counter) and abs(shotgun_instance_x.value_counter)<=speed and direction!=0 :
+					shotgun_instance_x.end_deceleration()
+					velocity.x+=walk()
+				if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
+					shotgun_instance_x.end_deceleration()
+					velocity.x+=walk()
+
+			else:
 				velocity.x+=walk()
-			if not has_same_sign(direction,shotgun_instance_x.value_counter) and direction!=0:
-				shotgun_instance_x.end_deceleration()
-				velocity.x+=walk()
 
-		else:
-			velocity.x+=walk()
+			if shotgun_instance_y.decelerating:
+				pass
 
-		if shotgun_instance_y.decelerating:
-			pass
-
-	jump()
-	if is_jumping:
-		if (raycastCollisions().y < 0):
-			is_jumping = false
-		velocity.y+=jump_velocity
-	
-	if not has_same_sign(direction,nodeSprite.scale.x) and direction != 0:
-		swap()
-	if shotgun_instance_x.just_finished or shotgun_instance_y.just_finished:
-		end_shotgun_blast(false,false,true)
-	
+		jump()
+		if is_jumping:
+			if (raycastCollisions().y < 0):
+				is_jumping = false
+			velocity.y+=jump_velocity
+		
+		if not has_same_sign(direction,nodeSprite.scale.x) and direction != 0:
+			swap()
+		if shotgun_instance_x.just_finished or shotgun_instance_y.just_finished:
+			end_shotgun_blast(false,false,true)
+		
 func swap():
 	nodeSprite.scale.x *= -1
 	nodeCollision.scale.x *= -1
@@ -207,5 +216,43 @@ func _on_tree_exiting():
 	shotgun_slots_UI_instance.queue_free()
 	root_node.remove_child.call_deferred(shotgun_slots_UI)
 	
+func start_invuln():
+	print("FUCKIN INVINCIBLE")
+	invuln = true
+	end_shotgun_blast(true,true)
+	velocity=Vector2(0,0)
+	exp_gravity = 0
+	for i in range(8):
+		collision_mask_list.append(get_collision_mask_value(i+1))
+		if i != 0:
+			set_collision_mask_value(i+1,false)
 	
+func end_invuln():
+	invuln = false
+	hp-=1
+	invuln_frames = 0
+	velocity = Vector2(0,0)
 	
+	for i in range(8):
+		set_collision_mask_value(i+1,collision_mask_list[i])
+	print(get_collision_mask_value(2))
+func during_invuln():
+	exp_gravity+= invuln_gravity
+	invuln_frames += 1
+	
+	velocity.x = invuln_begin_speed.x * invuln_direction
+	velocity.y = -invuln_begin_speed.y
+	
+	velocity.y += exp_gravity
+	print(velocity)
+	if is_on_floor() and not invuln_frames==1 or invuln_frames == invuln_frames_start:
+		end_invuln()
+
+func _on_hit(_hitter=null,_type="other"):
+	var direction = 0
+	if not hp -1 <=0:
+		if _hitter != null:
+			invuln_direction = into_sign(global_position.x-_hitter.global_position.x)
+			start_invuln()
+	else:
+		hp-=1

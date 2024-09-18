@@ -1,5 +1,9 @@
 extends CharacterBody2D
 
+var character_name = "Ramachnid"
+var moving_gravity = 0
+signal hit
+signal death
 var speed = 3000
 var frame_speed = 30
 var state = "idle"
@@ -14,29 +18,39 @@ var movement_instance_y = null
 var target
 var debug_block = true
 var jump_gravity = 30
-var jump_initial_speed = 600
+var jump_initial_speed = 1000
 var jump_speed_x = 500
 var jump_starting_y
 var jump_starting_x
-
+var target_position = Vector2(500,200)
+var base1collision = [Vector2(129.5,113.5),Vector2(0,-1.25)]
+var base2collision = [Vector2(79.8,104.8),Vector2(0,-5.6)]
+var base3collision = [Vector2(90.8,112.4),Vector2(0,12)]
+var is_not_on_floor_forced = false
 func _ready():
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
 	switch_sprite("base",$base1)
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
+	base1collision = [$base1/terrain.shape.size,$base1/terrain.position]
+	base2collision = [$base2/terrain.shape.size,$base2/terrain.position]
+	base3collision = [$base3/terrain.shape.size,$base3/terrain.position]
+	
 func _physics_process(delta):
-	if Input.is_action_just_pressed("debug"):
-		debug_block = false
-	if not debug_block:
-		new_jump_action(0)
-		
-	"""
+	velocity = Vector2(0,0)
+	if target != null:
+		target_position = target.global_position
 	chose_state()
 	chose_action_by_state()
 	apply_action()
 	
-	"""
+	if not is_on_floor():
+		moving_gravity+=jump_gravity
+		velocity.y+=moving_gravity
+	if is_on_floor() and not is_not_on_floor_forced:
+		moving_gravity = 0
+		
 	move_and_slide()
 
 func chose_state():
@@ -56,16 +70,18 @@ func chose_action_by_state():
 		"idle":
 			proportion_dict = {"wait":100}
 		"close_combat":
-			var range = 100
-			var close_range = 50
+			var range = position.x - target_position.x
+			var close_range = 200
 			var distant_range = 1000
-			
-			if range<=close_range:
-				proportion_dict = {"blade_attack":70,"jump r":10,"walk r":10,"wait":10}
-				banlist = {"blade_attack":last_action=="blade_attack","jump r":last_action=="jump r"}
-			elif close_range<range and range<distant_range:
-				proportion_dict = {"walk l":60,"jump l":20,"blade_attack":10,"walk r":10}
-				banlist = {"blade_attack":last_action=="blade_attack","jump l":last_action=="jump l"}
+			if abs(range)<=close_range:
+				proportion_dict = {"blade_attack":50,"jump stay":20,"walk out":25,"wait":5}
+				banlist = {"blade_attack":last_action=="blade_attack","jump stay":last_action=="jump stay"}
+			elif close_range<abs(range) and abs(range)<distant_range:
+				proportion_dict = {"walk in":50,"jump in":35,"blade_attack":10,"walk out":5}
+				banlist = {"blade_attack":last_action=="blade_attack","jump in":last_action=="jump in"}
+			else:
+				proportion_dict = {"jump in":20,"switch distant":80}
+				
 	assert(proportion_dict!={},"Proportion_dict must have at least 1 tuple")
 	switch_action(random_oriented_choice(proportion_dict,banlist))
 				
@@ -79,6 +95,8 @@ func switch_sprite(part,new_sprite,old_sprite = null):
 			hide_sprite(part,sprites_in_use[part])
 		show_sprite(part,new_sprite)
 		sprites_in_use[part]=new_sprite
+		if part == "base":
+			change_collision_size(new_sprite)
 
 func show_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
@@ -87,22 +105,37 @@ func show_sprite(part,this_sprite):
 func hide_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = false	
+	togle_collisions(false,this_sprite)
+	togle_orbs(false)
 
-func blade_attack():
+func blade_attack(facing_left ):
 	var time_end = 0
 	var ending = false
 	match timer_count[0]:
 		0:
-			time_end = 60
-			switch_sprite("armL",$arm4L)
-		1:	
-			switch_sprite("armL",$arm1L)
+			time_end=30
+			if facing_left:
+				switch_sprite("armL",$arm7L)
+			else:
+				switch_sprite("armR",$arm7R)
+		1:
+			time_end = 40
+			if facing_left:
+				switch_sprite("armL",$arm4L)
+				togle_collisions(true, $arm4L)
+			else:
+				switch_sprite("armR",$arm4R)
+				togle_collisions(true, $arm4R)
+		2:
+			if facing_left:
+				switch_sprite("armL",$arm1L)
+			else:
+				switch_sprite("armR",$arm1R)
 			end_action()
 			ending = true
 	if timer_count[1] >= time_end:
 		timer_count[0]+=1
 		timer_count[1]=-1
-
 	timer_count[1]+=1
 	if ending:
 		reset_timer_count()
@@ -153,16 +186,25 @@ func reset_timer_count():
 func apply_action():
 	match action:
 		"blade_attack":
-			blade_attack()
+			var facing_left = true
+			if into_sign(target_position.x - position.x)==1:
+				facing_left = false
+			blade_attack(facing_left)
 		"wait":
 			wait_action()
-		"walk l":
-			walk_action(-1)
-		"walk r":
-			walk_action(1)
+		"walk in":
+			walk_action(into_sign(target_position.x - position.x))
+		"walk out":
+			walk_action(into_sign(position.x-target_position.x))
 		"switch distant":
 			end_action()
 			switch_state("distant")
+		"jump in":
+			new_jump_action(into_sign(target_position.x - position.x))
+		"jump out":
+			new_jump_action(into_sign(position.x-target_position.x))
+		"jump stay":
+			new_jump_action(0)
 		_:
 			wait_action()
 
@@ -181,7 +223,7 @@ func new_jump_action(direction):
 	var ending = false
 	match timer_count[0]:
 		0:
-			time_end = 30
+			time_end = 20
 			switch_sprite("base",$base2)
 			switch_sprite("armL",$arm2L)
 			switch_sprite("armR",$arm2R)
@@ -189,27 +231,33 @@ func new_jump_action(direction):
 			time_end = 0
 			jump_starting_y = position.y
 			jump_starting_x = position.x
-			velocity.y = -jump_initial_speed 
-			velocity.x = jump_speed_x* direction
+			velocity.y += -jump_initial_speed 
+			velocity.x += jump_speed_x* direction
 		2:
 			time_end = 120 #big value, not used
 			switch_sprite("base",$base3)
 			switch_sprite("armL",$arm3L)
+			togle_collisions(true, $base3)
 			switch_sprite("armR",$arm3R)
-			if position.y >= jump_starting_y:
+			if global_position.y >= jump_starting_y or is_on_floor():
+				is_not_on_floor_forced = true
+				if target_position.y >= global_position.y and abs(global_position.x - target_position.x)<=$terrainCollision.shape.size.x:
+					player_stomped()
 				timer_count[0]+=1
 				timer_count[1]=-1
-			velocity.y += jump_gravity
+			velocity.y += -jump_initial_speed
+			velocity.x += jump_speed_x* direction
 		3:
 			time_end = 10
+			if timer_count[1] ==0:
+				is_not_on_floor_forced = false
 			switch_sprite("base",$base2)
+			togle_collisions(true, $base2)
 			switch_sprite("armL",$arm2L)
 			switch_sprite("armR",$arm2R)
-			velocity=Vector2(0,0)
 		4:
 			end_action()
 			ending = true
-			debug_block = true
 			switch_sprite("base",$base1)
 			switch_sprite("armL",$arm1L)
 			switch_sprite("armR",$arm1R)
@@ -239,5 +287,71 @@ func random_oriented_choice(options_dict,bandict={} ):
 		if tested_option >= random and tested_option < options_dict[return_value]:
 			return_value = option
 	return return_value
-	
+
+
+func into_sign(f1:float):
+	f1 = int(f1)
+	if f1<0:
+		return -1
+	elif f1>0:
+		return 1
+	else:
+		return 0
+
+func togle_collisions_old(on:bool,node):
+	var parent_node
+	var child_node
+	if node.has_node("Area2D"):
+		parent_node = node.get_node("Area2D")
+		
+	elif node.has_node("StaticBody2D"):
+		parent_node = node.get_node("StaticBody2D")
+		
+	if parent_node != null:
+		if parent_node.has_node("CollisionPolygon2D"):
+			child_node = parent_node.get_node("CollisionPolygon2D")
+		elif parent_node.has_node("CollisionShape2D"):
+			child_node = parent_node.get_node("CollisionShape2D")
 			
+		if child_node != null:
+			child_node.set_deferred("disabled",!on)
+	
+func togle_collisions(on:bool,node):
+	for parent_node in node.get_children():
+		if parent_node is Area2D or parent_node is StaticBody2D:
+			for child_node in parent_node.get_children():
+				if child_node is CollisionPolygon2D or child_node is CollisionShape2D:
+					child_node.set_deferred("disabled",!on)
+
+func togle_orbs(on:bool):
+	togle_collisions(on,$crysUR)
+	togle_collisions(on,$crysDL)
+	togle_collisions(on,$crysDR)
+	togle_collisions(on,$crysUL)
+
+func change_collision_size(node):
+	var old_shape=$terrainCollision.shape.size
+	var new_data
+	if node == $base1:
+		new_data = base1collision
+	elif node == $base2:
+		new_data = base2collision
+	elif node == $base3:
+		new_data = base3collision
+		
+	$terrainCollision.shape.size = new_data[0]
+	$terrainCollision.position = new_data[1]
+
+func player_stomped():
+	if target != null:
+		#target.position.x+=$terrainCollision.shape.size.x + target.shapeCollision.x
+		#target_position.x += 1000
+		pass
+	target.emit_signal("hit",self)
+
+
+func _on_area_2d_body_entered(body):
+	if body.character_name == "player":
+		body.emit_signal("hit",self)
+
+
