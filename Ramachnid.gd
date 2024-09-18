@@ -24,19 +24,22 @@ var jump_starting_y
 var jump_starting_x
 var starting_direction=null
 var target_position = Vector2(500,200)
-var base1collision = [Vector2(129.5,113.5),Vector2(0,-1.25)]
-var base2collision = [Vector2(79.8,104.8),Vector2(0,-5.6)]
-var base3collision = [Vector2(90.8,112.4),Vector2(0,12)]
+var base1collision 
+var base2collision 
+var base3collision
 var is_not_on_floor_forced = false
+var close_range = 200
+var distant_range = 1000
 func _ready():
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
+	base1collision = [$base1/terrain.shape.size,$base1/terrain.position,$base1/terrain2.shape.size,$base1/terrain2.position]
+	base2collision = [$base2/terrain.shape.size,$base2/terrain.position,$base2/terrain2.shape.size,$base2/terrain2.position]
+	base3collision = [$base3/terrain.shape.size,$base3/terrain.position,$base3/terrain2.shape.size,$base3/terrain2.position]
 	switch_sprite("base",$base1)
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
-	base1collision = [$base1/terrain.shape.size,$base1/terrain.position]
-	base2collision = [$base2/terrain.shape.size,$base2/terrain.position]
-	base3collision = [$base3/terrain.shape.size,$base3/terrain.position]
+
 	
 func _physics_process(delta):
 	velocity = Vector2(0,0)
@@ -55,12 +58,14 @@ func _physics_process(delta):
 	move_and_slide()
 
 func chose_state():
-	state = "close_combat"
-	
+	state = "distant_combat"
+	var range = position.x - target_position.x
 	if state == "close_combat":
-		pass
-	elif state == "far_combat":
-		pass
+		if abs(range)>=distant_range:
+			switch_state("distant_combat")
+	elif state == "distant_combat":
+		if abs(range)<distant_range:
+			switch_state("close_combat")
 	elif state== "blocked":
 		pass
 
@@ -72,17 +77,15 @@ func chose_action_by_state():
 			proportion_dict = {"wait":100}
 		"close_combat":
 			var range = position.x - target_position.x
-			var close_range = 200
-			var distant_range = 1000
+			
 			if abs(range)<=close_range:
 				proportion_dict = {"blade_attack":50,"jump stay":20,"walk out":25,"wait":5}
 				banlist = {"blade_attack":last_action=="blade_attack","jump stay":last_action=="jump stay"}
-			elif close_range<abs(range) and abs(range)<distant_range:
+			elif close_range<abs(range):
 				proportion_dict = {"walk in":50,"jump in":35,"blade_attack":10,"walk out":5}
 				banlist = {"blade_attack":last_action=="blade_attack","jump in":last_action=="jump in"}
-			else:
-				proportion_dict = {"jump in":20,"switch distant":80}
-				
+		"distant_combat":
+			proportion_dict = {"wait":20,"walk out": 30,"jump out":20,"walk in":20,"jump in":10}
 	assert(proportion_dict!={},"Proportion_dict must have at least 1 tuple")
 	switch_action(random_oriented_choice(proportion_dict,banlist))
 				
@@ -146,7 +149,12 @@ func wait_action():
 	var ending = false
 	match timer_count[0]:
 		0:
+			switch_sprite("base",$base1)
+			togle_collisions(true,$base1)
+			switch_sprite("armL",$arm1L)
+			switch_sprite("armR",$arm1R)
 			time_end = 60
+			
 		1:
 			end_action()
 			ending = true
@@ -187,7 +195,6 @@ func reset_timer_count():
 func apply_action():
 	match action:
 		"blade_attack":
-			print("in")
 			init_starting_direction(target_position.x - position.x)
 			var facing_left = true
 			if starting_direction==1:
@@ -271,6 +278,7 @@ func new_jump_action(direction):
 			end_action()
 			ending = true
 			switch_sprite("base",$base1)
+			togle_collisions(true,$base1)
 			switch_sprite("armL",$arm1L)
 			switch_sprite("armR",$arm1R)
 	if timer_count[1] >= time_end:
@@ -353,7 +361,8 @@ func change_collision_size(node):
 		
 	$terrainCollision.shape.size = new_data[0]
 	$terrainCollision.position = new_data[1]
-
+	$terrainCollision2.shape.size = new_data[2]
+	$terrainCollision2.position = new_data[3]
 func player_stomped():
 	if target != null:
 		#target.position.x+=$terrainCollision.shape.size.x + target.shapeCollision.x
