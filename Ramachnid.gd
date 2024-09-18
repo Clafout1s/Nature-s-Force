@@ -22,6 +22,7 @@ var jump_initial_speed = 1000
 var jump_speed_x = 500
 var jump_starting_y
 var jump_starting_x
+var starting_direction=null
 var target_position = Vector2(500,200)
 var base1collision = [Vector2(129.5,113.5),Vector2(0,-1.25)]
 var base2collision = [Vector2(79.8,104.8),Vector2(0,-5.6)]
@@ -186,27 +187,37 @@ func reset_timer_count():
 func apply_action():
 	match action:
 		"blade_attack":
+			print("in")
+			init_starting_direction(target_position.x - position.x)
 			var facing_left = true
-			if into_sign(target_position.x - position.x)==1:
+			if starting_direction==1:
 				facing_left = false
 			blade_attack(facing_left)
 		"wait":
 			wait_action()
 		"walk in":
-			walk_action(into_sign(target_position.x - position.x))
+			init_starting_direction(target_position.x - position.x)
+			walk_action(starting_direction)
 		"walk out":
-			walk_action(into_sign(position.x-target_position.x))
+			init_starting_direction(position.x-target_position.x)
+			walk_action(starting_direction)
 		"switch distant":
 			end_action()
 			switch_state("distant")
 		"jump in":
-			new_jump_action(into_sign(target_position.x - position.x))
+			init_starting_direction(target_position.x - position.x)
+			new_jump_action(starting_direction)
 		"jump out":
-			new_jump_action(into_sign(position.x-target_position.x))
+			init_starting_direction(position.x-target_position.x)
+			new_jump_action(starting_direction)
 		"jump stay":
 			new_jump_action(0)
 		_:
 			wait_action()
+
+func init_starting_direction(value):
+	if starting_direction == null:
+		starting_direction = into_sign(value)
 
 func switch_action(act):
 	if action == "":
@@ -216,6 +227,7 @@ func end_action():
 	reset_timer_count()
 	last_action = action
 	action = ""
+	starting_direction = null
 
 func new_jump_action(direction):
 	assert(direction in [1,0,-1],"direction is either 0, 1 or -1")

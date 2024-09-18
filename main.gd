@@ -5,10 +5,11 @@ var root_node
 
 var main_menu = preload("res://menu.tscn").instantiate()
 var character_list=[] 
+var ui_list = []
 var actual_scene 
 var actual_tilemap
 var effects_list = ["dangerous"]
-
+var lifebar_scene = preload("res://lifeBar.tscn").instantiate()
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	add_child(main_menu)
@@ -41,6 +42,7 @@ func spawn_to_position_markers(level_scene):
 			new_charac.scene.position = spawn_list[i][0].position
 			if "spawn_point" in new_charac.scene:
 				new_charac.scene.spawn_point = spawn_list[i][0].position
+	
 
 func load_level_scene(level_scene):
 	add_child(level_scene)
@@ -54,6 +56,14 @@ func delete_level_scene(level_scene):
 	var character_list_2 = character_list.duplicate()
 	for character in character_list_2:
 		character.remove_character()
+		
+	var ui_list2 = ui_list.duplicate()
+	for i in range(len(ui_list2)):
+		var ui_ele = ui_list2[i]
+		if is_instance_valid(ui_ele):
+			#queue_free is a problem, remove_child is enough
+			remove_child(ui_ele)
+		ui_list.remove_at(i)
 
 func get_tile_position(other_position):
 	if actual_scene != null:
@@ -84,3 +94,12 @@ func win_level_and_return_menu():
 func quit_game():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()
+
+func add_ui(ui_name,parameter_list):
+	match ui_name:
+		"lifebar":
+			add_child(lifebar_scene)
+			lifebar_scene.get_node("ProgressBar").max_value = parameter_list[0]
+			lifebar_scene.get_node("ProgressBar").value = parameter_list[0]
+			ui_list.append(lifebar_scene)
+			parameter_list[1].lifebar = lifebar_scene

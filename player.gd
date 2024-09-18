@@ -20,13 +20,15 @@ var shotgun_instance_x=Regular_value.new("shotgun_x",(-cos(shotgun_angle)*shotgu
 var shotgun_instance_y=Regular_value.new("shotgun_y",(-sin(shotgun_angle)*shotgun_value),shotgun_burst_frames,true,shotgun_deceleration_movement*direction,shotgun_deceleration_frames)
 var sword_instance = preload("res://laser_sword.tscn").instantiate()
 
-var invuln_frames_start = 360
+var invuln_frames_start = 180
 var invuln_frames = 0
-var invuln_gravity = 30
+var invuln_gravity = 50
 var invuln = false
 var invuln_direction
-var invuln_begin_speed = Vector2(500,500)
+var invuln_begin_speed = Vector2(650,350)
 var  collision_mask_list = []
+
+var lifebar
 func _ready():
 	character_name = "player"
 	super()
@@ -45,6 +47,8 @@ func _ready():
 	nodeCollision = $CollisionShape2D
 	nodeSprite = $mainCharac
 	adaptShape()
+	if hp>1:
+		root_node.add_ui("lifebar",[hp,self])
 	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:
@@ -217,7 +221,6 @@ func _on_tree_exiting():
 	root_node.remove_child.call_deferred(shotgun_slots_UI)
 	
 func start_invuln():
-	print("FUCKIN INVINCIBLE")
 	invuln = true
 	end_shotgun_blast(true,true)
 	velocity=Vector2(0,0)
@@ -235,7 +238,6 @@ func end_invuln():
 	
 	for i in range(8):
 		set_collision_mask_value(i+1,collision_mask_list[i])
-	print(get_collision_mask_value(2))
 func during_invuln():
 	exp_gravity+= invuln_gravity
 	invuln_frames += 1
@@ -244,15 +246,25 @@ func during_invuln():
 	velocity.y = -invuln_begin_speed.y
 	
 	velocity.y += exp_gravity
-	print(velocity)
 	if is_on_floor() and not invuln_frames==1 or invuln_frames == invuln_frames_start:
 		end_invuln()
 
 func _on_hit(_hitter=null,_type="other"):
 	var direction = 0
+	
 	if not hp -1 <=0:
 		if _hitter != null:
 			invuln_direction = into_sign(global_position.x-_hitter.global_position.x)
-			start_invuln()
+			if invuln_direction == 0:
+				invuln_direction = 1
+			if not invuln:
+				start_invuln()
+				update_lifebar()
+			
 	else:
+		update_lifebar()
 		hp-=1
+		
+func update_lifebar():
+	if not lifebar==null:
+		lifebar.get_node("ProgressBar").value-=1
