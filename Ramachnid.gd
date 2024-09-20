@@ -31,34 +31,34 @@ var is_not_on_floor_forced = false
 var close_range = 200
 var distant_range = 1000
 func _ready():
-	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3]}
+	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3,$canon4]}
 	base1collision = [$base1/terrain.shape.size,$base1/terrain.position,$base1/terrain2.shape.size,$base1/terrain2.position]
 	base2collision = [$base2/terrain.shape.size,$base2/terrain.position,$base2/terrain2.shape.size,$base2/terrain2.position]
 	base3collision = [$base3/terrain.shape.size,$base3/terrain.position,$base3/terrain2.shape.size,$base3/terrain2.position]
 	switch_sprite("base",$base1)
+	togle_collisions(true,$base1)
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
-
 	
 func _physics_process(delta):
 	velocity = Vector2(0,0)
 	if target != null:
 		target_position = target.global_position
-	chose_state()
-	chose_action_by_state()
-	apply_action()
-	
+	if not state == "blocking":
+		chose_state()
+		chose_action_by_state()
+		apply_action()
+		
 	if not is_on_floor():
 		moving_gravity+=jump_gravity
 		velocity.y+=moving_gravity
 	if is_on_floor() and not is_not_on_floor_forced:
 		moving_gravity = 0
-		
 	move_and_slide()
 
 func chose_state():
-	state = "distant_combat"
+	state = "idle"
 	var range = position.x - target_position.x
 	if state == "close_combat":
 		if abs(range)>=distant_range:
@@ -66,15 +66,13 @@ func chose_state():
 	elif state == "distant_combat":
 		if abs(range)<distant_range:
 			switch_state("close_combat")
-	elif state== "blocked":
-		pass
 
 func chose_action_by_state():
 	var proportion_dict = {}
 	var banlist={}
 	match state:
 		"idle":
-			proportion_dict = {"wait":100}
+			proportion_dict = {"blade_attack":100}
 		"close_combat":
 			var range = position.x - target_position.x
 			
@@ -94,25 +92,48 @@ func switch_state(new_state:String):
 	state = new_state
 
 func switch_sprite(part,new_sprite,old_sprite = null):
-	if sprites_in_use[part] != new_sprite and (old_sprite == null or old_sprite == sprites_in_use[part]):
+	if old_sprite == null:
+		old_sprite = sprites_in_use[part]
+	var no_switch = false
+	if (part == "armL" and sprites_in_use[part] == $arm6L) or (part == "armR" and sprites_in_use[part] == $arm6R):
+		no_switch = true
+	if part == "canon":
+		if (new_sprite == $canon2 and old_sprite == $canon3) or (old_sprite == $canon2 and new_sprite == $canon3):
+			new_sprite = $canon4
+		if old_sprite == $canon4:
+			no_switch = true
+		if old_sprite in [$canon2,$canon3] and new_sprite == $canon1:
+			no_switch = true
+	if not no_switch and sprites_in_use[part] != new_sprite and (old_sprite == null or old_sprite == sprites_in_use[part]):
 		if not sprites_in_use[part]==null:
 			hide_sprite(part,sprites_in_use[part])
 		show_sprite(part,new_sprite)
 		sprites_in_use[part]=new_sprite
 		if part == "base":
 			change_collision_size(new_sprite)
+		
 
 func show_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = true
+	if this_sprite in [$arm5L,$arm5R,$arm6L,$arm6R]:
+		togle_bot_orbs(true)
+	if this_sprite in body_parts_dict["base"]:
+		togle_top_orbs(true)
 
 func hide_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = false	
 	togle_collisions(false,this_sprite)
 	togle_orbs(false)
+	
 
 func blade_attack(facing_left ):
+	var letter
+	if facing_left:
+		letter = "L"
+	else:
+		letter = "R"
 	var time_end = 0
 	var ending = false
 	match timer_count[0]:
@@ -317,37 +338,38 @@ func into_sign(f1:float):
 		return 1
 	else:
 		return 0
-
-func togle_collisions_old(on:bool,node):
-	var parent_node
-	var child_node
-	if node.has_node("Area2D"):
-		parent_node = node.get_node("Area2D")
-		
-	elif node.has_node("StaticBody2D"):
-		parent_node = node.get_node("StaticBody2D")
-		
-	if parent_node != null:
-		if parent_node.has_node("CollisionPolygon2D"):
-			child_node = parent_node.get_node("CollisionPolygon2D")
-		elif parent_node.has_node("CollisionShape2D"):
-			child_node = parent_node.get_node("CollisionShape2D")
-			
-		if child_node != null:
-			child_node.set_deferred("disabled",!on)
 	
 func togle_collisions(on:bool,node):
+	var parent_node_banlist = []
+	if sprites_in_use["armL"] in [$arm6L,$arm5L]:
+		print("in")
+		parent_node_banlist+=[$base1/orbL,$base2/orbL]
+	if sprites_in_use["armR"] in [$arm5R, $arm6R]:
+		print("in")
+		parent_node_banlist+=[$base1/orbR,$base2/orbR]
 	for parent_node in node.get_children():
-		if parent_node is Area2D or parent_node is StaticBody2D:
+		if (parent_node is Area2D or parent_node is StaticBody2D) and parent_node not in parent_node_banlist:
 			for child_node in parent_node.get_children():
 				if child_node is CollisionPolygon2D or child_node is CollisionShape2D:
-					child_node.set_deferred("disabled",!on)
+					if not child_node.disabled == !on:
+						child_node.set_deferred("disabled",!on)
+
+func togle_specific_collision(on:bool,collision_node):
+	collision_node.set_deferred("disabled",!on)
 
 func togle_orbs(on:bool):
 	togle_collisions(on,$crysUR)
 	togle_collisions(on,$crysDL)
 	togle_collisions(on,$crysDR)
 	togle_collisions(on,$crysUL)
+
+func togle_top_orbs(on:bool):
+	togle_collisions(on,$crysUR)
+	togle_collisions(on,$crysUL)
+
+func togle_bot_orbs(on:bool):
+	togle_collisions(on,$crysDL)
+	togle_collisions(on,$crysDR)
 
 func change_collision_size(node):
 	var old_shape=$terrainCollision.shape.size
@@ -365,14 +387,55 @@ func change_collision_size(node):
 	$terrainCollision2.position = new_data[3]
 func player_stomped():
 	if target != null:
-		#target.position.x+=$terrainCollision.shape.size.x + target.shapeCollision.x
-		#target_position.x += 1000
-		pass
-	target.emit_signal("hit",self)
+		target.emit_signal("hit",self)
 
 
 func _on_area_2d_body_entered(body):
+	print("body_entered")
 	if body.character_name == "player":
 		body.emit_signal("hit",self)
 
 
+func _on_crystal_hit(area,crystal):
+	if area.attack_name == "laser_blade":
+		match crystal:
+			"UR":
+				$crysUR.visible = false
+				togle_specific_collision(false,$base1/orbR/CollisionShape2D)
+				togle_specific_collision(false,$base2/orbR/CollisionShape2D)
+				$crysUR/Area2D.disconnect("area_entered",_on_crystal_hit)
+				switch_sprite("canon",$canon3)
+			"UL":
+				$crysUL.visible = false
+				togle_specific_collision(false,$base1/orbL/CollisionShape2D)
+				togle_specific_collision(false,$base2/orbL/CollisionShape2D)
+				$crysUL/Area2D.disconnect("area_entered",_on_crystal_hit)
+				switch_sprite("canon",$canon2)
+			"DR":
+				$crysDR.visible = false
+				$crysDR/Area2D.disconnect("area_entered",_on_crystal_hit)
+				switch_sprite("armR",$arm6R)
+				togle_collisions(true,$arm6R)
+			"DL":
+				$crysDL.visible = false
+				$crysDL/Area2D.disconnect("area_entered",_on_crystal_hit)
+				switch_sprite("armL",$arm6L)
+				togle_collisions(true,$arm6L)
+
+func _on_area_2d_area_entered(area,side):
+	if area.attack_name == "laser_blade":
+		switch_sprite("arm"+side,get_node("arm5"+side))
+		togle_collisions(true,get_node("arm5"+side))
+		start_blocking()
+
+func start_blocking():
+	$armBlock.start()
+	switch_state("blocking")
+	end_action()
+	reset_timer_count()
+
+func end_blocking():
+	switch_state("distant_combat")
+
+func _on_arm_block_timeout():
+	end_blocking()

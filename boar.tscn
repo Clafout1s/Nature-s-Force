@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dlux5nbghwajw"]
+[gd_scene load_steps=7 format=3 uid="uid://dlux5nbghwajw"]
 
 [ext_resource type="Script" path="res://boar.gd" id="1_dvn30"]
 [ext_resource type="Texture2D" uid="uid://hyii0ed6wg24" path="res://sprites/boarv2.png" id="2_cgyvl"]
+[ext_resource type="Texture2D" uid="uid://co51q2ooldaua" path="res://sprites/boarHurt.png" id="2_ixd70"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kfchw"]
 radius = 20.6667
@@ -29,6 +30,13 @@ shape = SubResource("CapsuleShape2D_kfchw")
 position = Vector2(0, -8)
 texture = ExtResource("2_cgyvl")
 flip_h = true
+
+[node name="hurt" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -8)
+rotation = 3.14159
+scale = Vector2(1, -1)
+texture = ExtResource("2_ixd70")
 
 [node name="vision" type="Area2D" parent="."]
 collision_layer = 64

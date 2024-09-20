@@ -1,5 +1,6 @@
 extends StaticBody2D
 
+var attack_name = "laser_blade"
 var character_sword_gap = Vector2(30,30)
 var sword_scale = Vector2(0.7,0.7)
 var slash_frames = 15
@@ -16,6 +17,7 @@ func _ready():
 	sprite = $sprite
 	disable_blade()
 	rotate_sword(0)
+	$damage_zone.attack_name = attack_name
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if slashing:
@@ -64,6 +66,7 @@ func area_or_body_entered(node):
 		if raycast_to_target(node):
 			node.emit_signal("hit",user,"blade")
 	else:
+		
 		node.emit_signal("hit",self,"blade")
 
 func raycast_to_target(target):

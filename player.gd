@@ -27,7 +27,7 @@ var invuln = false
 var invuln_direction
 var invuln_begin_speed = Vector2(650,350)
 var  collision_mask_list = []
-
+var boss_hp = 5
 var lifebar
 func _ready():
 	character_name = "player"
@@ -113,6 +113,7 @@ func process_addon(delta):
 func swap():
 	nodeSprite.scale.x *= -1
 	nodeCollision.scale.x *= -1
+	$hurt.scale.x *= -1
 
 func on_floor_addon():
 	exp_gravity = 0
@@ -221,6 +222,7 @@ func _on_tree_exiting():
 	root_node.remove_child.call_deferred(shotgun_slots_UI)
 	
 func start_invuln():
+	$hurt.visible = true
 	invuln = true
 	end_shotgun_blast(true,true)
 	velocity=Vector2(0,0)
@@ -231,8 +233,9 @@ func start_invuln():
 			set_collision_mask_value(i+1,false)
 	
 func end_invuln():
+	$hurt.visible = false
 	invuln = false
-	hp-=1
+	#hp-=1
 	invuln_frames = 0
 	velocity = Vector2(0,0)
 	
@@ -251,7 +254,6 @@ func during_invuln():
 
 func _on_hit(_hitter=null,_type="other"):
 	var direction = 0
-	
 	if not hp -1 <=0:
 		if _hitter != null:
 			invuln_direction = into_sign(global_position.x-_hitter.global_position.x)

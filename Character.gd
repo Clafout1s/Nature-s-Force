@@ -23,7 +23,7 @@ func _init(nid,ntype,nroot,special_rules=[]):
 			#adapted_positions_list.append("player_floor")
 			scene.character_class_instance = self
 			if "hp_boss" in special_rules:
-				scene.hp = 2
+				scene.hp = scene.boss_hp
 		"boar":
 			scene = preload("res://boar.tscn").instantiate()
 			#adapted_positions_list.append("boar_wall")

@@ -67,6 +67,10 @@ func find_behavior():
 	if abs(last_target_position.x - global_position.x) < float(shapeCollision.x)/2 or no_ground_detection(position,shapeCollision) or wall_detection(position,shapeCollision,self):
 		switch_to_idle()
 
+func swap():
+	super()
+	$hurt.scale.x *= -1
+
 func switch_to_attack():
 	if not stunned:
 		super()
@@ -98,7 +102,7 @@ func _on_hit(hitter=null,damage_type="basic"):
 	
 func start_stun(hitter):
 	if not stunned:
-			
+		$hurt.visible = true
 		stunned = true
 		stun_attack_passed=false
 		$stunTimer.start()
@@ -114,4 +118,5 @@ func start_stun(hitter):
 func _on_stun_timer_timeout():
 	$damage_zone/CollisionShape2D.set_deferred("disabled",false)
 	stunned = false
+	$hurt.visible = false
 
