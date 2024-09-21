@@ -27,7 +27,7 @@ var invuln = false
 var invuln_direction
 var invuln_begin_speed = Vector2(650,350)
 var  collision_mask_list = []
-var boss_hp = 5
+var boss_hp = 3
 var lifebar
 func _ready():
 	character_name = "player"
@@ -235,7 +235,6 @@ func start_invuln():
 func end_invuln():
 	$hurt.visible = false
 	invuln = false
-	#hp-=1
 	invuln_frames = 0
 	velocity = Vector2(0,0)
 	
@@ -260,6 +259,7 @@ func _on_hit(_hitter=null,_type="other"):
 			if invuln_direction == 0:
 				invuln_direction = 1
 			if not invuln:
+				hp-=1
 				start_invuln()
 				update_lifebar()
 			
