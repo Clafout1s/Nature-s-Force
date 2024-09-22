@@ -1,7 +1,7 @@
 extends Ennemy_basics
 
 var limit_distance = 1000
-var bullet_instance = preload("res://bulletAttack.tscn").instantiate()
+var bullet_instance = preload("res://new_bullet.tscn").instantiate()
 var reloading = false
 var stunned = false
 var target_in_sight = false
@@ -58,7 +58,7 @@ func attack_behavior():
 	
 	if not has_same_sign(global_position.x  - target_body.global_position.x, direction):
 		swap()
-	if not bullet_instance.shooting and not reloading and not stunned and raycast_to_target():
+	if not bullet_instance.in_action and not reloading and not stunned and raycast_to_target():
 		shoot(target_body)
 
 func find_behavior():
@@ -69,7 +69,7 @@ func flee_behavior():
 		start_moving(calculate_movement_angle_BY_TARGET(target_body.position,false,120),speed,flee_frames)
 	if not has_same_sign(global_position.x  - target_body.global_position.x, -direction):
 		swap()
-	if not bullet_instance.shooting and not reloading and not stunned and raycast_to_target():
+	if not bullet_instance.in_action and not reloading and not stunned and raycast_to_target():
 		shoot(target_body)
 		
 func _on_vision_body_entered(body):
@@ -82,20 +82,19 @@ func _on_vision_body_exited(_body):
 
 func shoot(target):
 	"Creates a bullet that goes to the target"
-	if not bullet_instance.already_exists:
-		root_node.add_child(bullet_instance)
-		bullet_instance.hit_something.connect(_on_hit_something)
-		bullet_instance.ending_bullet.connect(_on_bullet_end)
-		bullet_instance.add_to_black_list(self)
-	
-	bullet_instance.global_position = global_position + Vector2(shapeCollision.x * direction,0)
-	bullet_instance.angle = global_position.angle_to_point(target.global_position)
-	bullet_instance.launch()
-	
+	add_child(bullet_instance)
+	bullet_instance.global_position = global_position
+	bullet_instance.scale = Vector2(0.3,0.3)
+	bullet_instance.launch(global_position.angle_to_point(target.global_position),500,180)
+	bullet_instance.endBullet.connect(_on_bullet_end)
+	bullet_instance.get_node("Area2D").body_entered.connect(_on_hit_something)
 
 func _on_bullet_end():
+	call_deferred("remove_child",bullet_instance)
 	reloading = true
 	$reloadTimer.start()
+	bullet_instance.endBullet.disconnect(_on_bullet_end)
+	bullet_instance.get_node("Area2D").body_entered.disconnect(_on_hit_something)
 	
 func _on_hit_something(body):
 	if not body is TileMap:
@@ -234,5 +233,4 @@ func calculate_range(a:Vector2,b:Vector2):
 
 
 func _on_tree_exiting():
-	if bullet_instance != null:
-		bullet_instance.queue_free()
+	pass

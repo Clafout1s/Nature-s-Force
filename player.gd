@@ -27,7 +27,7 @@ var invuln = false
 var invuln_direction
 var invuln_begin_speed = Vector2(650,350)
 var  collision_mask_list = []
-var boss_hp = 3
+var boss_hp = 5
 var lifebar
 func _ready():
 	character_name = "player"

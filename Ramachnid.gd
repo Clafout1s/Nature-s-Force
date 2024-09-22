@@ -30,8 +30,9 @@ var base1collision
 var base2collision 
 var base3collision
 var is_not_on_floor_forced = false
-var close_range = 200
-var distant_range = 1000
+var close_range = 500
+var distant_range = 1200
+var bullet_file = preload("res://new_bullet.tscn")
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3,$canon4]}
@@ -42,12 +43,13 @@ func _ready():
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
-	
+	$base2/stomp/CollisionShape2D.disabled = true
+
 func _physics_process(delta):
 	velocity = Vector2(0,0)
 	if target != null:
 		target_position = target.global_position
-	if not state == "blocking":
+	if not state in ["blocking","dying"]:
 		chose_state()
 		chose_action_by_state()
 		apply_action()
@@ -72,6 +74,7 @@ func chose_state():
 func chose_action_by_state():
 	var proportion_dict = {}
 	var banlist={}
+	var jump_boost = (boost_dict["canon"] + boost_dict["blade"] )/ 2
 	match state:
 		"idle":
 			proportion_dict = {"blade_attack":100}
@@ -81,20 +84,36 @@ func chose_action_by_state():
 			var range = position.x - target_position.x
 			
 			if abs(range)<=close_range:
-				proportion_dict = {"blade_attack":50,"jump stay":20,"walk out":25,"wait":5}
-				banlist = {"blade_attack":last_action=="blade_attack","jump stay":last_action=="jump stay"}
+				proportion_dict = {"blade_attack":50,"jump in":12*jump_boost,"jump stay":8*jump_boost,"walk out":25,"wait":5}
+				banlist = {"blade_attack":[last_action=="blade_attack",check_arm_broken(get_target_side())],"jump stay":last_action=="jump stay"}
 			elif close_range<abs(range):
-				proportion_dict = {"walk in":50,"jump in":35,"blade_attack":10,"walk out":5}
-				banlist = {"blade_attack":last_action=="blade_attack","jump in":last_action=="jump in"}
+				proportion_dict = {"walk in":50,"jump in":10*jump_boost,"blade_attack":35,"walk out":5}
+				banlist = {"blade_attack":[last_action=="blade_attack",check_arm_broken(get_target_side())],"jump in":last_action=="jump in"}
 		"distant_combat":
-			proportion_dict = {"wait":20,"walk out": 30,"jump out":20,"walk in":20,"jump in":10}
+			proportion_dict = {"wait":20,"walk out": 30,"jump out":20*jump_boost,"walk in":20,"jump in":10*jump_boost}
 	assert(proportion_dict!={},"Proportion_dict must have at least 1 tuple")
 	switch_action(random_oriented_choice(proportion_dict,banlist))
+	var shootlist = {"shoot":1,"wait":159/float(boost_dict["canon"])}
+	if state != "idle" and random_oriented_choice(shootlist)=="shoot":
+		var shoot_dir = into_sign(target_position.x - global_position.x)
+		if shoot_dir == -1:
+			shoot_bullet($leftBullet)
+		else:
+			shoot_bullet($rightBullet)
 				
 
 func switch_state(new_state:String):
 	state = new_state
 
+func get_target_side():
+	if target_position.x - global_position.x > 0:
+		return "R"
+	else:
+		return "L"
+
+func check_arm_broken(side):
+	return sprites_in_use["arm"+side] == get_node("arm6"+side)
+	
 func switch_sprite(part,new_sprite,old_sprite = null):
 	if old_sprite == null:
 		old_sprite = sprites_in_use[part]
@@ -118,14 +137,20 @@ func switch_sprite(part,new_sprite,old_sprite = null):
 func show_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = true
-	togle_collisions(true,this_sprite)
-	if part == "base":
-		change_collision_size(this_sprite)
+		togle_collisions(true,this_sprite)
+		if part == "base":
+			change_collision_size(this_sprite)
+		if this_sprite in [$arm5L,$arm5R]:
+			togle_bot_orbs(true)
+		else:
+			togle_bot_orbs(false)
 
 func hide_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = false
-	togle_collisions(false,this_sprite)
+		togle_collisions(false,this_sprite)
+		if this_sprite == $arm4L:
+			print($arm4L/Area2D/CollisionPolygon2D.disabled)
 
 func blade_attack(facing_left ):
 	var letter
@@ -146,8 +171,10 @@ func blade_attack(facing_left ):
 			time_end = 40
 			if facing_left:
 				switch_sprite("armL",$arm4L)
+				velocity.x = -speed * boost_dict["blade"]/float(6)
 			else:
 				switch_sprite("armR",$arm4R)
+				velocity.x = speed* boost_dict["blade"]/float(6)
 		2:
 			if facing_left:
 				switch_sprite("armL",$arm1L)
@@ -216,7 +243,8 @@ func apply_action():
 			var facing_left = true
 			if starting_direction==1:
 				facing_left = false
-			blade_attack(facing_left)
+			if not (facing_left and sprites_in_use["armL"]==$arm6L or not facing_left and sprites_in_use["armR"]==$arm6R):
+				blade_attack(facing_left)
 		"wait":
 			wait_action()
 		"walk in":
@@ -277,10 +305,6 @@ func new_jump_action(direction):
 			switch_sprite("armR",$arm3R)
 			if global_position.y >= jump_starting_y or is_on_floor():
 				is_not_on_floor_forced = true
-				"""
-				if target_position.y >= global_position.y and abs(global_position.x - target_position.x)<=$terrainCollision.shape.size.x:
-					player_stomped()
-				"""
 				timer_count[0]+=1
 				timer_count[1]=-1
 			velocity.y += -jump_initial_speed
@@ -308,8 +332,13 @@ func new_jump_action(direction):
 func random_oriented_choice(options_dict,bandict={} ):
 	assert (options_dict !={}, "options_dict must not be empty")
 	for option in bandict.keys():
-		if bandict[option]:
-			options_dict.erase(option)
+		if bandict[option] is Array:
+			for banbool in bandict[option]:
+				if banbool:
+					options_dict.erase(option)
+		else:
+			if bandict[option]:
+				options_dict.erase(option)
 	var added=0
 	var last_option
 	for option in options_dict:
@@ -386,7 +415,6 @@ func _on_area_2d_body_entered(body):
 func _on_crystal_hit(area,crystal):
 	if area.attack_name == "laser_blade":
 		if state == "blocking":
-			print("in")
 			$brokenOrb.start()
 			$armBlock.stop()
 		match crystal:
@@ -394,20 +422,33 @@ func _on_crystal_hit(area,crystal):
 				$crysUR.visible = false
 				$crysUR/Area2D.disconnect("area_entered",_on_crystal_hit)
 				switch_sprite("canon",$canon3)
+				boost_dict["canon"]+=0.5
+				if sprites_in_use["canon"]==$canon4:
+					boost_dict["blade"]+=0.5
+				
 			"UL":
 				$crysUL.visible = false
 				$crysUL/Area2D.disconnect("area_entered",_on_crystal_hit)
 				switch_sprite("canon",$canon2)
+				boost_dict["canon"]+=0.5
+				if sprites_in_use["canon"]==$canon4:
+					boost_dict["blade"]+=0.5
 			"DR":
 				$crysDR.visible = false
 				$crysDR/Area2D.disconnect("area_entered",_on_crystal_hit)
 				switch_sprite("armR",$arm6R)
-				boost_dict["blade"]+=1
+				boost_dict["blade"]+=0.5
+				if check_arm_broken("L") and check_arm_broken("R"):
+					boost_dict["canon"]+=0.5
+				togle_top_orbs(false)
 			"DL":
 				$crysDL.visible = false
 				$crysDL/Area2D.disconnect("area_entered",_on_crystal_hit)
 				switch_sprite("armL",$arm6L)
-				boost_dict["blade"]+=1
+				boost_dict["blade"]+=0.5
+				if check_arm_broken("L") and check_arm_broken("R"):
+					boost_dict["canon"]+=0.5
+				togle_top_orbs(false)
 		if ! (true in [$crysUR.visible,$crysUL.visible,$crysDR.visible,$crysDL.visible]):
 			begin_end()
 
@@ -437,7 +478,7 @@ func start_blocking():
 
 func end_blocking():
 	var side
-	
+	togle_top_orbs(true)
 	if sprites_in_use["armL"] == $arm5L:
 		side = "L"
 	elif sprites_in_use["armR"] == $arm5R:
@@ -448,9 +489,35 @@ func end_blocking():
 
 
 func _on_arm_block_timeout():
-	print("natural timeout")
 	end_blocking()
 
 
 func _on_broken_orb_timeout():
 	end_blocking()
+
+func shoot_bullet(marker):
+	var block = false
+	if marker == $leftBullet and sprites_in_use["canon"] in [$canon4,$canon2]:
+		block = true
+	elif marker == $rightBullet and sprites_in_use["canon"] in [$canon4,$canon3]:
+		block = true
+	if not block:
+		var bullet_instance = bullet_file.instantiate()
+		add_child(bullet_instance)
+		bullet_instance.global_position = marker.global_position
+		bullet_instance.scale = Vector2(0.5,0.5)
+		var exact_angle = marker.global_position.angle_to_point(target_position)
+		var rng =  RandomNumberGenerator.new()
+		var shoot_angle =rng.randf_range(exact_angle-PI/float(6),exact_angle+PI/float(6))
+		bullet_instance.launch(shoot_angle,1000,180/float(boost_dict["canon"]))
+		bullet_instance.endBullet.connect(_on_bullet_end.bind(bullet_instance))
+		bullet_instance.get_node("Area2D").body_entered.connect(_on_hit_something)
+
+
+func _on_bullet_end(instance):
+	call_deferred("remove_child",instance)
+	instance.endBullet.disconnect(_on_bullet_end)
+	instance.get_node("Area2D").body_entered.disconnect(_on_hit_something)
+
+func _on_hit_something(thing):
+	thing.emit_signal("hit",self,"bullet")

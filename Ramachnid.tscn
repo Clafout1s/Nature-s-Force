@@ -604,6 +604,15 @@ one_shot = true
 [node name="brokenOrb" type="Timer" parent="."]
 one_shot = true
 
+[node name="leftBullet" type="Marker2D" parent="."]
+position = Vector2(-23.6, -44.8)
+
+[node name="rightBullet" type="Marker2D" parent="."]
+position = Vector2(22.8, -44.4)
+
+[node name="upBullet" type="Marker2D" parent="."]
+position = Vector2(-0.4, -59.6)
+
 [connection signal="death" from="." to="." method="_on_death"]
 [connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered"]
