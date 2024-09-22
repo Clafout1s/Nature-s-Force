@@ -13,7 +13,7 @@ var level_to_button_dict
 # Called when the node enters the scene trepasse for the first time.
 func _ready():
 	root_node = get_tree().root.get_child(0)
-	level_to_button_dict = {level1:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1,level2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2,levelAmaury2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3,level4:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4}
+	level_to_button_dict = {level1:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1,level2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2,levelAmaury2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3,level4:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4,levelRamachnid:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer5/levelRamachnid}
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass

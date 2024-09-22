@@ -24,6 +24,7 @@ func _init(nid,ntype,nroot,special_rules=[]):
 			scene.character_class_instance = self
 			if "hp_boss" in special_rules:
 				scene.hp = scene.boss_hp
+				scene.invuln_frames_start = 330
 		"boar":
 			scene = preload("res://boar.tscn").instantiate()
 			#adapted_positions_list.append("boar_wall")
@@ -44,6 +45,7 @@ func _init(nid,ntype,nroot,special_rules=[]):
 		"Ramachnid":
 			scene=preload("res://Ramachnid.tscn").instantiate()
 			var target = get_in_list("player")
+			scene.character_class_instance = self
 			if not target == null:
 				scene.target = target.scene
 		_:

@@ -9,7 +9,7 @@ radius = 24.0
 height = 64.0
 
 [node name="StaticBody2D" type="StaticBody2D"]
-position = Vector2(500, 300)
+position = Vector2(500, 500)
 script = ExtResource("1_46shd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 var root_node
+var character_class_instance
 var character_name = "Ramachnid"
 var moving_gravity = 0
 signal hit
@@ -47,6 +48,8 @@ func _ready():
 
 func _physics_process(delta):
 	velocity = Vector2(0,0)
+	if Input.is_action_just_pressed("debug"):
+		emit_signal("death")
 	if target != null:
 		target_position = target.global_position
 	if not state in ["blocking","dying"]:
@@ -93,14 +96,19 @@ func chose_action_by_state():
 			proportion_dict = {"wait":20,"walk out": 30,"jump out":20*jump_boost,"walk in":20,"jump in":10*jump_boost}
 	assert(proportion_dict!={},"Proportion_dict must have at least 1 tuple")
 	switch_action(random_oriented_choice(proportion_dict,banlist))
-	var shootlist = {"shoot":1,"wait":159/float(boost_dict["canon"])}
+	
+	var shootlist = {"shoot":1,"wait":119/float(boost_dict["canon"])}
 	if state != "idle" and random_oriented_choice(shootlist)=="shoot":
 		var shoot_dir = into_sign(target_position.x - global_position.x)
 		if shoot_dir == -1:
 			shoot_bullet($leftBullet)
 		else:
 			shoot_bullet($rightBullet)
-				
+	if sprites_in_use["canon"] != $canon1:
+		var shoot_mortar_list ={"shoot":1,"wait":119/float(boost_dict["canon"])}
+		if state != "idle" and random_oriented_choice(shoot_mortar_list)=="shoot":
+			shoot_mortar_bullet()
+	
 
 func switch_state(new_state:String):
 	state = new_state
@@ -462,7 +470,7 @@ func _on_death_timer_timeout():
 	emit_signal("death")
 
 func _on_death():
-	root_node.remove_child(self)
+	character_class_instance.remove_character()
 	
 
 func _on_area_2d_area_entered(area,side):
@@ -502,17 +510,39 @@ func shoot_bullet(marker):
 	elif marker == $rightBullet and sprites_in_use["canon"] in [$canon4,$canon3]:
 		block = true
 	if not block:
+		var dir = 0
+		var pisign = 0
+		if marker == $leftBullet:
+			dir = PI
+			pisign = 1
+		elif marker == $rightBullet:
+			dir = 0
+			pisign = -1
 		var bullet_instance = bullet_file.instantiate()
 		add_child(bullet_instance)
 		bullet_instance.global_position = marker.global_position
 		bullet_instance.scale = Vector2(0.5,0.5)
 		var exact_angle = marker.global_position.angle_to_point(target_position)
 		var rng =  RandomNumberGenerator.new()
-		var shoot_angle =rng.randf_range(exact_angle-PI/float(6),exact_angle+PI/float(6))
+		print(sin(dir),PI/float(4))
+		var shoot_angle =rng.randf_range(dir+pisign*PI/float(4),dir-pisign*PI/float(6))
 		bullet_instance.launch(shoot_angle,1000,180/float(boost_dict["canon"]))
 		bullet_instance.endBullet.connect(_on_bullet_end.bind(bullet_instance))
 		bullet_instance.get_node("Area2D").body_entered.connect(_on_hit_something)
 
+func shoot_mortar_bullet():
+	var marker = $upBullet
+	var bullet_instance = bullet_file.instantiate()
+	add_child(bullet_instance)
+	bullet_instance.global_position = marker.global_position
+	bullet_instance.scale = Vector2(0.5,0.5)
+	bullet_instance.mortar_shot = true
+	var rng = RandomNumberGenerator.new()
+	var shoot_dist =rng.randf_range(5,10)
+	shoot_dist*=into_sign(target_position.x-global_position.x)
+	bullet_instance.mortar_launch(15,shoot_dist,180)
+	bullet_instance.endBullet.connect(_on_bullet_end.bind(bullet_instance))
+	bullet_instance.get_node("Area2D").body_entered.connect(_on_hit_something)
 
 func _on_bullet_end(instance):
 	call_deferred("remove_child",instance)
