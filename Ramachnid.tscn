@@ -362,6 +362,7 @@ shape = SubResource("RectangleShape2D_qf0bl")
 disabled = true
 
 [node name="canon1" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("11_4xgun")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="canon1"]
@@ -614,12 +615,12 @@ position = Vector2(22.8, -44.4)
 position = Vector2(-0.4, -59.6)
 
 [connection signal="death" from="." to="." method="_on_death"]
-[connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered" binds= ["1L"]]
+[connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered" binds= ["2L"]]
+[connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["3L"]]
 [connection signal="area_entered" from="arm4L/Area2D" to="." method="_on_area_2d_area_entered" binds= ["L"]]
-[connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm7L/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["4L"]]
+[connection signal="body_entered" from="arm7L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["7L"]]
 [connection signal="body_entered" from="base2/stomp" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="base3/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="area_entered" from="crysUL/Area2D" to="." method="_on_crystal_hit" binds= ["UL"]]

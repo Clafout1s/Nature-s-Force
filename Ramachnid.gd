@@ -44,6 +44,10 @@ func _ready():
 	switch_sprite("armL",$arm1L)
 	switch_sprite("armR",$arm1R)
 	switch_sprite("canon",$canon1)
+	togle_collisions(true,$arm1L,true)
+	togle_collisions(true,$arm1R,true)
+	togle_collisions(true,$base1,true)
+	togle_collisions(true,$canon1,true)
 	$base2/stomp/CollisionShape2D.disabled = true
 
 func _physics_process(delta):
@@ -65,7 +69,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 func chose_state():
-	state = "idle"
+	state = "distant_combat"
 	var range = position.x - target_position.x
 	if state == "close_combat":
 		if abs(range)>=distant_range:
@@ -157,8 +161,6 @@ func hide_sprite(part,this_sprite):
 	if this_sprite in body_parts_dict[part]:
 		this_sprite.visible = false
 		togle_collisions(false,this_sprite)
-		if this_sprite == $arm4L:
-			print($arm4L/Area2D/CollisionPolygon2D.disabled)
 
 func blade_attack(facing_left ):
 	var letter
@@ -372,14 +374,17 @@ func into_sign(f1:float):
 	else:
 		return 0
 	
-func togle_collisions(on:bool,node):
+func togle_collisions(on:bool,node,direct = false):
 	var parent_node_banlist = []
 	for parent_node in node.get_children():
 		if (parent_node is Area2D or parent_node is StaticBody2D) and parent_node not in parent_node_banlist:
 			for child_node in parent_node.get_children():
 				if child_node is CollisionPolygon2D or child_node is CollisionShape2D:
 					if not child_node.disabled == !on:
-						child_node.set_deferred("disabled",!on)
+						if not direct:
+							child_node.set_deferred("disabled",!on)
+						else:
+							child_node.disabled = !on
 
 func togle_specific_collision(on:bool,collision_node):
 	collision_node.set_deferred("disabled",!on)
@@ -415,7 +420,7 @@ func player_stomped():
 		target.emit_signal("hit",self)
 
 
-func _on_area_2d_body_entered(body):
+func _on_area_2d_body_entered(body,info=null):
 	if body.character_name == "player":
 		body.emit_signal("hit",self)
 
@@ -524,7 +529,6 @@ func shoot_bullet(marker):
 		bullet_instance.scale = Vector2(0.5,0.5)
 		var exact_angle = marker.global_position.angle_to_point(target_position)
 		var rng =  RandomNumberGenerator.new()
-		print(sin(dir),PI/float(4))
 		var shoot_angle =rng.randf_range(dir+pisign*PI/float(4),dir-pisign*PI/float(6))
 		bullet_instance.launch(shoot_angle,1000,180/float(boost_dict["canon"]))
 		bullet_instance.endBullet.connect(_on_bullet_end.bind(bullet_instance))
