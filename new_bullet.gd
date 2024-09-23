@@ -20,7 +20,7 @@ func _ready():
 	$Area2D.hit.connect(_on_hit)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	if in_action:
 		moving_frames+=1
 		if not mortar_shot:
@@ -56,7 +56,7 @@ func hide_bullet():
 func show_bullet():
 	pass
 
-func _on_area_2d_body_entered(body):
+func _on_area_2d_body_entered(_body):
 	end()
 
 func _on_hit(_body = null,type="basic"):

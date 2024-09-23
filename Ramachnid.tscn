@@ -181,7 +181,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm1L/Area2D"]
 position = Vector2(-25.2, 32.2)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_wxk18")
 disabled = true
 
@@ -218,7 +217,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm2L/Area2D"]
 position = Vector2(-26.8, 29.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_w5hs4")
 disabled = true
 
@@ -262,7 +260,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm4L/Area2D2"]
 position = Vector2(-27.2, 27.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_frsad")
 disabled = true
 
@@ -318,7 +315,6 @@ disabled = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm7L/Area2D2"]
 position = Vector2(-26.4, 32.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_tb1gx")
 disabled = true
 
@@ -546,7 +542,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm1R/Area2D"]
 position = Vector2(-27.2, 34)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_ltgon")
 disabled = true
 
@@ -583,7 +578,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm2R/Area2D"]
 position = Vector2(-26.4, 31.8)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_n20dq")
 disabled = true
 
@@ -629,7 +623,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm4R/Area2D2"]
 position = Vector2(-28, 35.8)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_wwc4l")
 disabled = true
 
@@ -690,7 +683,6 @@ collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm7R/Area2D2"]
 position = Vector2(-26.4, 35.2)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_47x5l")
 disabled = true
 
@@ -716,15 +708,15 @@ position = Vector2(22.8, -44.4)
 position = Vector2(-0.4, -59.6)
 
 [connection signal="death" from="." to="." method="_on_death"]
-[connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered" binds= ["1L"]]
+[connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm1L/Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered" binds= ["2L"]]
+[connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["3L"]]
 [connection signal="area_entered" from="arm4L/Area2D" to="." method="_on_area_2d_area_entered" binds= ["L"]]
-[connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["4L"]]
+[connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm4L/Area2D2" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm7L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["7L"]]
+[connection signal="body_entered" from="arm7L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm7L/Area2D2" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="base2/stomp" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="base3/Area2D" to="." method="_on_area_2d_body_entered"]

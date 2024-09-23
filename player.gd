@@ -231,7 +231,6 @@ func start_invuln():
 		collision_mask_list.append(get_collision_mask_value(i+1))
 		if i != 0:
 			set_collision_mask_value(i+1,false)
-	print(get_collision_mask_value(2))
 	
 func end_invuln():
 	$hurt.visible = false
@@ -258,7 +257,6 @@ func during_invuln():
 
 func _on_hit(_hitter=null,_type="other"):
 	if not invuln:
-		var direction = 0
 		if not hp -1 <=0:
 			if _hitter != null:
 				invuln_direction = into_sign(global_position.x-_hitter.global_position.x)

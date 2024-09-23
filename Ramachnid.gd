@@ -50,7 +50,7 @@ func _ready():
 	togle_collisions(true,$canon1,true)
 	$base2/stomp/CollisionShape2D.disabled = true
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	velocity = Vector2(0,0)
 	if Input.is_action_just_pressed("debug"):
 		emit_signal("death")
@@ -70,12 +70,12 @@ func _physics_process(delta):
 
 func chose_state():
 	state = "distant_combat"
-	var range = position.x - target_position.x
+	var actual_range = position.x - target_position.x
 	if state == "close_combat":
-		if abs(range)>=distant_range:
+		if abs(actual_range)>=distant_range:
 			switch_state("distant_combat")
 	elif state == "distant_combat":
-		if abs(range)<distant_range:
+		if abs(actual_range)<distant_range:
 			switch_state("close_combat")
 
 func chose_action_by_state():
@@ -88,12 +88,12 @@ func chose_action_by_state():
 		"dying":
 			proportion_dict = {"wait":100}
 		"close_combat":
-			var range = position.x - target_position.x
+			var actual_range = position.x - target_position.x
 			
-			if abs(range)<=close_range:
+			if abs(actual_range)<=close_range:
 				proportion_dict = {"blade_attack":50,"jump in":12*jump_boost,"jump stay":8*jump_boost,"walk out":25,"wait":5}
 				banlist = {"blade_attack":[last_action=="blade_attack",check_arm_broken(get_target_side())],"jump stay":last_action=="jump stay"}
-			elif close_range<abs(range):
+			elif close_range<abs(actual_range):
 				proportion_dict = {"walk in":50,"jump in":10*jump_boost,"blade_attack":35,"walk out":5}
 				banlist = {"blade_attack":[last_action=="blade_attack",check_arm_broken(get_target_side())],"jump in":last_action=="jump in"}
 		"distant_combat":
@@ -163,11 +163,6 @@ func hide_sprite(part,this_sprite):
 		togle_collisions(false,this_sprite)
 
 func blade_attack(facing_left ):
-	var letter
-	if facing_left:
-		letter = "L"
-	else:
-		letter = "R"
 	var time_end = 0
 	var ending = false
 	match timer_count[0]:
@@ -404,7 +399,6 @@ func togle_bot_orbs(on:bool):
 	togle_collisions(on,$crysDR)
 
 func change_collision_size(node):
-	var old_shape=$terrainCollision.shape.size
 	var new_data
 	if node == $base1:
 		new_data = base1collision
@@ -415,12 +409,8 @@ func change_collision_size(node):
 		
 	$terrainCollision.shape.size = new_data[0]
 	$terrainCollision.position = new_data[1]
-func player_stomped():
-	if target != null:
-		target.emit_signal("hit",self)
 
-
-func _on_area_2d_body_entered(body,info=null):
+func _on_area_2d_body_entered(body):
 	if body.character_name == "player":
 		body.emit_signal("hit",self)
 
@@ -527,7 +517,6 @@ func shoot_bullet(marker):
 		add_child(bullet_instance)
 		bullet_instance.global_position = marker.global_position
 		bullet_instance.scale = Vector2(0.5,0.5)
-		var exact_angle = marker.global_position.angle_to_point(target_position)
 		var rng =  RandomNumberGenerator.new()
 		var shoot_angle =rng.randf_range(dir+pisign*PI/float(4),dir-pisign*PI/float(6))
 		bullet_instance.launch(shoot_angle,1000,180/float(boost_dict["canon"]))
