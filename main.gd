@@ -9,7 +9,7 @@ var ui_list = []
 var actual_scene 
 var actual_tilemap
 var effects_list = ["dangerous"]
-var lifebar_scene = preload("res://lifeBar.tscn").instantiate()
+var lifebar_scene = preload("res://playerLifeBar.tscn").instantiate()
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	add_child(main_menu)
@@ -17,7 +17,6 @@ func _ready():
 func _process(_delta):
 	if Input.is_action_just_pressed("return_menu"):
 		return_to_menu()
-		#reset_level()
 
 func return_to_menu():
 	add_child(main_menu)
@@ -95,11 +94,12 @@ func quit_game():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()
 
-func add_ui(ui_name,parameter_list):
+func add_ui(ui_name,ui_element,user):
 	match ui_name:
 		"lifebar":
-			add_child(lifebar_scene)
-			lifebar_scene.get_node("ProgressBar").max_value = parameter_list[0]
-			lifebar_scene.get_node("ProgressBar").value = parameter_list[0]
-			ui_list.append(lifebar_scene)
-			parameter_list[1].lifebar = lifebar_scene
+			print(ui_element)
+			var scene = ui_element.instantiate()
+			add_child(scene)
+			ui_list.append(scene)
+			user.lifebar = scene
+			return scene

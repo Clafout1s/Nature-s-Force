@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgf64otuvhrqq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_37i0s"]
+bg_color = Color(0.839216, 0.160784, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbj8l"]
+bg_color = Color(0, 0.72549, 0.223529, 1)
+
+[sub_resource type="FontFile" id="FontFile_xdxj8"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+cache/0/20/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/20/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mivvv"]
+font = SubResource("FontFile_xdxj8")
+font_size = 20
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 20.0
+offset_right = 220.0
+offset_bottom = 47.0
+theme_override_styles/background = SubResource("StyleBoxFlat_37i0s")
+theme_override_styles/fill = SubResource("StyleBoxFlat_pbj8l")
+max_value = 5.0
+value = 5.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 99.0
+offset_bottom = 44.0
+text = "Player:"
+label_settings = SubResource("LabelSettings_mivvv")

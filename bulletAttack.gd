@@ -26,7 +26,7 @@ func _ready():
 	$CollisionShape2D.disabled = true
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	var movement_update = Vector2(bullet_movement_x.return_value(),bullet_movement_y.return_value())
 	global_position += movement_update
 	if shooting == true and Vector2(bullet_movement_x.return_value(), bullet_movement_y.return_value()) == Vector2(0,0):

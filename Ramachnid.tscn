@@ -712,7 +712,7 @@ position = Vector2(-0.4, -59.6)
 [connection signal="body_entered" from="arm1L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2L/Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["3L"]]
+[connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="area_entered" from="arm4L/Area2D" to="." method="_on_area_2d_area_entered" binds= ["L"]]
 [connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm4L/Area2D2" to="." method="_on_area_2d_body_entered"]

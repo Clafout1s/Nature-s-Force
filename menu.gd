@@ -14,9 +14,6 @@ var level_to_button_dict
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	level_to_button_dict = {level1:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1,level2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2,levelAmaury2:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3,level4:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4,levelRamachnid:$MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer5/levelRamachnid}
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
 
 func _on_level_2_pressed():
 	root_node.load_level_scene(level2)

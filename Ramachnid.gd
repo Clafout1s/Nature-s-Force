@@ -34,6 +34,7 @@ var is_not_on_floor_forced = false
 var close_range = 500
 var distant_range = 1200
 var bullet_file = preload("res://new_bullet.tscn")
+var lifebar
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	body_parts_dict = {"base":[$base1,$base2,$base3],"armL":[$arm1L,$arm2L,$arm3L,$arm4L,$arm5L,$arm6L,$arm7L],"armR":[$arm1R,$arm2R,$arm3R,$arm4R,$arm5R,$arm6R,$arm7R],"canon":[$canon1,$canon2,$canon3,$canon4]}
@@ -49,11 +50,10 @@ func _ready():
 	togle_collisions(true,$base1,true)
 	togle_collisions(true,$canon1,true)
 	$base2/stomp/CollisionShape2D.disabled = true
+	root_node.add_ui("lifebar",preload("res://ramachnidLifebar.tscn"),self)
 
 func _physics_process(_delta):
 	velocity = Vector2(0,0)
-	if Input.is_action_just_pressed("debug"):
-		emit_signal("death")
 	if target != null:
 		target_position = target.global_position
 	if not state in ["blocking","dying"]:
@@ -417,6 +417,7 @@ func _on_area_2d_body_entered(body):
 
 func _on_crystal_hit(area,crystal):
 	if area.attack_name == "laser_blade":
+		lifebar.get_node("ProgressBar").value -= 1
 		if state == "blocking":
 			$brokenOrb.start()
 			$armBlock.stop()
@@ -466,7 +467,7 @@ func _on_death_timer_timeout():
 
 func _on_death():
 	character_class_instance.remove_character()
-	
+	root_node.call_deferred("remove_child",lifebar)
 
 func _on_area_2d_area_entered(area,side):
 	if area.attack_name == "laser_blade":
