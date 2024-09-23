@@ -50,7 +50,7 @@ func _ready():
 	togle_collisions(true,$base1,true)
 	togle_collisions(true,$canon1,true)
 	$base2/stomp/CollisionShape2D.disabled = true
-	root_node.add_ui("lifebar",preload("res://ramachnidLifebar.tscn"),self)
+	#root_node.add_ui("lifebar",preload("res://ramachnidLifebar.tscn"),self)
 
 func _physics_process(_delta):
 	velocity = Vector2(0,0)
@@ -417,7 +417,8 @@ func _on_area_2d_body_entered(body):
 
 func _on_crystal_hit(area,crystal):
 	if area.attack_name == "laser_blade":
-		lifebar.get_node("ProgressBar").value -= 1
+		if lifebar != null:
+			lifebar.get_node("ProgressBar").value -= 1
 		if state == "blocking":
 			$brokenOrb.start()
 			$armBlock.stop()
@@ -466,8 +467,7 @@ func _on_death_timer_timeout():
 	emit_signal("death")
 
 func _on_death():
-	character_class_instance.remove_character()
-	root_node.call_deferred("remove_child",lifebar)
+	root_node.search_and_delete_character(self)
 
 func _on_area_2d_area_entered(area,side):
 	if area.attack_name == "laser_blade":

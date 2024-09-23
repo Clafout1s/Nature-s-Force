@@ -57,8 +57,8 @@ func add_character():
 	root.get_actual_level().character_list.append(scene)
 	
 func remove_character():
+	print(scene)
 	if is_instance_valid(scene):
-		scene.queue_free()
 		root.remove_child.call_deferred(scene)
 		remove_from_list(stock_list)
 	placed = false

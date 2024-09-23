@@ -45,7 +45,6 @@ func spawn_to_position_markers(level_scene):
 
 func load_level_scene(level_scene):
 	add_child(level_scene)
-	#level_scene.add_child($bulletSlots)
 	actual_scene=level_scene
 	actual_tilemap = find_tilemap(actual_scene)
 	spawn_to_position_markers(actual_scene)
@@ -61,8 +60,9 @@ func delete_level_scene(level_scene):
 		var ui_ele = ui_list2[i]
 		if is_instance_valid(ui_ele):
 			#queue_free is a problem, remove_child is enough
-			remove_child(ui_ele)
+			remove_child.call_deferred(ui_ele)
 		ui_list.remove_at(i)
+	
 
 func get_tile_position(other_position):
 	if actual_scene != null:
@@ -97,7 +97,6 @@ func quit_game():
 func add_ui(ui_name,ui_element,user):
 	match ui_name:
 		"lifebar":
-			print(ui_element)
 			var scene = ui_element.instantiate()
 			add_child(scene)
 			ui_list.append(scene)
