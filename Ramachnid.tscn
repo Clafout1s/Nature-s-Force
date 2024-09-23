@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://lf74fabwd4td"]
+[gd_scene load_steps=63 format=3 uid="uid://lf74fabwd4td"]
 
 [ext_resource type="Texture2D" uid="uid://c5r4upyokdai8" path="res://sprites/RamachnoidArm1.png" id="1_26wmx"]
 [ext_resource type="Script" path="res://Ramachnid.gd" id="1_mfohf"]
@@ -27,17 +27,26 @@ size = Vector2(5.40002, 69.6)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i8bmx"]
 size = Vector2(24.4, 63.2)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wxk18"]
+size = Vector2(20, 43.6)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4y5dt"]
 size = Vector2(24, 46.8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ldisd"]
 size = Vector2(6.79999, 53.1)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5hs4"]
+size = Vector2(20, 36)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xp6bp"]
 size = Vector2(42.7999, 84)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4x0ew"]
 size = Vector2(32.4, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_frsad"]
+size = Vector2(20, 39.2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m02ss"]
 size = Vector2(75.4, 7)
@@ -47,6 +56,9 @@ size = Vector2(33.6, 6.79999)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d7s10"]
 size = Vector2(5.60001, 67.5999)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tb1gx"]
+size = Vector2(20, 29.2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aegjv"]
 size = Vector2(91.2, 82)
@@ -99,17 +111,26 @@ size = Vector2(5.4, 69)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0vy2u"]
 size = Vector2(25.2, 62.8)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ltgon"]
+size = Vector2(20, 40)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s437y"]
 size = Vector2(23.6, 46.4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i3vop"]
 size = Vector2(6, 53.0915)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n20dq"]
+size = Vector2(20, 31.6)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nrgx6"]
 size = Vector2(42, 84.4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_epbug"]
 size = Vector2(35.2, 63.6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwc4l"]
+size = Vector2(20, 37.2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_te12w"]
 size = Vector2(76.2, 7)
@@ -119,6 +140,9 @@ size = Vector2(34.4, 6.40001)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8c325"]
 size = Vector2(6.39999, 67.0656)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_47x5l"]
+size = Vector2(20, 36.8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a2f07"]
 
@@ -151,6 +175,16 @@ position = Vector2(-41.8, 23.2)
 shape = SubResource("RectangleShape2D_i8bmx")
 disabled = true
 
+[node name="Area2D" type="Area2D" parent="arm1L"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm1L/Area2D"]
+position = Vector2(-25.2, 32.2)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_wxk18")
+disabled = true
+
 [node name="arm2L" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("2_p01xj")
@@ -176,6 +210,16 @@ collision_mask = 16
 position = Vector2(-53.6, 21.6)
 rotation = -0.117133
 shape = SubResource("RectangleShape2D_ldisd")
+disabled = true
+
+[node name="Area2D" type="Area2D" parent="arm2L"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm2L/Area2D"]
+position = Vector2(-26.8, 29.6)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_w5hs4")
 disabled = true
 
 [node name="arm3L" type="Sprite2D" parent="."]
@@ -210,6 +254,16 @@ collision_mask = 16
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm4L/StaticBody2D"]
 position = Vector2(-45, 22.4)
 shape = SubResource("RectangleShape2D_4x0ew")
+disabled = true
+
+[node name="Area2D2" type="Area2D" parent="arm4L"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm4L/Area2D2"]
+position = Vector2(-27.2, 27.6)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_frsad")
 disabled = true
 
 [node name="arm5L" type="Sprite2D" parent="."]
@@ -260,8 +314,15 @@ rotation = 0.202731
 shape = SubResource("RectangleShape2D_d7s10")
 disabled = true
 
+[node name="Area2D2" type="Area2D" parent="arm7L"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm7L/Area2D2"]
+position = Vector2(-26.4, 32.6)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_tb1gx")
+disabled = true
+
 [node name="base1" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("8_2t5jr")
 
 [node name="terrain" type="CollisionShape2D" parent="base1"]
@@ -479,6 +540,16 @@ position = Vector2(-41.4, 23)
 shape = SubResource("RectangleShape2D_0vy2u")
 disabled = true
 
+[node name="Area2D" type="Area2D" parent="arm1R"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm1R/Area2D"]
+position = Vector2(-27.2, 34)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_ltgon")
+disabled = true
+
 [node name="arm2R" type="Sprite2D" parent="."]
 visible = false
 scale = Vector2(-1, 1)
@@ -504,6 +575,16 @@ collision_mask = 16
 position = Vector2(-54.5294, 20.6631)
 rotation = -0.0790188
 shape = SubResource("RectangleShape2D_i3vop")
+disabled = true
+
+[node name="Area2D" type="Area2D" parent="arm2R"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm2R/Area2D"]
+position = Vector2(-26.4, 31.8)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_n20dq")
 disabled = true
 
 [node name="arm3R" type="Sprite2D" parent="."]
@@ -540,6 +621,16 @@ collision_mask = 16
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm4R/StaticBody2D"]
 position = Vector2(-46.4, 22.6)
 shape = SubResource("RectangleShape2D_epbug")
+disabled = true
+
+[node name="Area2D2" type="Area2D" parent="arm4R"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm4R/Area2D2"]
+position = Vector2(-28, 35.8)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_wwc4l")
 disabled = true
 
 [node name="arm5R" type="Sprite2D" parent="."]
@@ -593,6 +684,16 @@ rotation = 0.197172
 shape = SubResource("RectangleShape2D_8c325")
 disabled = true
 
+[node name="Area2D2" type="Area2D" parent="arm7R"]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="arm7R/Area2D2"]
+position = Vector2(-26.4, 35.2)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_47x5l")
+disabled = true
+
 [node name="terrainCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_a2f07")
 
@@ -616,11 +717,15 @@ position = Vector2(-0.4, -59.6)
 
 [connection signal="death" from="." to="." method="_on_death"]
 [connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered" binds= ["1L"]]
+[connection signal="body_entered" from="arm1L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2L/blade" to="." method="_on_area_2d_body_entered" binds= ["2L"]]
+[connection signal="body_entered" from="arm2L/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm3L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["3L"]]
 [connection signal="area_entered" from="arm4L/Area2D" to="." method="_on_area_2d_area_entered" binds= ["L"]]
 [connection signal="body_entered" from="arm4L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["4L"]]
+[connection signal="body_entered" from="arm4L/Area2D2" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm7L/Area2D" to="." method="_on_area_2d_body_entered" binds= ["7L"]]
+[connection signal="body_entered" from="arm7L/Area2D2" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="base2/stomp" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="base3/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="area_entered" from="crysUL/Area2D" to="." method="_on_crystal_hit" binds= ["UL"]]
@@ -628,11 +733,15 @@ position = Vector2(-0.4, -59.6)
 [connection signal="area_entered" from="crysDL/Area2D" to="." method="_on_crystal_hit" binds= ["DL"]]
 [connection signal="area_entered" from="crysDR/Area2D" to="." method="_on_crystal_hit" binds= ["DR"]]
 [connection signal="body_entered" from="arm1R/blade" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm1R/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm2R/blade" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm2R/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm3R/Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="area_entered" from="arm4R/Area2D" to="." method="_on_area_2d_area_entered" binds= ["R"]]
 [connection signal="body_entered" from="arm4R/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm4R/Area2D2" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm7R/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="arm7R/Area2D2" to="." method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="armBlock" to="." method="_on_arm_block_timeout"]
 [connection signal="timeout" from="deathTimer" to="." method="_on_death_timer_timeout"]
 [connection signal="timeout" from="brokenOrb" to="." method="_on_broken_orb_timeout"]

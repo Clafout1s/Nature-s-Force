@@ -25,7 +25,7 @@ var invuln_frames = 0
 var invuln_gravity = 50
 var invuln = false
 var invuln_direction
-var invuln_begin_speed = Vector2(650,350)
+var invuln_begin_speed = Vector2(600,900)
 var  collision_mask_list = []
 var boss_hp = 5
 var lifebar
@@ -231,6 +231,7 @@ func start_invuln():
 		collision_mask_list.append(get_collision_mask_value(i+1))
 		if i != 0:
 			set_collision_mask_value(i+1,false)
+	print(get_collision_mask_value(2))
 	
 func end_invuln():
 	$hurt.visible = false
@@ -250,23 +251,28 @@ func during_invuln():
 	velocity.y += exp_gravity
 	if is_on_floor() and not invuln_frames==1 or invuln_frames == invuln_frames_start:
 		end_invuln()
+	if ($wallcheckLeft.is_colliding() or $wallcheckRight.is_colliding()) and not invuln_frames==1:
+		end_invuln()
+		start_invuln()
+		invuln_direction*=-1
 
 func _on_hit(_hitter=null,_type="other"):
-	var direction = 0
-	if not hp -1 <=0:
-		if _hitter != null:
-			invuln_direction = into_sign(global_position.x-_hitter.global_position.x)
-			if invuln_direction == 0:
-				invuln_direction = 1
-			if not invuln:
+	if not invuln:
+		var direction = 0
+		if not hp -1 <=0:
+			if _hitter != null:
+				invuln_direction = into_sign(global_position.x-_hitter.global_position.x)
+				if invuln_direction == 0:
+					invuln_direction = 1
 				hp-=1
 				start_invuln()
 				update_lifebar()
-			
-	else:
-		update_lifebar()
-		hp-=1
+				
+		else:
+			update_lifebar()
+			hp-=1
 		
 func update_lifebar():
 	if not lifebar==null:
 		lifebar.get_node("ProgressBar").value-=1
+
