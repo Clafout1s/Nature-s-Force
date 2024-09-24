@@ -92,13 +92,11 @@ func _on_damage_zone_body_entered(body):
 	body.emit_signal("hit")
 	
 func _on_hit(hitter=null,damage_type="basic"):
-	if damage_type == "blade":
+	if damage_type == "blade" and not stunned:
 		hp-=1
 		
 		start_stun(hitter)
 		stun_attack_passed=true
-	else:
-		start_stun(hitter)
 	
 func start_stun(hitter):
 	if not stunned:

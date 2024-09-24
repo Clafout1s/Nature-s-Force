@@ -2,7 +2,7 @@
 
 [ext_resource type="TileSet" uid="uid://bdf6gslx6cehj" path="res://basic_tileset.tres" id="1_fhd47"]
 [ext_resource type="Script" path="res://level1.gd" id="1_s8dgx"]
-[ext_resource type="Texture2D" uid="uid://bvheihmvl447p" path="res://sprites/Background.png" id="2_0r143"]
+[ext_resource type="Texture2D" uid="uid://bf3c1hepqwn4l" path="res://sprites/Backgroundnew.png" id="2_nmq40"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_s8dgx")
@@ -13,7 +13,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = ExtResource("2_0r143")
+texture = ExtResource("2_nmq40")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("1_fhd47")
@@ -24,7 +24,7 @@ layer_0/tile_data = PackedInt32Array(4063248, 65537, 2, 4128784, 65537, 3, 41943
 position = Vector2(100, 332)
 
 [node name="boar_spawn" type="Marker2D" parent="."]
-position = Vector2(1505, 321)
+position = Vector2(1251, 962)
 
 [node name="bird_spawn" type="Marker2D" parent="."]
 position = Vector2(1779, 776)

@@ -48,8 +48,7 @@ func _ready():
 	nodeSprite = $mainCharac
 	adaptShape()
 	if hp>1:
-		pass
-		 #root_node.add_ui("lifebar",preload("res://playerLifeBar.tscn"),self)
+		root_node.add_ui("lifebar",preload("res://playerLifeBar.tscn").instantiate(),self)
 	
 func tempoclamp_addon_x():
 	if shotgun_instance_x.activated:

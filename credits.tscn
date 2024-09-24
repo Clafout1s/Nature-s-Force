@@ -1,4 +1,52 @@
-[gd_scene format=3 uid="uid://dvegts0ymfr4k"]
+[gd_scene load_steps=6 format=3 uid="uid://dvegts0ymfr4k"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_y1o3s"]
+
+[sub_resource type="FontFile" id="FontFile_oyhek"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/80/0 = Vector2(0, 0)
+cache/0/80/0/ascent = 0.0
+cache/0/80/0/descent = 0.0
+cache/0/80/0/underline_position = 0.0
+cache/0/80/0/underline_thickness = 0.0
+cache/0/80/0/scale = 1.0
+cache/0/80/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/80/0/kerning_overrides/80/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ap4mo"]
+font = SubResource("FontFile_oyhek")
+font_size = 80
+
+[sub_resource type="FontFile" id="FontFile_i4me4"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/50/0/ascent = 0.0
+cache/0/50/0/descent = 0.0
+cache/0/50/0/underline_position = 0.0
+cache/0/50/0/underline_thickness = 0.0
+cache/0/50/0/scale = 1.0
+cache/0/50/0/glyphs/0/advance = Vector2(0, 0)
+cache/0/50/0/glyphs/0/offset = Vector2(0, 0)
+cache/0/50/0/glyphs/0/size = Vector2(0, 0)
+cache/0/50/0/glyphs/0/uv_rect = Rect2(0, 0, 0, 0)
+cache/0/50/0/glyphs/0/texture_idx = -1
+cache/0/50/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/50/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_v414i"]
+line_spacing = 30.0
+font = SubResource("FontFile_i4me4")
+font_size = 50
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -8,8 +56,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.294118, 0.243137, 0.243137, 1)
+layout_mode = 2
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("CanvasTexture_y1o3s")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Thanks to:"
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Credits"
+label_settings = SubResource("LabelSettings_ap4mo")
+horizontal_alignment = 1
+
+[node name="list" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 7.0
+text = "- Gamedev, code and character art by Clafout1s
+
+- Tiles and background picture by Craftpix.net : 
+https://free-game-assets.itch.io/free-swamp-2d-tileset-pixel-art
+
+- Merci à Amaury G. pour avoir aidé à concevoir certains niveaux"
+label_settings = SubResource("LabelSettings_v414i")
+horizontal_alignment = 1

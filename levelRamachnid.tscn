@@ -1,10 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjp1g8yrbmc0w"]
+[gd_scene load_steps=4 format=3 uid="uid://cjp1g8yrbmc0w"]
 
 [ext_resource type="TileSet" uid="uid://bdf6gslx6cehj" path="res://basic_tileset.tres" id="1_fqlq5"]
 [ext_resource type="Script" path="res://levelRamachnid.gd" id="1_t4d6d"]
+[ext_resource type="Texture2D" uid="uid://bf3c1hepqwn4l" path="res://sprites/Backgroundnew.png" id="2_7rhkq"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_t4d6d")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_7rhkq")
+stretch_mode = 4
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("1_fqlq5")
@@ -18,4 +26,4 @@ position = Vector2(296, 751)
 position = Vector2(804, 774)
 
 [node name="flag" type="Marker2D" parent="."]
-position = Vector2(1850, 828)
+position = Vector2(1842, 832)

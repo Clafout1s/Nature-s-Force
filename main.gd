@@ -10,6 +10,9 @@ var actual_scene
 var actual_tilemap
 var effects_list = ["dangerous"]
 var lifebar_scene = preload("res://playerLifeBar.tscn").instantiate()
+var levelEasy2 = preload("res://levelEasy2.tscn").instantiate()
+var levelAmaury3 = preload("res://levelAmaury3.tscn").instantiate()
+var actual_page = null
 func _ready():
 	root_node = get_tree().root.get_child(0)
 	add_child(main_menu)
@@ -20,7 +23,10 @@ func _process(_delta):
 
 func return_to_menu():
 	add_child(main_menu)
-	delete_level_scene(actual_scene)
+	if actual_scene != null:
+		delete_level_scene(actual_scene)
+	if actual_page != null:
+		remove_page()
 
 func switch(level_scene):
 	delete_level_scene(actual_scene)
@@ -46,6 +52,7 @@ func spawn_to_position_markers(level_scene):
 func load_level_scene(level_scene):
 	add_child(level_scene)
 	actual_scene=level_scene
+	print(actual_scene)
 	actual_tilemap = find_tilemap(actual_scene)
 	spawn_to_position_markers(actual_scene)
 
@@ -61,8 +68,18 @@ func delete_level_scene(level_scene):
 		if is_instance_valid(ui_ele):
 			#queue_free is a problem, remove_child is enough
 			remove_child.call_deferred(ui_ele)
-		ui_list.remove_at(i)
+		ui_list.remove_at(0)
+	actual_scene = null
 	
+func find_and_remove_ui(ui_target):
+	var i = 0
+	var finished = false
+	while i<len(ui_list) and not finished:
+		if ui_target == ui_list[i]:
+			remove_child.call_deferred(ui_list[i])
+			ui_list.remove_at(i)
+			finished = true
+		i+=1
 
 func get_tile_position(other_position):
 	if actual_scene != null:
@@ -74,8 +91,9 @@ func get_tile_from_tile_position(tile_position):
 		return actual_tilemap.get_cell_tile_data(0, tile_position)
 
 func reset_level():
-	delete_level_scene(actual_scene)
-	load_level_scene(actual_scene)
+	var scene_reseted = actual_scene
+	delete_level_scene(scene_reseted)
+	load_level_scene(scene_reseted)
 
 func get_actual_level():
 	return actual_scene
@@ -97,8 +115,17 @@ func quit_game():
 func add_ui(ui_name,ui_element,user):
 	match ui_name:
 		"lifebar":
-			var scene = ui_element.instantiate()
+			var scene = ui_element
 			add_child(scene)
 			ui_list.append(scene)
 			user.lifebar = scene
 			return scene
+	
+func add_page(page):
+	assert(actual_page == null,"Page en trop !")
+	actual_page = page
+	add_child(actual_page)
+
+func remove_page():
+	remove_child(actual_page)
+	actual_page = null

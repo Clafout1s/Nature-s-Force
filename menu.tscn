@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bbovxyc4heoxd"]
+[gd_scene load_steps=14 format=3 uid="uid://bbovxyc4heoxd"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_qjxoi"]
 [ext_resource type="Texture2D" uid="uid://mm6ebhu46auy" path="res://sprites/level_pictures/level1bis.png" id="2_xkg55"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://bftldqsmui6vt" path="res://sprites/level_pictures/level3.png" id="5_pp26m"]
 [ext_resource type="Texture2D" uid="uid://cp7ux12chup87" path="res://sprites/level_pictures/level4.png" id="6_rvwbj"]
 [ext_resource type="Texture2D" uid="uid://b18hgsfxr540p" path="res://icon.svg" id="7_lhp37"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_igf4l"]
 
 [sub_resource type="FontFile" id="FontFile_wltan"]
 cache/0/120/0/ascent = 0.0
@@ -130,6 +132,13 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_qjxoi")
+
+[node name="background" type="TextureRect" parent="."]
+modulate = Color(0.372549, 0.372549, 0.372549, 1)
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("CanvasTexture_igf4l")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -332,7 +341,7 @@ theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 15
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="tutorial" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_ukrn5")
 theme_override_font_sizes/font_size = 70
@@ -343,7 +352,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_top = 20
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer3"]
+[node name="credits" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer3"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_tu03n")
 theme_override_font_sizes/font_size = 70
@@ -356,20 +365,17 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 30
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2"]
+[node name="quit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_e4htr")
 theme_override_font_sizes/font_size = 70
 text = "Quit the game"
-
-[node name="background" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer2/level1" to="." method="_on_level_1_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer3/level2" to="." method="_on_level_2_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer/level3" to="." method="_on_level_3_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer4/level4" to="." method="_on_level_4_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/GridContainer/MarginContainer5/levelRamachnid" to="." method="_on_level_ramachnid_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/tutorial" to="." method="_on_tutorial_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer3/credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/quit" to="." method="_on_button_pressed"]

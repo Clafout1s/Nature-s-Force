@@ -1,7 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://de2keqa0p54fu"]
+[gd_scene load_steps=4 format=3 uid="uid://de2keqa0p54fu"]
+
+[ext_resource type="Texture2D" uid="uid://disq8uitbfldv" path="res://sprites/tutorial.png" id="1_ahmy5"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_qva7t"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ibs8v"]
-font_size = 50
+font_size = 100
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -10,6 +14,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.585384, 0.576773, 0.59836, 1)
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("CanvasTexture_qva7t")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -27,3 +38,8 @@ size_flags_vertical = 0
 text = "Tutorial"
 label_settings = SubResource("LabelSettings_ibs8v")
 horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("1_ahmy5")
+stretch_mode = 5

@@ -50,7 +50,7 @@ func _ready():
 	togle_collisions(true,$base1,true)
 	togle_collisions(true,$canon1,true)
 	$base2/stomp/CollisionShape2D.disabled = true
-	#root_node.add_ui("lifebar",preload("res://ramachnidLifebar.tscn"),self)
+	root_node.add_ui("lifebar",preload("res://ramachnidLifebar.tscn").instantiate(),self)
 
 func _physics_process(_delta):
 	velocity = Vector2(0,0)
@@ -468,6 +468,8 @@ func _on_death_timer_timeout():
 
 func _on_death():
 	root_node.search_and_delete_character(self)
+	if not lifebar == null:
+		root_node.find_and_remove_ui(lifebar)
 
 func _on_area_2d_area_entered(area,side):
 	if area.attack_name == "laser_blade":
