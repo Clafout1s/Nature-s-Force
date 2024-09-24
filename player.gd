@@ -269,6 +269,8 @@ func _on_hit(_hitter=null,_type="other"):
 		else:
 			update_lifebar()
 			hp-=1
+	else:
+		start_invuln()
 		
 func update_lifebar():
 	if not lifebar==null:

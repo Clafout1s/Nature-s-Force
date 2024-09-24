@@ -59,7 +59,7 @@ func load_level_scene(level_scene):
 	spawn_to_position_markers(actual_scene)
 
 func delete_level_scene(level_scene):
-	remove_child(level_scene)
+	
 	var character_list_2 = character_list.duplicate()
 	for character in character_list_2:
 		character.remove_character()
@@ -71,7 +71,10 @@ func delete_level_scene(level_scene):
 			#queue_free is a problem, remove_child is enough
 			remove_child.call_deferred(ui_ele)
 		ui_list.remove_at(0)
-	actual_scene = null
+	
+	if level_scene in get_children():
+		remove_child(level_scene)
+	pass
 	
 func find_and_remove_ui(ui_target):
 	var i = 0
