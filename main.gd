@@ -12,6 +12,7 @@ var effects_list = ["dangerous"]
 var lifebar_scene = preload("res://playerLifeBar.tscn").instantiate()
 var levelEasy2 = preload("res://levelEasy2.tscn").instantiate()
 var levelAmaury3 = preload("res://levelAmaury3.tscn").instantiate()
+var congrats = preload("res://congrats.tscn").instantiate()
 var actual_page = null
 func _ready():
 	root_node = get_tree().root.get_child(0)
@@ -20,6 +21,8 @@ func _ready():
 func _process(_delta):
 	if Input.is_action_just_pressed("return_menu"):
 		return_to_menu()
+	if Input.is_action_just_pressed("debug"):
+		win_level_and_return_menu()
 
 func return_to_menu():
 	add_child(main_menu)
@@ -52,7 +55,6 @@ func spawn_to_position_markers(level_scene):
 func load_level_scene(level_scene):
 	add_child(level_scene)
 	actual_scene=level_scene
-	print(actual_scene)
 	actual_tilemap = find_tilemap(actual_scene)
 	spawn_to_position_markers(actual_scene)
 

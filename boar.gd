@@ -97,10 +97,13 @@ func _on_hit(hitter=null,damage_type="basic"):
 		
 		start_stun(hitter)
 		stun_attack_passed=true
+	else:
+		start_stun(hitter,false)
 	
-func start_stun(hitter):
+func start_stun(hitter,red=true):
 	if not stunned:
-		$hurt.visible = true
+		if red:
+			$hurt.visible = true
 		stunned = true
 		stun_attack_passed=false
 		$stunTimer.start()
