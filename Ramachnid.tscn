@@ -707,6 +707,10 @@ position = Vector2(22.8, -44.4)
 [node name="upBullet" type="Marker2D" parent="."]
 position = Vector2(-0.4, -59.6)
 
+[node name="orbInvuln" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
 [connection signal="death" from="." to="." method="_on_death"]
 [connection signal="body_entered" from="arm1L/blade" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="arm1L/Area2D" to="." method="_on_area_2d_body_entered"]

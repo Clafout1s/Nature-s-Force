@@ -416,12 +416,13 @@ func _on_area_2d_body_entered(body):
 
 
 func _on_crystal_hit(area,crystal):
-	if area.attack_name == "laser_blade":
+	if area.attack_name == "laser_blade" and $orbInvuln.is_stopped():
 		if lifebar != null:
 			lifebar.get_node("ProgressBar").value -= 1
 		if state == "blocking":
 			$brokenOrb.start()
 			$armBlock.stop()
+		$orbInvuln.start()
 		match crystal:
 			"UR":
 				$crysUR.visible = false

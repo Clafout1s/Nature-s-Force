@@ -21,8 +21,6 @@ func _ready():
 func _process(_delta):
 	if Input.is_action_just_pressed("return_menu"):
 		return_to_menu()
-	if Input.is_action_just_pressed("debug"):
-		win_level_and_return_menu()
 
 func return_to_menu():
 	add_child(main_menu)
