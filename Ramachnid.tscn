@@ -312,6 +312,8 @@ shape = SubResource("RectangleShape2D_d7s10")
 disabled = true
 
 [node name="Area2D2" type="Area2D" parent="arm7L"]
+collision_layer = 8
+collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="arm7L/Area2D2"]
 position = Vector2(-26.4, 32.6)

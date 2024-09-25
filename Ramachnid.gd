@@ -411,6 +411,7 @@ func change_collision_size(node):
 	$terrainCollision.position = new_data[1]
 
 func _on_area_2d_body_entered(body):
+	print(body)
 	if body.character_name == "player":
 		body.emit_signal("hit",self)
 
