@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dlux5nbghwajw"]
 
-[ext_resource type="Script" path="res://boar.gd" id="1_dvn30"]
+[ext_resource type="Script" uid="uid://dwduidqo755rx" path="res://boar.gd" id="1_dvn30"]
 [ext_resource type="Texture2D" uid="uid://hyii0ed6wg24" path="res://sprites/boarv2.png" id="2_cgyvl"]
 [ext_resource type="Texture2D" uid="uid://co51q2ooldaua" path="res://sprites/boarHurt.png" id="2_ixd70"]
 

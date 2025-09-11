@@ -7,6 +7,9 @@ bg_color = Color(0.839216, 0.160784, 0, 1)
 bg_color = Color(0, 0.72549, 0.223529, 1)
 
 [sub_resource type="FontFile" id="FontFile_xdxj8"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0

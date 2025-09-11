@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ddang74spdrk6"]
 
-[ext_resource type="Script" path="res://bird_shooter.gd" id="1_56wbc"]
+[ext_resource type="Script" uid="uid://duu5km1b3drpb" path="res://bird_shooter.gd" id="1_56wbc"]
 [ext_resource type="Texture2D" uid="uid://bilowro5wtsx4" path="res://sprites/flybird.png" id="2_r83gt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cfk10"]

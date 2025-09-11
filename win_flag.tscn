@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b1ulgs3lgn1um"]
 
-[ext_resource type="Script" path="res://win_flag.gd" id="1_1ide4"]
+[ext_resource type="Script" uid="uid://cpno7nryffowc" path="res://win_flag.gd" id="1_1ide4"]
 [ext_resource type="Texture2D" uid="uid://n0jw7mma3vp3" path="res://sprites/flag.png" id="1_edbts"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nhhw1"]

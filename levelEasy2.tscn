@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dfsr74neswslg"]
 
 [ext_resource type="TileSet" uid="uid://bdf6gslx6cehj" path="res://basic_tileset.tres" id="1_4tsgv"]
-[ext_resource type="Script" path="res://levelEasy2.gd" id="1_owc2k"]
+[ext_resource type="Script" uid="uid://cm11h6huqlnkw" path="res://levelEasy2.gd" id="1_owc2k"]
 [ext_resource type="Texture2D" uid="uid://bf3c1hepqwn4l" path="res://sprites/Backgroundnew.png" id="2_3rf6p"]
 
 [node name="Node2D" type="Node2D"]

@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://gaeau15omfc6"]
 
 [ext_resource type="Texture2D" uid="uid://1svf500u0p0v" path="res://sprites/laserBlade.png" id="1_dwhui"]
-[ext_resource type="Script" path="res://laser_sword.gd" id="1_omrll"]
-[ext_resource type="Script" path="res://attacks_script.gd" id="2_15tcb"]
+[ext_resource type="Script" uid="uid://22qp6rbmmrjh" path="res://laser_sword.gd" id="1_omrll"]
+[ext_resource type="Script" uid="uid://cgqsw1vbq4jbt" path="res://attacks_script.gd" id="2_15tcb"]
 
 [node name="StaticBody2D" type="StaticBody2D"]
 scale = Vector2(0.6, 0.6)

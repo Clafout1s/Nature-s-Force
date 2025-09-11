@@ -1,7 +1,7 @@
 [gd_scene load_steps=63 format=3 uid="uid://lf74fabwd4td"]
 
 [ext_resource type="Texture2D" uid="uid://c5r4upyokdai8" path="res://sprites/RamachnoidArm1.png" id="1_26wmx"]
-[ext_resource type="Script" path="res://Ramachnid.gd" id="1_mfohf"]
+[ext_resource type="Script" uid="uid://rtd86d2r0cdj" path="res://Ramachnid.gd" id="1_mfohf"]
 [ext_resource type="Texture2D" uid="uid://k4xumtt0o3m3" path="res://sprites/RamachnoidArm2.png" id="2_p01xj"]
 [ext_resource type="Texture2D" uid="uid://cpgowpqptl256" path="res://sprites/RamachnoidArm3.png" id="3_r2w8f"]
 [ext_resource type="Texture2D" uid="uid://ckaohjsgfqygt" path="res://sprites/RamachnoidArm4.png" id="4_dfcye"]
