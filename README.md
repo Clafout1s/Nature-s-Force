@@ -1,4 +1,5 @@
 # Nature-s-Force
+[![Made with Godot](https://img.shields.io/badge/Made%20with-Godot-478CBF?style=flat&logo=godot%20engine&logoColor=white)](https://godotengine.org)
 Nature's Force is a platformer game, coded with the Godot engine, where you control a cute little robot penguin with a powerful shotgun !    
 The shotgun can be used as a weapon, but especially as a movement tool, allowing you burst of movements through the skies thanks to its strong recoil.    
 You will have to advance through the 7 or so levels by clever use of the movement opportunities of your weapon, fight small robotic animals, and a powerful boss: Ramachnid !    
